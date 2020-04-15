@@ -3,7 +3,7 @@
 
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-class MDoctor extends CI_Model
+class Mdoctor extends CI_Model
 {
 
 }

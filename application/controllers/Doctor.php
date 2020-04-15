@@ -6,7 +6,7 @@ class Doctor extends CI_Controller
 	public function __construct()
 	{
 		parent::__construct();
-		$this->load->model('mdoctor');
+		$this->load->model('Mdoctor');
 	}
 
 	public function index()
