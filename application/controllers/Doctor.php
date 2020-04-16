@@ -1,9 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-use CodeIgnitor\RESTfull\ResourceController;
-
-class Doctor extends ResourceController
+class Doctor extends CI_Controller
 {
 	public function __construct()
 	{
