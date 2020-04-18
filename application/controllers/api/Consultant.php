@@ -19,7 +19,7 @@ class Consultant extends REST_Controller
 		$data = null;
 		$this->load->entity("EntityConsultant", $data, 'consultant');
 		//$this->response( array("value" => array( "this is the GET response")), REST_Controller::HTTP_OK);
-		$this->response( $this->consultant, REST_Controller::HTTP_OK);
+		$this->response( $this->consultant, REST_Controller::HTTP_OK); 
 	}
 
 	public function index_post()
