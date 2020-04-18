@@ -15,7 +15,11 @@ class Consultant extends REST_Controller
 	}
 	
 	function index_get($id) {
-		$this->response( array("value" => array( "this is the GET response")), REST_Controller::HTTP_OK);
+
+		$data = null;
+		$this->load->entity("EntityConsultant", $data, 'consultant');
+		//$this->response( array("value" => array( "this is the GET response")), REST_Controller::HTTP_OK);
+		$this->response( $this->consultant, REST_Controller::HTTP_OK);
 	}
 
 	public function index_post()
@@ -36,10 +40,34 @@ class Consultant extends REST_Controller
 			if($check_auth_client == true) {
 
 				$doctor_id = trim(com_create_guid(), '{}');
-				$doctor_data = $this->input->post();
-				$doctor_data['id'] = $doctor_id;
+				$post = $this->input->post();
 
-//				$this->mmodel->insert('doctor', $doctor_data);
+				/*
+				POSTs
+
+				salutation,
+				firstname,
+				lastname,
+				wellknownas,
+				contact_telephone,
+				contact_mobile,
+				device_mobile,
+				email,
+				specialities,
+				slmc_reg_number
+				consulting_hospitals
+				*/
+
+				/*
+				id:guid, salutation:string(5), first_name:text, last_name:text, nic:varchar(20), contact_telephone:varchar(15), contact_mobile, device_mobile, email:text,  known_name:text, location:guid, specialities:json, doctor_code:guid, is_deleted:bool, is_active:bool, updated:datetime, created:datetime, updated_by:guid, created_by:guid
+				*/
+
+
+				// $this->mmodel->insert('doctor', $doctor_data);
+				// select the inserted record, 
+				// instantiate consultant as follows
+				// $this->load->entity("EntityConsultant", , 'consultant');
+				// $this->response($this->consultant, REST_Controller::HTTP_OK);
 
 
 				$response['status'] = REST_Controller::HTTP_OK;
