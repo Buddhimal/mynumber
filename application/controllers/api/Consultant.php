@@ -36,10 +36,26 @@ class Consultant extends REST_Controller
 			if($check_auth_client == true) {
 
 				$doctor_id = trim(com_create_guid(), '{}');
-				$doctor_data = $this->input->post();
-				$doctor_data['id'] = $doctor_id;
 
-//				$this->mmodel->insert('doctor', $doctor_data);
+				$doctor_data['id']=$doctor_id;
+				$doctor_data['salutation']=$this->input->post('salutation');
+				$doctor_data['first_name']=$this->input->post('firstname');
+				$doctor_data['last_name']=$this->input->post('lastname');
+				$doctor_data['known_name']=$this->input->post('wellknownas');
+				$doctor_data['contact_telephone']=$this->input->post('telephone');
+				$doctor_data['email']=$this->input->post('email');
+				$doctor_data['specialities']=$this->input->post('specialities');
+				$doctor_data['slmc_reg_number']=$this->input->post('slmc_reg_number');
+				$doctor_data['consulting_hospitals']=$this->input->post('consulting_hospitals');
+				$doctor_data['is_deleted']=0;
+				$doctor_data['is_active']=1;
+				$doctor_data['updated']=date("Y-m-d h:i:s");
+				$doctor_data['created']=date("Y-m-d h:i:s");
+				$doctor_data['updated_by']='';
+				$doctor_data['created_by']='';
+
+
+				$this->mmodel->insert('doctor', $doctor_data);
 
 
 				$response['status'] = REST_Controller::HTTP_OK;
