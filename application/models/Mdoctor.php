@@ -74,8 +74,8 @@ class Mdoctor extends CI_Model
 
 		$result = null;
 
-		$this->post['id'] = trim(com_create_guid(), '{}');
-		
+		$doctor_id = trim(com_create_guid(), '{}');
+		$this->post['id'] = $doctor_id;
 		$this->post['is_deleted'] = 0;
 		$this->post['is_active'] = 1;
 		$this->post['updated'] = date("Y-m-d h:i:s");
