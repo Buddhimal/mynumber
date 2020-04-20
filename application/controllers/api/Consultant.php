@@ -83,7 +83,7 @@ class Consultant extends REST_Controller
 					}
 				} else {
 					$response->status = REST_Controller::HTTP_BAD_REQUEST;
-					$response->msg = 'New Doctor Added Successfully';
+					$response->msg = 'Validation Failed.';
 					$response->response = NULL;
 					$response->error_msg = $this->mdoctor->validation_errors;
 					$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
@@ -124,6 +124,64 @@ class Consultant extends REST_Controller
 				$this->response($response, REST_Controller::HTTP_OK);
 
 
+			} else {
+				$response->status = REST_Controller::HTTP_UNAUTHORIZED;
+				$response->msg = 'Unauthorized';
+				$response->response = NULL;
+				$response->error_msg = 'Invalid Authentication Key.';
+				$this->response($response, REST_Controller::HTTP_UNAUTHORIZED);
+			}
+		} else {
+			$response->status = REST_Controller::HTTP_METHOD_NOT_ALLOWED;
+			$response->msg = 'Method Not Allowed';
+			$response->response = NULL;
+			$response->error_msg = 'Invalid Request Method.';
+			$this->response($response, REST_Controller::HTTP_METHOD_NOT_ALLOWED);
+		}
+	}
+
+	public function RegisterDoctor_put($doctor_id)
+	{
+		$method = $_SERVER['REQUEST_METHOD'];
+		$response = new stdClass();
+		if ($method == 'PUT') {
+
+			$check_auth_client = $this->mmodel->check_auth_client();
+
+			if ($check_auth_client == true) {
+
+				// Passing put array to the model.
+				$this->mdoctor->set_data($this->put());
+
+				// model it self will validate the input data
+				if ($this->mdoctor->is_valid()) {
+
+					// update the doctor record as the given data is valid
+					$doctor = $this->mdoctor->update($doctor_id);
+
+					if (!is_null($doctor)) {
+
+						unset($mdoctor);
+
+						$response->status = REST_Controller::HTTP_OK;
+						$response->msg = 'Doctor Updated Successfully';
+						$response->error_msg = NULL;
+						$response->response = $doctor;
+						$this->response($response, REST_Controller::HTTP_OK);
+					} else{
+						$response->status = REST_Controller::HTTP_OK;
+						$response->msg = 'No Records to Update';
+						$response->error_msg = NULL;
+						$response->response = $doctor;
+						$this->response($response, REST_Controller::HTTP_OK);
+					}
+				} else {
+					$response->status = REST_Controller::HTTP_BAD_REQUEST;
+					$response->msg = 'Validation Failed.';
+					$response->response = NULL;
+					$response->error_msg = $this->mdoctor->validation_errors;
+					$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
+				}
 			} else {
 				$response->status = REST_Controller::HTTP_UNAUTHORIZED;
 				$response->msg = 'Unauthorized';
