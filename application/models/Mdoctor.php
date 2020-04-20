@@ -1,6 +1,5 @@
 <?php
 if (!defined('BASEPATH')) exit('No direct script access allowed');
-date_default_timezone_set("Asia/Kolkata");
 
 class Mdoctor extends CI_Model
 {
@@ -123,11 +122,6 @@ class Mdoctor extends CI_Model
 		$this->db->where('id', $id);
 
 		$query_result = $this->db->get()->row();
-
-//		var_dump($query_result);
-//		die();
-
-//		$query_result = $this->db->select("*")->from($this->table)->where(sprintf("id='%s'", $id))->ow(0);
 
 		$CI->load->entity('EntityConsultant', $query_result, 'doctor_response');
 		return $CI->doctor_response;
