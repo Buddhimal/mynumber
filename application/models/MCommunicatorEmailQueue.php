@@ -1,11 +1,11 @@
 <?php 
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-class MCommunicatorEmailQueue extends CI_Model{
+class McommunicatorEmailQueue extends CI_Model{
 
 	public $validation_errors = array();
 	private $post = array();
-	protected $table = "clinic_appointment_trans";
+	protected $table = "communicator_email_queue";
 
 	function __construct()
 	{

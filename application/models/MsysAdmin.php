@@ -1,11 +1,11 @@
-<?php
+<?php 
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-class MclinicSessionTrans extends CI_Model{
+class MsysAdmin extends CI_Model{
 
 	public $validation_errors = array();
 	private $post = array();
-	protected $table = "clinic_session_trans";
+	protected $table = "sysadmin";
 
 	function __construct()
 	{
