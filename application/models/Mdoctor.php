@@ -85,9 +85,8 @@ class Mdoctor extends CI_Model
 	}
 
 
-	/*
-	*
-	*/
+
+
 	public function create()
 	{
 
@@ -102,11 +101,13 @@ class Mdoctor extends CI_Model
 		$this->post['updated_by'] = $doctor_id;
 		$this->post['created_by'] = $doctor_id;
 
-		if ($this->mmodel->insert($this->table, $this->post)) {
-			$result = $this->get_doctor($doctor_id);
+		$this->mmodel->insert($this->table, $this->post);
+
+		if ($this->db->affected_rows()>0) {
+			$result = $this->get($doctor_id);
 		}
 		// Folowing line is commented out intentionally. do no uncomment - ASANKA
-		// $result = $this->get_doctor($doctor_id);
+		// $result = $this->get($doctor_id);
 
 		return $result;
 	}
@@ -116,12 +117,12 @@ class Mdoctor extends CI_Model
 		$result = null;
 		$update_data = array();
 
-		$current_doctor_data = $this->get_doctor_record($doctor_id);
+		$current_doctor_data = $this->get_record($doctor_id);
 
-		if (isset($this->post['first_name']) && $this->post['first_name'] != $current_doctor_data->firstname)
+		if (isset($this->post['first_name']) && $this->post['first_name'] != $current_doctor_data->first_name)
 			$update_data['first_name'] = $this->post['first_name'];
 
-		if (isset($this->post['last_name']) && $this->post['last_name'] != $current_doctor_data->lastname)
+		if (isset($this->post['last_name']) && $this->post['last_name'] != $current_doctor_data->last_name)
 			$update_data['last_name'] = $this->post['last_name'];
 
 		if (isset($this->post['nic']) && $this->post['nic'] != $current_doctor_data->nic)
@@ -164,32 +165,31 @@ class Mdoctor extends CI_Model
 
 			$this->db->where('id', $doctor_id);
 			$this->db->update($this->table, $update_data);
+
+			if ($this->db->affected_rows() > 0) {
+				// update successful
+				$result = $this->get($doctor_id);
+			}
 		}
 
-		if ($this->db->affected_rows() > 0) {
-			// update successful
-			$result = $this->get_doctor($doctor_id);   // ERROR : The model name you are loading is the name of a resource that is already being used: doctor_response
-		}
 		return $result;
 	}
 
-	private function get_doctor_record($id){
+	public function get($id)
+	{
+		$query_result = $this->get_record($id);
+		$CI = &get_instance();
+		$CI->load->entity('EntityConsultant', $query_result, 'doctor_response');
+
+		return $CI->doctor_response;
+	}
+
+	private function get_record($id){
 
 		$this->db->select('*');
 		$this->db->from($this->table);
 		$this->db->where('id', $id);
 		return $this->db->get()->row();
-	}
-	/*
-	*
-	*/
-	public function get_doctor($id)
-	{
-		$query_result = $this->get_doctor_record($id);
-		$CI = &get_instance();
-		$CI->load->entity('EntityConsultant', $query_result, 'doctor_response');
-
-		return $CI->doctor_response;
 	}
 
 }
