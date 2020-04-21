@@ -105,7 +105,8 @@ class Mdoctor extends CI_Model
 		if ($this->mmodel->insert($this->table, $this->post)) {
 			$result = $this->get_doctor($doctor_id);
 		}
-		$result = $this->get_doctor($doctor_id);
+		// Folowing line is commented out intentionally. do no uncomment - ASANKA
+		// $result = $this->get_doctor($doctor_id);
 
 		return $result;
 	}
@@ -115,33 +116,45 @@ class Mdoctor extends CI_Model
 		$result = null;
 		$update_data = array();
 
-		$current_doctor_data = $this->get_doctor($doctor_id);
+		$current_doctor_data = $this->get_doctor_record($doctor_id);
 
-		if (isset($this->post['first_name']) && $this->post['first_name'] != $current_doctor_data->firstname)
+		if (isset($this->post['first_name']) && $this->post['first_name'] != $current_doctor_data['firstname'])
 			$update_data['first_name'] = $this->post['first_name'];
-		if (isset($this->post['last_name']) && $this->post['last_name'] != $current_doctor_data->lastname)
+
+		if (isset($this->post['last_name']) && $this->post['last_name'] != $current_doctor_data['lastname'])
 			$update_data['last_name'] = $this->post['last_name'];
-		if (isset($this->post['nic']) && $this->post['nic'] != $current_doctor_data->nic)
+
+		if (isset($this->post['nic']) && $this->post['nic'] != $current_doctor_data['nic'])
 			$update_data['nic'] = $this->post['nic'];
-		if (isset($this->post['contact_telephone']) && $this->post['contact_telephone'] != $current_doctor_data->contact_telephone)
+
+		if (isset($this->post['contact_telephone']) && $this->post['contact_telephone'] != $current_doctor_data['contact_telephone'])
 			$update_data['contact_telephone'] = $this->post['contact_telephone'];
-		if (isset($this->post['contact_mobile']) && $this->post['contact_mobile'] != $current_doctor_data->contact_mobile)
+
+		if (isset($this->post['contact_mobile']) && $this->post['contact_mobile'] != $current_doctor_data['contact_mobile'])
 			$update_data['contact_mobile'] = $this->post['contact_mobile'];
-		if (isset($this->post['device_mobile']) && $this->post['device_mobile'] != $current_doctor_data->device_mobile)
+
+		if (isset($this->post['device_mobile']) && $this->post['device_mobile'] != $current_doctor_data['device_mobile'])
 			$update_data['device_mobile'] = $this->post['device_mobile'];
-		if (isset($this->post['email']) && $this->post['email'] != $current_doctor_data->email)
+
+		if (isset($this->post['email']) && $this->post['email'] != $current_doctor_data['email'])
 			$update_data['email'] = $this->post['email'];
-		if (isset($this->post['known_name']) && $this->post['known_name'] != $current_doctor_data->wellknownas)
+
+		if (isset($this->post['known_name']) && $this->post['known_name'] != $current_doctor_data['wellknownas'])
 			$update_data['known_name'] = $this->post['wellknownas'];
-		if (isset($this->post['location']) && $this->post['location'] != $current_doctor_data->location)
+
+		if (isset($this->post['location']) && $this->post['location'] != $current_doctor_data['location'])
 			$update_data['location'] = $this->post['location'];
-		if (isset($this->post['specialities']) && $this->post['specialities'] != $current_doctor_data->specialities)
+
+		if (isset($this->post['specialities']) && $this->post['specialities'] != $current_doctor_data['specialities'])
 			$update_data['specialities'] = $this->post['specialities'];
-		if (isset($this->post['doctor_code']) && $this->post['doctor_code'] != $current_doctor_data->doctor_code)
+
+		if (isset($this->post['doctor_code']) && $this->post['doctor_code'] != $current_doctor_data['doctor_code'])
 			$update_data['doctor_code'] = $this->post['doctor_code'];
-		if (isset($this->post['slmc_reg_number']) && $this->post['slmc_reg_number'] != $current_doctor_data->slmc_reg_number)
+
+		if (isset($this->post['slmc_reg_number']) && $this->post['slmc_reg_number'] != $current_doctor_data['slmc_reg_number'])
 			$update_data['slmc_reg_number'] = $this->post['slmc_reg_number'];
-		if (isset($this->post['consulting_hospitals']) && $this->post['consulting_hospitals'] != $current_doctor_data->consulting_hospitals)
+
+		if (isset($this->post['consulting_hospitals']) && $this->post['consulting_hospitals'] != $current_doctor_data['consulting_hospitals'])
 			$update_data['consulting_hospitals'] = $this->post['consulting_hospitals'];
 
 
@@ -154,25 +167,26 @@ class Mdoctor extends CI_Model
 		}
 
 		if ($this->db->affected_rows() > 0) {
-			//update successful
-//			$result = $this->get_doctor($doctor_id);   // ERROR : The model name you are loading is the name of a resource that is already being used: doctor_response
+			// update successful
+			$result = $this->get_doctor($doctor_id);   // ERROR : The model name you are loading is the name of a resource that is already being used: doctor_response
 		}
 		return $result;
 	}
 
+	private function get_doctor_record($id){
+
+		$this->db->select('*');
+		$this->db->from($this->table);
+		$this->db->where('id', $id);
+		return $this->db->get()->row();
+	}
 	/*
 	*
 	*/
 	public function get_doctor($id)
 	{
+		$query_result = $this->get_doctor_record($id);
 		$CI = &get_instance();
-
-		$this->db->select('*');
-		$this->db->from($this->table);
-		$this->db->where('id', $id);
-
-		$query_result = $this->db->get()->row();
-
 		$CI->load->entity('EntityConsultant', $query_result, 'doctor_response');
 
 		return $CI->doctor_response;
