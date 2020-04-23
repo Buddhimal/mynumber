@@ -15,6 +15,7 @@ class Consultant extends REST_Controller
 		$this->load->model("mdoctor");
 		$this->load->model("mpublic");
 		$this->load->model("mclinic");
+		$this->load->model("mlocations");
 	}
 
 	//region Index
@@ -366,16 +367,50 @@ class Consultant extends REST_Controller
 				// model it self will validate the input data
 				if ($this->mclinic->is_valid()) {
 
-					// create the doctor record as the given data is valid
-					$public = $this->mclinic->create();
+					$this->mlocations->set_data($this->input->post());
 
-					if (!is_null($public)) {
-						$response->status = REST_Controller::HTTP_OK;
-						$response->msg = 'New Public Added Successfully';
-						$response->error_msg = NULL;
-						$response->response = $public;
-						$this->response($response, REST_Controller::HTTP_OK);
+					//Validate location data
+					if ($this->mlocations->is_valid()) {
+
+						// create the Location record as the given data is valid
+						$locations = $this->mlocations->create();
+
+						if (!is_null($locations)) {
+							// create the Clinic record as the given data is valid
+							$clinic = $this->mclinic->create($locations->id);
+
+							if (!is_null($clinic)) {
+
+								$response_array['clinic'] = $clinic;
+								$response_array['location'] = $locations;
+
+								$response->status = REST_Controller::HTTP_OK;
+								$response->msg = 'New Public Added Successfully';
+								$response->error_msg = NULL;
+								$response->response = $response_array;
+								$this->response($response, REST_Controller::HTTP_OK);
+							} else {
+								$response->status = REST_Controller::HTTP_INTERNAL_SERVER_ERROR;
+								$response->msg = NULL;
+								$response->error_msg = 'Internal Server Error';
+								$response->response = NULL;
+								$this->response($response, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+							}
+						} else {
+							$response->status = REST_Controller::HTTP_INTERNAL_SERVER_ERROR;
+							$response->msg = NULL;
+							$response->error_msg = 'Internal Server Error';
+							$response->response = NULL;
+							$this->response($response, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+						}
+					} else {
+						$response->status = REST_Controller::HTTP_BAD_REQUEST;
+						$response->msg = 'Validation Failed.';
+						$response->response = NULL;
+						$response->error_msg = $this->mlocations->validation_errors;
+						$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
 					}
+
 				} else {
 					$response->status = REST_Controller::HTTP_BAD_REQUEST;
 					$response->msg = 'Validation Failed.';

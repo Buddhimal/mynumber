@@ -5,11 +5,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class EntityClinic
 {
 	public $id=null;
-	public $clinic_name = null;
+	public $name = null;
 	public $telephone = null;
 	public $email = null;
 	public $web = null;
-	public $location_id = null;
+//	public $location_id = null;
 	public $created = null;
 	public $updated = null;
 	public $is_active = null;
@@ -20,11 +20,11 @@ class EntityClinic
 	function __construct($data=null){
 		if(!is_null($data)){
 			$this->id = $data->id;
-			$this->clinic_name = $data->name;
+			$this->name = $data->clinic_name;
 			$this->telephone = $data->telephone;
 			$this->email = $data->email;
 			$this->web = $data->web;
-			$this->location_id = $data->location;
+//			$this->location_id = $data->location;
 			$this->created = $data->created;
 			$this->updated = $data->updated;
 			$this->is_active = $data->is_active;

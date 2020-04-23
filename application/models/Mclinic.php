@@ -30,7 +30,7 @@ class Mclinic extends CI_Model
 	{
 		$result = true;
 
-		if (!(isset($this->post['name']) && $this->post['name'] != NULL && $this->post['name'] != '')) {
+		if (!(isset($this->post['clinic_name']) && $this->post['clinic_name'] != NULL && $this->post['clinic_name'] != '')) {
 			array_push($this->validation_errors, 'Invalid Clinic Name.');
 			$result = false;
 		}
@@ -49,23 +49,24 @@ class Mclinic extends CI_Model
 	}
 
 
-	public function create()
+	public function create($location_id=NULL)
 	{
 		$result = null;
 
-		$public_id = trim(com_create_guid(), '{}');
-		$this->post['id'] = $public_id;
+		$clinic_id = trim(com_create_guid(), '{}');
+		$this->post['id'] = $clinic_id;
+		$this->post['location_id'] = $location_id;
 		$this->post['is_deleted'] = 0;
 		$this->post['is_active'] = 1;
 		$this->post['updated'] = date("Y-m-d h:i:s");
 		$this->post['created'] = date("Y-m-d h:i:s");
-		$this->post['updated_by'] = $public_id;
-		$this->post['created_by'] = $public_id;
+		$this->post['updated_by'] = $clinic_id;
+		$this->post['created_by'] = $clinic_id;
 
 		$this->mmodel->insert($this->table, $this->post);
 
 		if ($this->db->affected_rows() > 0) {
-			$result = $this->get($public_id);
+			$result = $this->get($clinic_id);
 		}
 
 		return $result;
@@ -127,8 +128,8 @@ class Mclinic extends CI_Model
 	{
 		$query_result = $this->get_record($id);
 		$CI = &get_instance();
-		$CI->load->entity('EntityPublic', $query_result, 'clinic_response');
+		$CI->load->entity('EntityClinic', $query_result, 'clinic_response');
 
-		return $CI->public_response;
+		return $CI->clinic_response;
 	}
 }
