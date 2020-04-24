@@ -9,7 +9,7 @@ class EntityClinic
 	public $telephone = null;
 	public $email = null;
 	public $web = null;
-//	public $location_id = null;
+	public $location = null;
 	public $created = null;
 	public $updated = null;
 	public $is_active = null;
@@ -24,7 +24,7 @@ class EntityClinic
 			$this->telephone = $data->telephone;
 			$this->email = $data->email;
 			$this->web = $data->web;
-//			$this->location_id = $data->location;
+			$this->location = $data->location_id;
 			$this->created = $data->created;
 			$this->updated = $data->updated;
 			$this->is_active = $data->is_active;

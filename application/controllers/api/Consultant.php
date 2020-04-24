@@ -381,13 +381,12 @@ class Consultant extends REST_Controller
 
 							if (!is_null($clinic)) {
 
-								$response_array['clinic'] = $clinic;
-								$response_array['location'] = $locations;
+								$clinic->location=$locations;
 
 								$response->status = REST_Controller::HTTP_OK;
 								$response->msg = 'New Public Added Successfully';
 								$response->error_msg = NULL;
-								$response->response = $response_array;
+								$response->response = $clinic;
 								$this->response($response, REST_Controller::HTTP_OK);
 							} else {
 								$response->status = REST_Controller::HTTP_INTERNAL_SERVER_ERROR;

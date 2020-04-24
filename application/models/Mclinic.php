@@ -57,7 +57,7 @@ class Mclinic extends CI_Model
 		$this->post['id'] = $clinic_id;
 		$this->post['location_id'] = $location_id;
 		$this->post['is_deleted'] = 0;
-		$this->post['is_active'] = 1;
+		$this->post['is_active'] = 0;
 		$this->post['updated'] = date("Y-m-d h:i:s");
 		$this->post['created'] = date("Y-m-d h:i:s");
 		$this->post['updated_by'] = $clinic_id;
