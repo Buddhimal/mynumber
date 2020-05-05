@@ -484,8 +484,7 @@ class Consultant extends REST_Controller
 			if ($check_auth_client == true) {
 
 				$clinic_id = $this->input->post('clinic');
-				$row = 1;
-
+				
 				foreach ($this->input->post('substitute') as $substitute) {
 
 					// Passing post array to the model.
@@ -498,12 +497,11 @@ class Consultant extends REST_Controller
 						$doctor = $this->mdoctor->create();
 
 						if (!is_null($doctor)) {
-							$inserted_records[$row] = $doctor;
+							$inserted_records[] = $doctor;
 						}
 					} else {
 						$validation_errors[$row] = $this->mdoctor->validation_errors;
 					}
-					++$row;
 				}
 
 				$response->status = REST_Controller::HTTP_OK;
