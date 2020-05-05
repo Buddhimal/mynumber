@@ -16,6 +16,7 @@ class Consultant extends REST_Controller
 		$this->load->model("mpublic");
 		$this->load->model("mclinic");
 		$this->load->model("mlocations");
+		$this->load->model("mconsultantpool");
 	}
 
 	//region Index
@@ -485,7 +486,7 @@ class Consultant extends REST_Controller
 
 				$clinic_id = $this->input->post('clinic');
 				
-				$i=0;
+
 				foreach ($this->input->post('substitute') as $substitute) {
 
 					// Passing post array to the model.
@@ -498,18 +499,22 @@ class Consultant extends REST_Controller
 						$doctor = $this->mdoctor->create();
 
 						if (!is_null($doctor)) {
-							$inserted_records[$i] = $doctor;
+
+							if($this->mconsultantpool->create($doctor->id,$clinic_id) ==true){
+								$inserted_records[] = $doctor;
+							}
 						}
 					} else {
-						$validation_errors[$row] = $this->mdoctor->validation_errors;
+						$errors['msg'] = 'Validation Failed.';
+						$errors['request_data'] = $substitute;
+						$errors['errors'] = $this->mdoctor->validation_errors;
+						$validation_errors[] = $errors;
 					}
-					
-					$i++;
 				}
 
 				$response->status = REST_Controller::HTTP_OK;
-				$response->msg = 'New Doctor Added Successfully';
-				$response->error_msg = NULL;
+				$response->msg = 'Success';
+//				$response->error_msg = NULL;
 				$response->substitutes = $inserted_records;
 				$response->validation_errors = $validation_errors;
 				$this->response($response, REST_Controller::HTTP_OK);

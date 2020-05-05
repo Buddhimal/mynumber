@@ -51,6 +51,9 @@ class Mdoctor extends CI_Model
 	public function is_valid()
 	{
 
+		unset($this->validation_errors);
+		$this->validation_errors = array();
+
 		$result = true;
 
 		if (!(($this->mvalidation->already_exists($this->table,'slmc_reg_number',$this->post['slmc_reg_number'])!=TRUE))) {
@@ -114,7 +117,7 @@ class Mdoctor extends CI_Model
 		if ($this->db->affected_rows()>0) {
 			$result = $this->get($doctor_id);
 		}
-		// Folowing line is commented out intentionally. do no uncomment - ASANKA
+		// Folowing line is commented out intentionally. do not uncomment - ASANKA
 		// $result = $this->get($doctor_id);
 
 		return $result;
@@ -187,7 +190,7 @@ class Mdoctor extends CI_Model
 	{
 
 		$query_result = $this->get_record($id);
-		
+
 		return new EntityConsultant($query_result);
 		// $CI = &get_instance();
 		// $CI->load->entity('EntityConsultant', $query_result, 'doctor_response');
