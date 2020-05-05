@@ -381,7 +381,7 @@ class Consultant extends REST_Controller
 
 							if (!is_null($clinic)) {
 
-								$clinic->location=$locations;
+								$clinic->location = $locations;
 
 								$response->status = REST_Controller::HTTP_OK;
 								$response->msg = 'New Public Added Successfully';
@@ -451,6 +451,66 @@ class Consultant extends REST_Controller
 				$response->msg = 'Clinic Details';
 				$response->error_msg = NULL;
 				$response->response = $clinic;
+				$this->response($response, REST_Controller::HTTP_OK);
+
+
+			} else {
+				$response->status = REST_Controller::HTTP_UNAUTHORIZED;
+				$response->msg = 'Unauthorized';
+				$response->response = NULL;
+				$response->error_msg = 'Invalid Authentication Key.';
+				$this->response($response, REST_Controller::HTTP_UNAUTHORIZED);
+			}
+		} else {
+			$response->status = REST_Controller::HTTP_METHOD_NOT_ALLOWED;
+			$response->msg = 'Method Not Allowed';
+			$response->response = NULL;
+			$response->error_msg = 'Invalid Request Method.';
+			$this->response($response, REST_Controller::HTTP_METHOD_NOT_ALLOWED);
+		}
+	}
+
+
+	public function CreateSubstituteConsultants_post()
+	{
+		$method = $_SERVER['REQUEST_METHOD'];
+		$response = new stdClass();
+		$inserted_records = array();
+		$validation_errors = array();
+		if ($method == 'POST') {
+
+			$check_auth_client = $this->mmodel->check_auth_client();
+
+			if ($check_auth_client == true) {
+
+				$clinic_id = $this->input->post('clinic');
+				$row = 1;
+
+				foreach ($this->input->post('substitute') as $substitute) {
+
+					// Passing post array to the model.
+					$this->mdoctor->set_data($substitute);
+
+					// model it self will validate the input data
+					if ($this->mdoctor->is_valid()) {
+
+						// create the doctor record as the given data is valid
+						$doctor = $this->mdoctor->create();
+
+						if (!is_null($doctor)) {
+							$inserted_records[$row] = $doctor;
+						}
+					} else {
+						$validation_errors[$row] = $this->mdoctor->validation_errors;
+					}
+					++$row;
+				}
+
+				$response->status = REST_Controller::HTTP_OK;
+				$response->msg = 'New Doctor Added Successfully';
+				$response->error_msg = NULL;
+				$response->substitutes = $inserted_records;
+				$response->validation_errors = $validation_errors;
 				$this->response($response, REST_Controller::HTTP_OK);
 
 

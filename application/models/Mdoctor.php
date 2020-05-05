@@ -44,12 +44,18 @@ class Mdoctor extends CI_Model
 			$this->post['slmc_reg_number'] = $post_array['slmc_reg_number'];
 		if (isset($post_array['consulting_hospitals']))
 			$this->post['consulting_hospitals'] = $post_array['consulting_hospitals'];
-
 	}
 
 	public function is_valid()
 	{
+
 		$result = true;
+
+		if (!(($this->mvalidation->already_exists($this->table,'slmc_reg_number',$this->post['slmc_reg_number'])!=TRUE))) {
+			array_push($this->validation_errors, 'Doctor already exists..');
+			$result = false;
+			return $result;
+		}
 
 		if (!(isset($this->post['salutation']) && $this->post['salutation'] != NULL && $this->post['salutation'] != '')) {
 			array_push($this->validation_errors, 'Invalid Salutation.');
@@ -66,8 +72,8 @@ class Mdoctor extends CI_Model
 			$result = false;
 		}
 
-		if (!(isset($this->post['slmc_reg_number']) && $this->post['slmc_reg_number'] != NULL && $this->post['slmc_reg_number'] != '')) {
-			array_push($this->validation_errors, 'Invalid SLMC Reg Number.');
+		if (!(isset($this->post['slmc_reg_number']) && $this->post['slmc_reg_number'] != NULL && $this->post['slmc_reg_number'] != '' )) {
+			array_push($this->validation_errors, 'Invalid SLMC Reg Number..');
 			$result = false;
 		}
 
