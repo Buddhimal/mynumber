@@ -1,6 +1,8 @@
 <?php
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 
+require_once(APPPATH . 'entities/EntityConsultant.php');
+
 class Mdoctor extends CI_Model
 {
 	public $validation_errors = array();
@@ -183,11 +185,14 @@ class Mdoctor extends CI_Model
 
 	public function get($id)
 	{
-		$query_result = $this->get_record($id);
-		$CI = &get_instance();
-		$CI->load->entity('EntityConsultant', $query_result, 'doctor_response');
 
-		return $CI->doctor_response;
+		$query_result = $this->get_record($id);
+		
+		return new EntityConsultant($query_result);
+		// $CI = &get_instance();
+		// $CI->load->entity('EntityConsultant', $query_result, 'doctor_response');
+
+		// return $CI->doctor_response;
 	}
 
 	private function get_record($id){
