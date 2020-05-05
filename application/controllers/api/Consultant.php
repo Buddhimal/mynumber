@@ -485,6 +485,7 @@ class Consultant extends REST_Controller
 
 				$clinic_id = $this->input->post('clinic');
 				
+				$i=0;
 				foreach ($this->input->post('substitute') as $substitute) {
 
 					// Passing post array to the model.
@@ -497,11 +498,13 @@ class Consultant extends REST_Controller
 						$doctor = $this->mdoctor->create();
 
 						if (!is_null($doctor)) {
-							$inserted_records[] = $doctor;
+							$inserted_records[$i] = $doctor;
 						}
 					} else {
 						$validation_errors[$row] = $this->mdoctor->validation_errors;
 					}
+					
+					$i++;
 				}
 
 				$response->status = REST_Controller::HTTP_OK;
