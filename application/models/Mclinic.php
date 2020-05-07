@@ -53,7 +53,7 @@ class Mclinic extends CI_Model
 	{
 		$result = null;
 
-		$clinic_id = trim(com_create_guid(), '{}');
+		$clinic_id = trim($this->mmodel->getGUID(), '{}');
 		$this->post['id'] = $clinic_id;
 		$this->post['location_id'] = $location_id;
 		$this->post['is_deleted'] = 0;

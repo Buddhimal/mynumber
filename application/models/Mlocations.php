@@ -67,7 +67,7 @@ class Mlocations extends CI_Model{
 	{
 		$result = null;
 
-		$location_id = trim(com_create_guid(), '{}');
+		$location_id = trim($this->mmodel->getGUID(), '{}');
 		$this->post['id'] = $location_id;
 		$this->post['is_deleted'] = 0;
 		$this->post['is_active'] = 0;

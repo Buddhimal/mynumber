@@ -72,7 +72,7 @@ class Mpublic extends CI_Model
 	{
 		$result = null;
 
-		$public_id = trim(com_create_guid(), '{}');
+		$public_id = trim($this->mmodel->getGUID(), '{}');
 		$this->post['id'] = $public_id;
 		$this->post['is_deleted'] = 0;
 		$this->post['is_active'] = 1;

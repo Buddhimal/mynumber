@@ -57,7 +57,7 @@ class Mdoctor extends CI_Model
 		$result = true;
 
 		if (!(($this->mvalidation->already_exists($this->table,'slmc_reg_number',$this->post['slmc_reg_number'])!=TRUE))) {
-			array_push($this->validation_errors, 'Doctor already exists..');
+			array_push($this->validation_errors, 'Duplicate SLMC Register Number..');
 			$result = false;
 			return $result;
 		}
@@ -96,26 +96,6 @@ class Mdoctor extends CI_Model
 	}
 
 
-	function getGUID(){
-		if (function_exists('com_create_guid')){
-			return com_create_guid();
-		}
-		else {
-			mt_srand((double)microtime()*10000);//optional for php 4.2.0 and up.
-			$charid = strtoupper(md5(uniqid(rand(), true)));
-			$hyphen = chr(45);// "-"
-			$uuid = chr(123)// "{"
-				.substr($charid, 0, 8).$hyphen
-				.substr($charid, 8, 4).$hyphen
-				.substr($charid,12, 4).$hyphen
-				.substr($charid,16, 4).$hyphen
-				.substr($charid,20,12)
-				.chr(125);// "}"
-			return $uuid;
-		}
-	}
-
-
 
 	public function create()
 	{
@@ -123,8 +103,7 @@ class Mdoctor extends CI_Model
 		$result = null;
 
 //		$doctor_id = trim(com_create_guid(), '{}');
-		$doctor_id = trim($this->getGUID());
-		$doctor_id = trim($this->getGUID(),'{}');
+		$doctor_id = trim($this->mmodel->getGUID(),'{}');
 
 //		var_dump($doctor_id);
 

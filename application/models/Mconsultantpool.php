@@ -42,7 +42,7 @@ class Mconsultantpool extends CI_Model{
 	{
 		$result = false;
 
-		$id = trim(com_create_guid(), '{}');
+		$id = trim($this->mmodel->getGUID(), '{}');
 		$this->post['id'] = $id;
 		$this->post['consultant_id'] = $doctor_id;
 		$this->post['clinic_id'] = $clinic_id;
