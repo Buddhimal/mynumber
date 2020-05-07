@@ -13,21 +13,27 @@ class MconsultantPool extends CI_Model{
 	}
 
 
-	public function set_data($post_array)
+	public function set_data($doctor_id,$clinic_id)
 	{
-		// $this->post = $post_array
+		$this->post['consultant_id'] = $doctor_id;
+		$this->post['clinic_id'] = $clinic_id;
 	}
 
-	public function is_valid()
-	{
-		$result = true;
-
-		/*
-		 Validation logics goes here
-		*/
-
-		return $result;
-	}
+//	public function is_valid()
+////	{
+////		$result = true;
+////
+////		unset($this->validation_errors);
+////		$this->validation_errors = array();
+////
+////		if (!(($this->mvalidation->valid_id('doctor',$this->post['consultant_id'])!=TRUE))) {
+////			array_push($this->validation_errors, 'Doctor already exists..');
+////			$result = false;
+////			return $result;
+////		}
+////
+////		return $result;
+////	}
 
 	/*
 	*

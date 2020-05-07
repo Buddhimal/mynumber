@@ -27,15 +27,26 @@ class Mvalidation extends CI_Model
 
 		$result = $this->db->get();
 
+		if($result->num_rows()>0){
+			return TRUE;
+		}else{
+			return FALSE;
+		}
+	}
+
+	function valid_id($table,$value)
+	{
+		$this->db->select('id');
+		$this->db->from($table);
+		$this->db->where('id',$value);
+
+		$result = $this->db->get();
 
 		if($result->num_rows()>0){
 			return TRUE;
 		}else{
 			return FALSE;
 		}
-
-
-
 	}
 
 
