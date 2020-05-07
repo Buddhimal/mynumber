@@ -17,6 +17,7 @@ class Consultant extends REST_Controller
 		$this->load->model("mclinic");
 		$this->load->model("mlocations");
 		$this->load->model("mconsultantpool");
+		$this->load->model("mclinicsession");
 	}
 
 	//region Index
@@ -485,40 +486,108 @@ class Consultant extends REST_Controller
 			if ($check_auth_client == true) {
 
 				$clinic_id = $this->input->post('clinic');
-				
 
-				foreach ($this->input->post('substitute') as $substitute) {
+				if ($this->mclinic->valid_clinic($clinic_id)) {
+					foreach ($this->input->post('substitute') as $substitute) {
 
-					// Passing post array to the model.
-					$this->mdoctor->set_data($substitute);
+						// Passing post array to the model.
+						$this->mdoctor->set_data($substitute);
 
-					// model it self will validate the input data
-					if ($this->mdoctor->is_valid()) {
+						// model it self will validate the input data
+						if ($this->mdoctor->is_valid()) {
 
-						// create the doctor record as the given data is valid
-						$doctor = $this->mdoctor->create();
+							// create the doctor record as the given data is valid
+							$doctor = $this->mdoctor->create();
 
-						if (!is_null($doctor)) {
+							if (!is_null($doctor)) {
 
-							if($this->mconsultantpool->create($doctor->id,$clinic_id) ==true){
-								$inserted_records[] = $doctor;
+								if ($this->mconsultantpool->create($doctor->id, $clinic_id) == true) {
+									$inserted_records[] = $doctor;
+								}
 							}
+						} else {
+							$errors['msg'] = 'Validation Failed.';
+							$errors['request_data'] = $substitute;
+							$errors['errors'] = $this->mdoctor->validation_errors;
+							$validation_errors[] = $errors;
 						}
-					} else {
-						$errors['msg'] = 'Validation Failed.';
-						$errors['request_data'] = $substitute;
-						$errors['errors'] = $this->mdoctor->validation_errors;
-						$validation_errors[] = $errors;
 					}
+					$response->status = REST_Controller::HTTP_OK;
+					$response->msg = 'Success';
+					$response->substitutes = $inserted_records;
+					$response->validation_errors = $validation_errors;
+					$this->response($response, REST_Controller::HTTP_OK);
+				} else {
+					$response->status = REST_Controller::HTTP_BAD_REQUEST;
+					$response->msg = 'Invalid Clinic Id';
+					$response->request_data = $this->input->post();
+					$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
 				}
+			} else {
+				$response->status = REST_Controller::HTTP_UNAUTHORIZED;
+				$response->msg = 'Unauthorized';
+				$response->response = NULL;
+				$response->error_msg = 'Invalid Authentication Key.';
+				$this->response($response, REST_Controller::HTTP_UNAUTHORIZED);
+			}
+		} else {
+			$response->status = REST_Controller::HTTP_METHOD_NOT_ALLOWED;
+			$response->msg = 'Method Not Allowed';
+			$response->response = NULL;
+			$response->error_msg = 'Invalid Request Method.';
+			$this->response($response, REST_Controller::HTTP_METHOD_NOT_ALLOWED);
+		}
+	}
 
-				$response->status = REST_Controller::HTTP_OK;
-				$response->msg = 'Success';
-//				$response->error_msg = NULL;
-				$response->substitutes = $inserted_records;
-				$response->validation_errors = $validation_errors;
-				$this->response($response, REST_Controller::HTTP_OK);
+	public function AddClinicSessions_post()
+	{
+		$method = $_SERVER['REQUEST_METHOD'];
+		$response = new stdClass();
+		$inserted_records = array();
+		$validation_errors = array();
 
+		if ($method == 'POST') {
+
+			$check_auth_client = $this->mmodel->check_auth_client();
+
+			if ($check_auth_client == true) {
+
+				$clinic_id = $this->input->post('clinic');
+
+				if ($this->mclinic->valid_clinic($clinic_id)) {
+
+					foreach ($this->input->post('session') as $session) {
+
+						// Passing post array to the model.
+						$this->mclinicsession->set_data($session);
+
+						// model it self will validate the input data
+						if ($this->mclinicsession->is_valid()) {
+
+							// create the doctor record as the given data is valid
+							$clinic_session = $this->mclinicsession->create($clinic_id);
+
+							$inserted_records[] = $clinic_session;
+
+						} else {
+							$errors['msg'] = 'Validation Failed.';
+							$errors['request_data'] = $session;
+							$errors['errors'] = $this->mclinicsession->validation_errors;
+							$validation_errors[] = $errors;
+						}
+					}
+					$response->status = REST_Controller::HTTP_OK;
+					$response->msg = 'Success';//				$response->error_msg = NULL;
+					$response->substitutes = $inserted_records;
+					$response->validation_errors = $validation_errors;
+					$this->response($response, REST_Controller::HTTP_OK);
+
+				} else {
+					$response->status = REST_Controller::HTTP_BAD_REQUEST;
+					$response->msg = 'Invalid Clinic Id';
+					$response->request_data = $this->input->post();
+					$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
+				}
 
 			} else {
 				$response->status = REST_Controller::HTTP_UNAUTHORIZED;
@@ -527,6 +596,7 @@ class Consultant extends REST_Controller
 				$response->error_msg = 'Invalid Authentication Key.';
 				$this->response($response, REST_Controller::HTTP_UNAUTHORIZED);
 			}
+
 		} else {
 			$response->status = REST_Controller::HTTP_METHOD_NOT_ALLOWED;
 			$response->msg = 'Method Not Allowed';

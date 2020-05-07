@@ -132,4 +132,20 @@ class Mclinic extends CI_Model
 
 		return $CI->clinic_response;
 	}
+
+
+	function valid_clinic($id)
+	{
+		$this->db->select('id');
+		$this->db->from($this->table);
+		$this->db->where('id', $id);
+
+		$result = $this->db->get();
+
+		if ($result->num_rows() > 0) {
+			return TRUE;
+		} else {
+			return FALSE;
+		}
+	}
 }

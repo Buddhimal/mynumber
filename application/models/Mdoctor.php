@@ -209,4 +209,19 @@ class Mdoctor extends CI_Model
 		return $this->db->get()->row();
 	}
 
+	function valid_doctor($id)
+	{
+		$this->db->select('id');
+		$this->db->from($this->table);
+		$this->db->where('id', $id);
+
+		$result = $this->db->get();
+
+		if ($result->num_rows() > 0) {
+			return TRUE;
+		} else {
+			return FALSE;
+		}
+	}
+
 }
