@@ -1,11 +1,11 @@
 <?php 
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-class McommunicatorSMSQueue extends CI_Model{
-
+class Mclinicholidays extends CI_Model
+{
 	public $validation_errors = array();
 	private $post = array();
-	protected $table = "communicator_sms_queue";
+	protected $table = "clinic_holidays";
 
 	function __construct()
 	{
@@ -39,4 +39,3 @@ class McommunicatorSMSQueue extends CI_Model{
 	}
 
 }
-

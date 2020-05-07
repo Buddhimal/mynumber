@@ -1,11 +1,11 @@
-<?php
+<?php 
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-class MClinicSessionSubstituteConsultant  extends CI_Model{
+class Mpaymentreceivals extends CI_Model{
 
 	public $validation_errors = array();
 	private $post = array();
-	protected $table = "clinic_session_substitute_consultant";
+	protected $table = "payment_receivals";
 
 	function __construct()
 	{

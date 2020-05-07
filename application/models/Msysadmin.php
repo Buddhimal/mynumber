@@ -1,12 +1,11 @@
 <?php 
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-class MclinicAppointment extends CI_Model
-{
+class Msysadmin extends CI_Model{
 
 	public $validation_errors = array();
 	private $post = array();
-	protected $table = "clinic_appointments";
+	protected $table = "sysadmin";
 
 	function __construct()
 	{
@@ -38,4 +37,5 @@ class MclinicAppointment extends CI_Model
 	{
 
 	}
+
 }

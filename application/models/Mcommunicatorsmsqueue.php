@@ -1,11 +1,11 @@
 <?php 
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-class MpaymentReceivals extends CI_Model{
+class Mcommunicatorsmsqueue extends CI_Model{
 
 	public $validation_errors = array();
 	private $post = array();
-	protected $table = "payment_receivals";
+	protected $table = "communicator_sms_queue";
 
 	function __construct()
 	{
@@ -39,3 +39,4 @@ class MpaymentReceivals extends CI_Model{
 	}
 
 }
+

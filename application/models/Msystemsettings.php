@@ -1,11 +1,11 @@
 <?php 
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-class MsysAdmin extends CI_Model{
+class Msystemsettings extends CI_Model{
 
 	public $validation_errors = array();
 	private $post = array();
-	protected $table = "sysadmin";
+	protected $table = "system_settings";
 
 	function __construct()
 	{

@@ -3,7 +3,7 @@
 
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-class MsalesStaff extends CI_Model{
+class Msalesstaff extends CI_Model{
 
 	public $validation_errors = array();
 	private $post = array();

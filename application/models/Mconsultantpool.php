@@ -1,6 +1,6 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-class MconsultantPool extends CI_Model{
+class Mconsultantpool extends CI_Model{
 
 	public $validation_errors = array();
 	private $post = array();
