@@ -56,11 +56,11 @@ class Mdoctor extends CI_Model
 
 		$result = true;
 
-		if (!(($this->mvalidation->already_exists($this->table,'slmc_reg_number',$this->post['slmc_reg_number'])!=TRUE))) {
-			array_push($this->validation_errors, 'Duplicate SLMC Register Number..');
-			$result = false;
-			return $result;
-		}
+//		if (!(($this->mvalidation->already_exists($this->table,'slmc_reg_number',$this->post['slmc_reg_number'])!=TRUE))) {
+//			array_push($this->validation_errors, 'Duplicate SLMC Register Number..');
+//			$result = false;
+//			return $result;
+//		}
 
 		if (!(isset($this->post['salutation']) && $this->post['salutation'] != NULL && $this->post['salutation'] != '')) {
 			array_push($this->validation_errors, 'Invalid Salutation.');

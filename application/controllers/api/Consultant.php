@@ -578,7 +578,7 @@ class Consultant extends REST_Controller
 					}
 					$response->status = REST_Controller::HTTP_OK;
 					$response->msg = 'Success';//				$response->error_msg = NULL;
-					$response->substitutes = $inserted_records;
+					$response->sessions = $inserted_records;
 					$response->validation_errors = $validation_errors;
 					$this->response($response, REST_Controller::HTTP_OK);
 
