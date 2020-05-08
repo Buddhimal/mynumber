@@ -50,7 +50,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |		my-controller/my-method	-> my_controller/my_method
 */
 $route['default_controller'] = 'index';
-//$route['api/clinic/consultant'] = 'api/consultant/ConsultantByUniqueId';
+
+
+//region Clinic Routes
+
+$route['api/clinic']['POST'] = 'api/consultant/CreateClinic';
+$route['api/clinic/(:any)']['GET'] = 'api/consultant/ClinicByUniqueId/$1';
+$route['api/clinic/consultant/(:any)']['POST'] = 'api/consultant/RegisterConsultant/$1';
 $route['api/clinic/consultant/(:any)']['GET'] = 'api/consultant/ConsultantByUniqueId/$1';
+$route['api/clinic/consultant/(:any)']['PUT'] = 'api/consultant/UpdateConsultant/$1';
+$route['api/clinic/sessions/(:any)']['POST'] = 'api/consultant/AddClinicSessions/$1';
+
+//endregion
 $route['404_override'] = 'errors/index';
 $route['translate_uri_dashes'] = FALSE;

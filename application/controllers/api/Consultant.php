@@ -296,7 +296,7 @@ class Consultant extends REST_Controller
 								$clinic->location = $locations;
 
 								$response->status = REST_Controller::HTTP_OK;
-								$response->msg = 'New Public Added Successfully';
+								$response->msg = 'New Clinic Added Successfully';
 								$response->error_msg = NULL;
 								$response->response = $clinic;
 								$this->response($response, REST_Controller::HTTP_OK);
@@ -345,7 +345,7 @@ class Consultant extends REST_Controller
 		}
 	}
 
-	public function ClinicByUniqueId_get()
+	public function ClinicByUniqueId_get($clinic_id='')
 	{
 		$method = $_SERVER['REQUEST_METHOD'];
 		$response = new stdClass();
@@ -355,7 +355,7 @@ class Consultant extends REST_Controller
 
 			if ($check_auth_client == true) {
 
-				$clinic = $this->mclinic->get($this->input->get('id'));
+				$clinic = $this->mclinic->get($clinic_id);
 				$clinic->location = $this->mlocations->get($clinic->location);
 
 				$response->status = REST_Controller::HTTP_OK;
@@ -381,7 +381,7 @@ class Consultant extends REST_Controller
 		}
 	}
 
-	public function RegisterConsultant_post()
+	public function RegisterConsultant_post($clinic_id='')
 	{
 		$method = $_SERVER['REQUEST_METHOD'];
 		$response = new stdClass();
@@ -392,8 +392,6 @@ class Consultant extends REST_Controller
 			$check_auth_client = $this->mmodel->check_auth_client();
 
 			if ($check_auth_client == true) {
-
-				$clinic_id = $this->input->post('clinic');
 
 				if ($this->mclinic->valid_clinic($clinic_id)) {
 					foreach ($this->input->post('substitute') as $substitute) {
@@ -483,7 +481,7 @@ class Consultant extends REST_Controller
 		}
 	}
 
-	public function UpdateConsultant_put($doctor_id)
+	public function UpdateConsultant_put($doctor_id='')
 	{
 		$method = $_SERVER['REQUEST_METHOD'];
 		$response = new stdClass();
@@ -541,7 +539,7 @@ class Consultant extends REST_Controller
 		}
 	}
 
-	public function AddClinicSessions_post()
+	public function AddClinicSessions_post($clinic_id='')
 	{
 		$method = $_SERVER['REQUEST_METHOD'];
 		$response = new stdClass();
@@ -553,8 +551,6 @@ class Consultant extends REST_Controller
 			$check_auth_client = $this->mmodel->check_auth_client();
 
 			if ($check_auth_client == true) {
-
-				$clinic_id = $this->input->post('clinic');
 
 				if ($this->mclinic->valid_clinic($clinic_id)) {
 
