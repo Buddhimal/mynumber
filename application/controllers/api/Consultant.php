@@ -74,6 +74,11 @@ class Consultant extends REST_Controller
 
 			if ($check_auth_client == true) {
 
+
+				var_dump($this->input->post());
+				die();
+
+
 				// Passing post array to the model.
 				$this->mdoctor->set_data($this->input->post());
 
