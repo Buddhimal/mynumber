@@ -50,5 +50,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |		my-controller/my-method	-> my_controller/my_method
 */
 $route['default_controller'] = 'index';
+//$route['api/clinic/consultant'] = 'api/consultant/ConsultantByUniqueId';
+$route['api/clinic/consultant/(:any)']['GET'] = 'api/consultant/ConsultantByUniqueId/$1';
 $route['404_override'] = 'errors/index';
 $route['translate_uri_dashes'] = FALSE;
