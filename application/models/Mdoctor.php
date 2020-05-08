@@ -56,11 +56,14 @@ class Mdoctor extends CI_Model
 
 		$result = true;
 
-//		if (!(($this->mvalidation->already_exists($this->table,'slmc_reg_number',$this->post['slmc_reg_number'])!=TRUE))) {
-//			array_push($this->validation_errors, 'Duplicate SLMC Register Number..');
-//			$result = false;
-//			return $result;
-//		}
+
+		if (isset($this->post['slmc_reg_number'])) {
+			if (!(($this->mvalidation->already_exists($this->table, 'slmc_reg_number', $this->post['slmc_reg_number']) != TRUE))) {
+				array_push($this->validation_errors, 'Duplicate SLMC Register Number..');
+				$result = false;
+				return $result;
+			}
+		}
 
 		if (!(isset($this->post['salutation']) && $this->post['salutation'] != NULL && $this->post['salutation'] != '')) {
 			array_push($this->validation_errors, 'Invalid Salutation.');
@@ -77,7 +80,7 @@ class Mdoctor extends CI_Model
 			$result = false;
 		}
 
-		if (!(isset($this->post['slmc_reg_number']) && $this->post['slmc_reg_number'] != NULL && $this->post['slmc_reg_number'] != '' )) {
+		if (!(isset($this->post['slmc_reg_number']) && $this->post['slmc_reg_number'] != NULL && $this->post['slmc_reg_number'] != '')) {
 			array_push($this->validation_errors, 'Invalid SLMC Reg Number..');
 			$result = false;
 		}
@@ -96,14 +99,13 @@ class Mdoctor extends CI_Model
 	}
 
 
-
 	public function create()
 	{
 
 		$result = null;
 
 //		$doctor_id = trim(com_create_guid(), '{}');
-		$doctor_id = trim($this->mmodel->getGUID(),'{}');
+		$doctor_id = trim($this->mmodel->getGUID(), '{}');
 
 //		var_dump($doctor_id);
 
@@ -117,7 +119,7 @@ class Mdoctor extends CI_Model
 
 		$this->mmodel->insert($this->table, $this->post);
 
-		if ($this->db->affected_rows()>0) {
+		if ($this->db->affected_rows() > 0) {
 			$result = $this->get($doctor_id);
 		}
 		// Folowing line is commented out intentionally. do not uncomment - ASANKA
@@ -201,7 +203,8 @@ class Mdoctor extends CI_Model
 		// return $CI->doctor_response;
 	}
 
-	private function get_record($id){
+	private function get_record($id)
+	{
 
 		$this->db->select('*');
 		$this->db->from($this->table);
