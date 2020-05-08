@@ -19,21 +19,13 @@ class Mconsultantpool extends CI_Model{
 		$this->post['clinic_id'] = $clinic_id;
 	}
 
-//	public function is_valid()
-////	{
-////		$result = true;
-////
-////		unset($this->validation_errors);
-////		$this->validation_errors = array();
-////
-////		if (!(($this->mvalidation->valid_id('doctor',$this->post['consultant_id'])!=TRUE))) {
-////			array_push($this->validation_errors, 'Doctor already exists..');
-////			$result = false;
-////			return $result;
-////		}
-////
-////		return $result;
-////	}
+	public function is_valid()
+	{
+		$result = true;
+
+
+		return $result;
+	}
 
 	/*
 	*
@@ -58,8 +50,6 @@ class Mconsultantpool extends CI_Model{
 		if ($this->db->affected_rows()>0) {
 			$result = true;
 		}
-		// Folowing line is commented out intentionally. do no uncomment - ASANKA
-		// $result = $this->get($doctor_id);
 
 		return $result;
 	}

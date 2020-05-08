@@ -18,6 +18,7 @@ class Consultant extends REST_Controller
 		$this->load->model("mlocations");
 		$this->load->model("mconsultantpool");
 		$this->load->model("mclinicsession");
+		$this->load->model("mclinicholidays");
 	}
 
 	//region Index
@@ -603,6 +604,74 @@ class Consultant extends REST_Controller
 			$this->response($response, REST_Controller::HTTP_METHOD_NOT_ALLOWED);
 		}
 	}
+
+
+	public function AddHolidays_post($clinic_id='')
+	{
+		$method = $_SERVER['REQUEST_METHOD'];
+		$response = new stdClass();
+		$inserted_records = array();
+		$validation_errors = array();
+
+		if ($method == 'POST') {
+
+			$check_auth_client = $this->mmodel->check_auth_client();
+
+			if ($check_auth_client == true) {
+
+				if ($this->mclinic->valid_clinic($clinic_id)) {
+
+					foreach ($this->input->post('session') as $session) {
+
+						// Passing post array to the model.
+						$this->mclinicsession->set_data($session);
+
+						// model it self will validate the input data
+						if ($this->mclinicsession->is_valid()) {
+
+							// create the doctor record as the given data is valid
+							$clinic_session = $this->mclinicsession->create($clinic_id);
+
+							$inserted_records[] = $clinic_session;
+
+						} else {
+							$errors['msg'] = 'Validation Failed.';
+							$errors['request_data'] = $session;
+							$errors['errors'] = $this->mclinicsession->validation_errors;
+							$validation_errors[] = $errors;
+						}
+					}
+					$response->status = REST_Controller::HTTP_OK;
+					$response->msg = 'Success';//				$response->error_msg = NULL;
+					$response->sessions = $inserted_records;
+					$response->validation_errors = $validation_errors;
+					$this->response($response, REST_Controller::HTTP_OK);
+
+				} else {
+					$response->status = REST_Controller::HTTP_BAD_REQUEST;
+					$response->msg = 'Invalid Clinic Id';
+					$response->request_data = $this->input->post();
+					$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
+				}
+
+			} else {
+				$response->status = REST_Controller::HTTP_UNAUTHORIZED;
+				$response->msg = 'Unauthorized';
+				$response->response = NULL;
+				$response->error_msg = 'Invalid Authentication Key.';
+				$this->response($response, REST_Controller::HTTP_UNAUTHORIZED);
+			}
+
+		} else {
+			$response->status = REST_Controller::HTTP_METHOD_NOT_ALLOWED;
+			$response->msg = 'Method Not Allowed';
+			$response->response = NULL;
+			$response->error_msg = 'Invalid Request Method.';
+			$this->response($response, REST_Controller::HTTP_METHOD_NOT_ALLOWED);
+		}
+	}
+
+
 
 	//endregion
 

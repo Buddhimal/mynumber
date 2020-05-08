@@ -104,8 +104,6 @@ class Mclinicsession extends CI_Model
 		if ($this->db->affected_rows() > 0) {
 			$result = $this->get($session_id);
 		}
-		// Folowing line is commented out intentionally. do not uncomment - ASANKA
-		// $result = $this->get($doctor_id);
 
 		return $result;
 	}
