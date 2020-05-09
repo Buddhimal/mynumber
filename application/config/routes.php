@@ -56,10 +56,10 @@ $route['default_controller'] = 'index';
 
 $route['api/clinic']['POST'] = 'api/consultant/CreateClinic';
 $route['api/clinic/(:any)']['GET'] = 'api/consultant/ClinicByUniqueId/$1';
-$route['api/clinic/consultant/(:any)']['POST'] = 'api/consultant/RegisterConsultant/$1';
+$route['api/clinic/(:any)/consultant']['POST'] = 'api/consultant/RegisterConsultant/$1';
 $route['api/clinic/consultant/(:any)']['GET'] = 'api/consultant/ConsultantByUniqueId/$1';
 $route['api/clinic/consultant/(:any)']['PUT'] = 'api/consultant/UpdateConsultant/$1';
-$route['api/clinic/sessions/(:any)']['POST'] = 'api/consultant/AddClinicSessions/$1';
+$route['api/clinic/(:any)/sessions']['POST'] = 'api/consultant/AddClinicSessions/$1';
 
 //endregion
 $route['404_override'] = 'errors/index';

@@ -72,49 +72,51 @@ class Mclinic extends CI_Model
 		return $result;
 	}
 
-//	public function update($public_id)
-//	{
-//		$result = null;
-//		$update_data = array();
-//
-//		$current_public_data = $this->get_record($public_id);
-//
-//		if (isset($this->post['first_name']) && $this->post['first_name'] != $current_public_data->first_name)
-//			$update_data['first_name'] = $this->post['first_name'];
-//
-//		if (isset($this->post['last_name']) && $this->post['last_name'] != $current_public_data->last_name)
-//			$update_data['last_name'] = $this->post['last_name'];
-//
-//		if (isset($this->post['nic']) && $this->post['nic'] != $current_public_data->nic)
-//			$update_data['nic'] = $this->post['nic'];
-//
-//		if (isset($this->post['telephone']) && $this->post['telephone'] != $current_public_data->telephone)
-//			$update_data['telephone'] = $this->post['telephone'];
-//
-//		if (isset($this->post['email']) && $this->post['email'] != $current_public_data->email)
-//			$update_data['email'] = $this->post['email'];
-//
-//		if (isset($this->post['location']) && $this->post['location'] != $current_public_data->location)
-//			$update_data['location'] = $this->post['location'];
-//
-//		if (isset($this->post['patient_code']) && $this->post['patient_code'] != $current_public_data->patient_code)
-//			$update_data['patient_code'] = $this->post['patient_code'];
-//
-//		if (sizeof($update_data) > 0) {
-//			$update_data['updated'] = date("Y-m-d h:i:s");
-//			$update_data['updated_by'] = $public_id;
-//
-//			$this->db->where('id', $public_id);
-//			$this->db->update($this->table, $update_data);
-//
-//			if ($this->db->affected_rows() > 0) {
-//				// update successful
-//				$result = $this->get($public_id);
-//			}
-//		}
-//
-//		return $result;
-//	}
+	/*
+		//	public function update($public_id)
+		//	{
+		//		$result = null;
+		//		$update_data = array();
+		//
+		//		$current_public_data = $this->get_record($public_id);
+		//
+		//		if (isset($this->post['first_name']) && $this->post['first_name'] != $current_public_data->first_name)
+		//			$update_data['first_name'] = $this->post['first_name'];
+		//
+		//		if (isset($this->post['last_name']) && $this->post['last_name'] != $current_public_data->last_name)
+		//			$update_data['last_name'] = $this->post['last_name'];
+		//
+		//		if (isset($this->post['nic']) && $this->post['nic'] != $current_public_data->nic)
+		//			$update_data['nic'] = $this->post['nic'];
+		//
+		//		if (isset($this->post['telephone']) && $this->post['telephone'] != $current_public_data->telephone)
+		//			$update_data['telephone'] = $this->post['telephone'];
+		//
+		//		if (isset($this->post['email']) && $this->post['email'] != $current_public_data->email)
+		//			$update_data['email'] = $this->post['email'];
+		//
+		//		if (isset($this->post['location']) && $this->post['location'] != $current_public_data->location)
+		//			$update_data['location'] = $this->post['location'];
+		//
+		//		if (isset($this->post['patient_code']) && $this->post['patient_code'] != $current_public_data->patient_code)
+		//			$update_data['patient_code'] = $this->post['patient_code'];
+		//
+		//		if (sizeof($update_data) > 0) {
+		//			$update_data['updated'] = date("Y-m-d h:i:s");
+		//			$update_data['updated_by'] = $public_id;
+		//
+		//			$this->db->where('id', $public_id);
+		//			$this->db->update($this->table, $update_data);
+		//
+		//			if ($this->db->affected_rows() > 0) {
+		//				// update successful
+		//				$result = $this->get($public_id);
+		//			}
+		//		}
+		//
+		//		return $result;
+		//	}
+	*/
 
 	private function get_record($id)
 	{

@@ -10,13 +10,13 @@ class Mvalidation extends CI_Model
 
 	function email($email = '')
 	{
-		return (!preg_match("/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix", $email)) ? FALSE : TRUE;
+		return preg_match("/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix", $email) === 1;
 	}
 
 	function telephone($tp = '')
 	{
 		$length = strlen($tp);
-		return ($length <= 15) ? TRUE : FALSE;
+		return ($length <= 15);
 	}
 
 	function already_exists($table, $column, $value)
@@ -24,14 +24,8 @@ class Mvalidation extends CI_Model
 		$this->db->select($column);
 		$this->db->from($table);
 		$this->db->where($column, $value);
-
 		$result = $this->db->get();
-
-		if ($result->num_rows() > 0) {
-			return TRUE;
-		} else {
-			return FALSE;
-		}
+		return ($result->num_rows() > 0) ;
 	}
 
 
@@ -40,14 +34,8 @@ class Mvalidation extends CI_Model
 		$this->db->select('id');
 		$this->db->from($table);
 		$this->db->where('id', $value);
-
 		$result = $this->db->get();
-
-		if ($result->num_rows() > 0) {
-			return TRUE;
-		} else {
-			return FALSE;
-		}
+		return ($result->num_rows() > 0) ;
 	}
 
 	function valid_time($time)
