@@ -68,8 +68,9 @@ class Auth extends CI_Controller {
 			$this->mlogin->set_data($inputs);
 			if($this->mlogin->is_valid()){
 
-				$consultant_login_data = $this->mlogin->get_login(Enum_EntityType::Consultant);
-				/** 
+//				$consultant_login_data = $this->mlogin->get_login(Enum_EntityType::Consultant);
+				$consultant_login_data = $this->mlogin->get_login(CONSULTANT);
+				/**
 					look for is_active
 					look for is_deleted
 					if everything ok then send back the Clinic Data ( clinic data + sessions list + consultants list + holiday list of the current year)

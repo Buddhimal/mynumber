@@ -10,12 +10,12 @@ class EntityClinic
 	public $email = null;
 	public $web = null;
 	public $location = null;
-	public $created = null;
-	public $updated = null;
-	public $is_active = null;
-	public $is_deleted = null;
-	public $updated_by = null;
-	public $created_by = null;
+//	public $created = null;
+//	public $updated = null;
+//	public $is_active = null;
+//	public $is_deleted = null;
+//	public $updated_by = null;
+//	public $created_by = null;
 
 	function __construct($data=null){
 		if(!is_null($data)){
