@@ -565,7 +565,7 @@ class Consultant extends REST_Controller
 			$response->error_msg = 'Invalid Request Method.';
 			$this->response($response, REST_Controller::HTTP_METHOD_NOT_ALLOWED);
 		}
-	}
+	}  //need to recheck
 
 	public function AddClinicSessions_post($clinic_id = '')
 	{
