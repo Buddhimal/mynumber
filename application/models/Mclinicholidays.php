@@ -68,13 +68,13 @@ class Mclinicholidays extends CI_Model
 
 		$query_result = $this->get_record($id);
 
-		return new EntityClinicSession($query_result);
+		return $query_result;
 	}
 
 	private function get_record($id)
 	{
 
-		$this->db->select('*');
+		$this->db->select('id,holiday');
 		$this->db->from($this->table);
 		$this->db->where('id', $id);
 		return $this->db->get()->row();

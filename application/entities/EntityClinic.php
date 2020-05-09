@@ -25,12 +25,12 @@ class EntityClinic
 			$this->email = $data->email;
 			$this->web = $data->web;
 			$this->location = $data->location_id;
-			$this->created = $data->created;
-			$this->updated = $data->updated;
-			$this->is_active = $data->is_active;
-			$this->is_deleted = $data->is_deleted;
-			$this->updated_by = $data->updated_by;
-			$this->created_by = $data->created_by;
+//			$this->created = $data->created;
+//			$this->updated = $data->updated;
+//			$this->is_active = $data->is_active;
+//			$this->is_deleted = $data->is_deleted;
+//			$this->updated_by = $data->updated_by;
+//			$this->created_by = $data->created_by;
 		}
 	}
 }

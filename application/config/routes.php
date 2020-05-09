@@ -60,7 +60,10 @@ $route['api/clinic/(:any)/consultant']['POST'] = 'api/consultant/RegisterConsult
 $route['api/clinic/consultant/(:any)']['GET'] = 'api/consultant/ConsultantByUniqueId/$1';
 $route['api/clinic/consultant/(:any)']['PUT'] = 'api/consultant/UpdateConsultant/$1';
 $route['api/clinic/(:any)/sessions']['POST'] = 'api/consultant/AddClinicSessions/$1';
+$route['api/clinic/(:any)/holidays']['POST'] = 'api/consultant/AddHolidays/$1';
 
 //endregion
+
+
 $route['404_override'] = 'errors/index';
 $route['translate_uri_dashes'] = FALSE;

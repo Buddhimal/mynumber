@@ -346,7 +346,7 @@ class Consultant extends REST_Controller
 		}
 	}
 
-	public function ClinicByUniqueId_get($clinic_id='')
+	public function ClinicByUniqueId_get($clinic_id = '')
 	{
 		$method = $_SERVER['REQUEST_METHOD'];
 		$response = new stdClass();
@@ -382,7 +382,7 @@ class Consultant extends REST_Controller
 		}
 	}
 
-	public function RegisterConsultant_post($clinic_id='')
+	public function RegisterConsultant_post($clinic_id = '')
 	{
 		$method = $_SERVER['REQUEST_METHOD'];
 		$response = new stdClass();
@@ -390,12 +390,14 @@ class Consultant extends REST_Controller
 		$validation_errors = array();
 		if ($method == 'POST') {
 
+			$json_data=($this->post('json_data'));
+
 			$check_auth_client = $this->mmodel->check_auth_client();
 
 			if ($check_auth_client == true) {
 
 				if ($this->mclinic->valid_clinic($clinic_id)) {
-					foreach ($this->input->post('substitute') as $substitute) {
+					foreach ($json_data['substitute'] as $substitute) {
 
 						// Passing post array to the model.
 						$this->mdoctor->set_data($substitute);
@@ -446,7 +448,7 @@ class Consultant extends REST_Controller
 		}
 	}
 
-	public function ConsultantByUniqueId_get($consultant_id='')
+	public function ConsultantByUniqueId_get($consultant_id = '')
 	{
 
 		$method = $_SERVER['REQUEST_METHOD'];
@@ -482,7 +484,7 @@ class Consultant extends REST_Controller
 		}
 	}
 
-	public function UpdateConsultant_put($doctor_id='')
+	public function UpdateConsultant_put($doctor_id = '')
 	{
 		$method = $_SERVER['REQUEST_METHOD'];
 		$response = new stdClass();
@@ -540,7 +542,7 @@ class Consultant extends REST_Controller
 		}
 	}
 
-	public function AddClinicSessions_post($clinic_id='')
+	public function AddClinicSessions_post($clinic_id = '')
 	{
 		$method = $_SERVER['REQUEST_METHOD'];
 		$response = new stdClass();
@@ -555,7 +557,9 @@ class Consultant extends REST_Controller
 
 				if ($this->mclinic->valid_clinic($clinic_id)) {
 
-					foreach ($this->input->post('session') as $session) {
+					$json_data=($this->post('json_data'));
+
+					foreach ($json_data['session'] as $session) {
 
 						// Passing post array to the model.
 						$this->mclinicsession->set_data($session);
@@ -606,12 +610,10 @@ class Consultant extends REST_Controller
 	}
 
 
-	public function AddHolidays_post($clinic_id='')
+	public function AddHolidays_post($clinic_id = '')
 	{
 		$method = $_SERVER['REQUEST_METHOD'];
 		$response = new stdClass();
-		$inserted_records = array();
-		$validation_errors = array();
 
 		if ($method == 'POST') {
 
@@ -619,33 +621,37 @@ class Consultant extends REST_Controller
 
 			if ($check_auth_client == true) {
 
+
+//				var_dump($this->post());
+//				die();
+
+
 				if ($this->mclinic->valid_clinic($clinic_id)) {
 
-					foreach ($this->input->post('session') as $session) {
+					$this->mclinicholidays->set_data($this->post('json_data'));
 
-						// Passing post array to the model.
-						$this->mclinicsession->set_data($session);
+					//Validate location data
+					if ($this->mclinicholidays->is_valid()) {
 
-						// model it self will validate the input data
-						if ($this->mclinicsession->is_valid()) {
 
-							// create the doctor record as the given data is valid
-							$clinic_session = $this->mclinicsession->create($clinic_id);
+						// create the holiday record as the given data is valid
+						$holiday = $this->mclinicholidays->create($clinic_id);
 
-							$inserted_records[] = $clinic_session;
-
-						} else {
-							$errors['msg'] = 'Validation Failed.';
-							$errors['request_data'] = $session;
-							$errors['errors'] = $this->mclinicsession->validation_errors;
-							$validation_errors[] = $errors;
+						if (!is_null($holiday)) {
+							$response->status = REST_Controller::HTTP_OK;
+							$response->msg = 'New Holiday Added Successfully';
+							$response->error_msg = NULL;
+							$response->response = $holiday;
+							$this->response($response, REST_Controller::HTTP_OK);
 						}
+					}else {
+						$response->status = REST_Controller::HTTP_BAD_REQUEST;
+						$response->msg = 'Validation Failed.';
+						$response->response = NULL;
+						$response->error_msg = $this->mclinicholidays->validation_errors;
+						$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
 					}
-					$response->status = REST_Controller::HTTP_OK;
-					$response->msg = 'Success';//				$response->error_msg = NULL;
-					$response->sessions = $inserted_records;
-					$response->validation_errors = $validation_errors;
-					$this->response($response, REST_Controller::HTTP_OK);
+
 
 				} else {
 					$response->status = REST_Controller::HTTP_BAD_REQUEST;
@@ -670,7 +676,6 @@ class Consultant extends REST_Controller
 			$this->response($response, REST_Controller::HTTP_METHOD_NOT_ALLOWED);
 		}
 	}
-
 
 
 	//endregion
