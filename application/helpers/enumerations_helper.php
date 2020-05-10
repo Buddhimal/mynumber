@@ -1,8 +1,8 @@
 <?php
 
 
-$this->ci =& get_instance();
-$this->ci->load->database();
+// $this->ci =& get_instance();
+// $this->ci->load->database();
 
 
 
@@ -11,7 +11,7 @@ $this->ci->load->database();
 
 define("PATIENT", 1);
 define("CONSULTANT", 1);
-define("SALEREP", 1);
+define("SALESREP", 1);
 
 //endregion
 
@@ -48,13 +48,11 @@ define("METHOD_NOT_ALLOWED", 4050);  // Api response status =405 & method not al
 //endregion
 
 
-//class Enum_EntityType
-//{
-//	// public=0, consultant=1, salesrep=2
-//	const Patient = 0;
-//	const Consultant = 1;
-//	const SaleRep = 2;
-//
-//
-//}
+// class EntityType
+// {
+// 	// public=0, consultant=1, salesrep=2
+// 	const Patient = 0;
+// 	const Consultant = 1;
+// 	const SalesRep = 2;
+// }
 

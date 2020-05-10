@@ -62,6 +62,7 @@ $route['api/clinic/consultant/(:any)']['PUT'] = 'api/consultant/UpdateConsultant
 $route['api/clinic/(:any)/sessions']['POST'] = 'api/consultant/AddClinicSessions/$1';
 $route['api/clinic/(:any)/holidays']['POST'] = 'api/consultant/AddHolidays/$1';
 
+$route['api/clinic/auth/checkin']['POST'] = 'api/auth/checkin';
 //endregion
 
 

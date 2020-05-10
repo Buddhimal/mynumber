@@ -67,12 +67,6 @@ class Mclinicsession extends CI_Model
 			}
 		}
 
-
-//		if (isset($this->post['consultant']) && $this->post['consultant'] != NULL && $this->post['consultant'] != '' ) {
-//			array_push($this->validation_errors, 'Invalid Consultant..');
-//			$result = false;
-//		}
-
 		if (!(isset($this->post['session_name']) && $this->post['session_name'] != NULL && $this->post['session_name'] != '')) {
 			array_push($this->validation_errors, 'Invalid Session Name..');
 			$result = false;
@@ -124,6 +118,16 @@ class Mclinicsession extends CI_Model
 		$this->db->from($this->table);
 		$this->db->where('id', $id);
 		return $this->db->get()->row();
+	}
+
+	public function get_sessions($clinic_id){
+		$output = null;
+		$all_sessions = $this->db->where(sprintf("clinic_id='%s' and is_deleted=0 and is_active=1", $clinic_id) )->get();
+		foreach($all_sessions as $session_data){
+			$output[] = EntityClinicSession($query_result);
+		}
+
+		return $output;
 	}
 
 }

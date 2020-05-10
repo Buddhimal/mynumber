@@ -57,14 +57,6 @@ class Mdoctor extends CI_Model
 		$result = true;
 
 
-//		if (isset($this->post['slmc_reg_number'])) {
-//			if (!(($this->mvalidation->already_exists($this->table, 'slmc_reg_number', $this->post['slmc_reg_number']) != TRUE))) {
-//				array_push($this->validation_errors, 'Duplicate SLMC Register Number..');
-//				$result = false;
-//				return $result;
-//			}
-//		}
-
 		if (!(isset($this->post['salutation']) && $this->post['salutation'] != NULL && $this->post['salutation'] != '')) {
 			array_push($this->validation_errors, 'Invalid Salutation.');
 			$result = false;
@@ -99,15 +91,12 @@ class Mdoctor extends CI_Model
 	}
 
 
-	public function create()
+	public function create($clinic_id)
 	{
 
 		$result = null;
 
-//		$doctor_id = trim(com_create_guid(), '{}');
 		$doctor_id = trim($this->mmodel->getGUID(), '{}');
-
-//		var_dump($doctor_id);
 
 		$this->post['id'] = $doctor_id;
 		$this->post['is_deleted'] = 0;
@@ -122,8 +111,6 @@ class Mdoctor extends CI_Model
 		if ($this->db->affected_rows() > 0) {
 			$result = $this->get($doctor_id);
 		}
-		// Folowing line is commented out intentionally. do not uncomment - ASANKA
-		// $result = $this->get($doctor_id);
 
 		return $result;
 	}
@@ -193,23 +180,34 @@ class Mdoctor extends CI_Model
 
 	public function get($id)
 	{
-
 		$query_result = $this->get_record($id);
-
 		return new EntityConsultant($query_result);
-		// $CI = &get_instance();
-		// $CI->load->entity('EntityConsultant', $query_result, 'doctor_response');
-
-		// return $CI->doctor_response;
 	}
 
 	private function get_record($id)
 	{
-
 		$this->db->select('*');
 		$this->db->from($this->table);
 		$this->db->where('id', $id);
 		return $this->db->get()->row();
+	}
+
+	public function get_consultants($clinic_id) {
+
+		$output = null;
+
+		$all_sessions = $this->db
+			->select( '*' )
+			->from( sprintf( "%s D", $this->table) )
+			->join( 'consultant_pool P', 'P.consultant_id= D.id' )
+			->where( sprintf( "D.clinic_id='%s' and D.is_deleted=0 and D.is_active=1", $clinic_id ) )
+			->get();
+
+		foreach($all_sessions as $session_data) {
+			$output[] = EntityConsultant($query_result);
+		}
+
+		return $output;
 	}
 
 	function valid_doctor($id)

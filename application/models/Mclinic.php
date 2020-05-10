@@ -1,6 +1,8 @@
 <?php
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 
+require_once(APPPATH . 'entities/EntityClinic.php');
+
 class Mclinic extends CI_Model
 {
 	public $validation_errors = array();
@@ -129,10 +131,7 @@ class Mclinic extends CI_Model
 	public function get($id)
 	{
 		$query_result = $this->get_record($id);
-		$CI = &get_instance();
-		$CI->load->entity('EntityClinic', $query_result, 'clinic_response');
-
-		return $CI->clinic_response;
+		return new EntityClinic($query_result);
 	}
 
 
