@@ -28,8 +28,6 @@ class Mclinicsession extends CI_Model
 			$this->post['end_time'] = $post_array['end_time'];
 		if (isset($post_array['consultant']))
 			$this->post['consultant'] = $post_array['consultant'];
-		else
-			$this->post['consultant'] = NULL;
 		if (isset($post_array['session_name']))
 			$this->post['session_name'] = $post_array['session_name'];
 		if (isset($post_array['session_description']))
@@ -58,20 +56,10 @@ class Mclinicsession extends CI_Model
 			$result = false;
 		}
 
-
-		if ($this->post['consultant'] != NULL && $this->post['consultant'] != '') {
-
-			if ($this->mdoctor->valid_doctor($this->post['consultant'])==FALSE) {
-				array_push($this->validation_errors, 'Invalid Consultant..');
-				$result = false;
-			}
+		if (!(isset($this->post['consultant']) && $this->post['consultant'] != NULL && $this->post['consultant'] != '' && $this->mdoctor->valid_doctor($this->post['consultant']) == TRUE)) {
+			array_push($this->validation_errors, 'Invalid Consultant..');
+			$result = false;
 		}
-
-
-//		if (isset($this->post['consultant']) && $this->post['consultant'] != NULL && $this->post['consultant'] != '' ) {
-//			array_push($this->validation_errors, 'Invalid Consultant..');
-//			$result = false;
-//		}
 
 		if (!(isset($this->post['session_name']) && $this->post['session_name'] != NULL && $this->post['session_name'] != '')) {
 			array_push($this->validation_errors, 'Invalid Session Name..');
@@ -79,6 +67,13 @@ class Mclinicsession extends CI_Model
 		}
 
 		return $result;
+	}
+
+
+	private function is_valied_consultant($consultant, $clinic)
+	{
+
+
 	}
 
 	/*
@@ -124,6 +119,17 @@ class Mclinicsession extends CI_Model
 		$this->db->from($this->table);
 		$this->db->where('id', $id);
 		return $this->db->get()->row();
+	}
+
+	function valid_session($id)
+	{
+		$this->db->select('id');
+		$this->db->from($this->table);
+		$this->db->where('id', $id);
+
+		$result = $this->db->get();
+
+		return ($result->num_rows() > 0);
 	}
 
 }

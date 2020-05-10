@@ -19,6 +19,7 @@ class Consultant extends REST_Controller
 		$this->load->model("mconsultantpool");
 		$this->load->model("mclinicsession");
 		$this->load->model("mclinicholidays");
+		$this->load->model("mclinicsessionsubstituteconsultant");
 	}
 
 	//region Index
@@ -444,7 +445,7 @@ class Consultant extends REST_Controller
 					$response->status = REST_Controller::HTTP_BAD_REQUEST;
 					$response->status_code = BAD_REQUEST;
 					$response->msg = 'Invalid Clinic Id';
-					$response->request_data = $this->input->post();
+					$response->request_data = $this->post();
 					$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
 				}
 			} else {
@@ -615,7 +616,7 @@ class Consultant extends REST_Controller
 					$response->status = REST_Controller::HTTP_BAD_REQUEST;
 					$response->status_code = BAD_REQUEST;
 					$response->msg = 'Invalid Clinic Id';
-					$response->request_data = $this->input->post();
+					$response->request_data = $this->post();
 					$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
 				}
 
@@ -648,11 +649,6 @@ class Consultant extends REST_Controller
 			$check_auth_client = $this->mmodel->check_auth_client();
 
 			if ($check_auth_client == true) {
-
-
-//				var_dump($this->post());
-//				die();
-
 
 				if ($this->mclinic->valid_clinic($clinic_id)) {
 
@@ -687,7 +683,7 @@ class Consultant extends REST_Controller
 					$response->status = REST_Controller::HTTP_BAD_REQUEST;
 					$response->status_code = BAD_REQUEST;
 					$response->msg = 'Invalid Clinic Id';
-					$response->request_data = $this->input->post();
+					$response->request_data = $this->post();
 					$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
 				}
 
@@ -710,7 +706,80 @@ class Consultant extends REST_Controller
 		}
 	}
 
+	public function StartSession_put($clinic_id = '', $session_id = '')
+	{
+		$method = $_SERVER['REQUEST_METHOD'];
+		$response = new stdClass();
 
+		if ($method == 'PUT') {
+
+			$check_auth_client = $this->mmodel->check_auth_client();
+
+			if ($check_auth_client == true) {
+
+				if ($this->mclinic->valid_clinic($clinic_id)) {
+
+					if ($this->mclinicsession->valid_session($session_id)) {
+
+						$this->mclinicsessionsubstituteconsultant->set_data($this->put('json_data'));
+
+						if ($this->mclinicsessionsubstituteconsultant->is_valid()) {
+
+
+							// create the holiday record as the given data is valid
+							$holiday = $this->mclinicsessionsubstituteconsultant->create($session_id);
+
+							if (!is_null($holiday)) {
+								$response->status = REST_Controller::HTTP_OK;
+								$response->status_code = SUCCESS;
+								$response->msg = 'New Session Added Successfully';
+								$response->error_msg = NULL;
+								$response->response = $holiday;
+								$this->response($response, REST_Controller::HTTP_OK);
+							}
+						} else {
+							$response->status = REST_Controller::HTTP_BAD_REQUEST;
+							$response->status_code = BAD_REQUEST;
+							$response->msg = 'Validation Failed.';
+							$response->response = NULL;
+							$response->error_msg = $this->mclinicsessionsubstituteconsultant->validation_errors;
+							$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
+						}
+					} else {
+						$response->status = REST_Controller::HTTP_BAD_REQUEST;
+						$response->status_code = BAD_REQUEST;
+						$response->msg = 'Invalid Session Id';
+						$response->request_data = $this->post();
+						$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
+					}
+
+
+				} else {
+					$response->status = REST_Controller::HTTP_BAD_REQUEST;
+					$response->status_code = BAD_REQUEST;
+					$response->msg = 'Invalid Clinic Id';
+					$response->request_data = $this->post();
+					$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
+				}
+
+			} else {
+				$response->status = REST_Controller::HTTP_UNAUTHORIZED;
+				$response->status_code = UNAUTHORIZED;
+				$response->msg = 'Unauthorized';
+				$response->response = NULL;
+				$response->error_msg = 'Invalid Authentication Key.';
+				$this->response($response, REST_Controller::HTTP_UNAUTHORIZED);
+			}
+
+		} else {
+			$response->status = REST_Controller::HTTP_METHOD_NOT_ALLOWED;
+			$response->status_code = METHOD_NOT_ALLOWED;
+			$response->msg = 'Method Not Allowed';
+			$response->response = NULL;
+			$response->error_msg = 'Invalid Request Method.';
+			$this->response($response, REST_Controller::HTTP_METHOD_NOT_ALLOWED);
+		}
+	}
 
 
 	//endregion
