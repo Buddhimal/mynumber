@@ -59,7 +59,7 @@ class Mclinicsession extends CI_Model
 
 		if ($this->post['consultant'] != NULL && $this->post['consultant'] != '') {
 
-			if ($this->mdoctor->valid_doctor($this->post['consultant'])==FALSE) {
+			if ($this->mdoctor->valid_doctor($this->post['consultant']) == FALSE) {
 				array_push($this->validation_errors, 'Invalid Consultant..');
 				$result = false;
 			}
@@ -135,22 +135,22 @@ class Mclinicsession extends CI_Model
 		return ($result->num_rows() > 0);
 	}
 
-//	public function get_sessions($clinic_id) {
-//
-//		$output = null;
-//
-//		$all_sessions = $this->db
-//			->select( '*' )
-//			->from( sprintf( "%s D", $this->table) )
-//			->join( 'consultant_pool P', 'P.consultant_id= D.id' )
-//			->where( sprintf( "D.clinic_id='%s' and D.is_deleted=0 and D.is_active=1", $clinic_id ) )
-//			->get();
-//
-//		foreach($all_sessions as $session_data) {
-//			$output[] = EntityConsultant($session_data);
-//		}
-//
-//		return $output;
-//	}
+	public function get_sessions($clinic_id)
+	{
+
+		$output = null;
+
+		$all_sessions = $this->db
+			->select('*')
+			->from(sprintf("%s S", $this->table))
+			->where(sprintf("S.clinic_id='%s' and S.is_deleted=0 and S.is_active=1", $clinic_id))
+			->get();
+
+		foreach ($all_sessions->result() as $session_data) {
+			$output[] = new EntityClinicSession($session_data);
+		}
+
+		return $output;
+	}
 
 }

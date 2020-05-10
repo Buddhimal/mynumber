@@ -40,6 +40,9 @@ class Mclinic extends CI_Model
 		if (!(isset($this->post['email']) && $this->mvalidation->email($this->post['email']))) {
 			array_push($this->validation_errors, 'Invalid Email.');
 			$result = false;
+		} elseif ($this->mvalidation->already_exists($this->table, 'email', $this->post['email']) == TRUE) {
+			array_push($this->validation_errors, 'Email already registered.');
+			$result = false;
 		}
 
 		if (!(isset($this->post['telephone']) && $this->mvalidation->telephone($this->post['telephone']))) {

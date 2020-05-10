@@ -200,11 +200,10 @@ class Mdoctor extends CI_Model
 			->select( '*' )
 			->from( sprintf( "%s D", $this->table) )
 			->join( 'consultant_pool P', 'P.consultant_id= D.id' )
-			->where( sprintf( "D.clinic_id='%s' and D.is_deleted=0 and D.is_active=1", $clinic_id ) )
+			->where( sprintf( "P.clinic_id='%s' and D.is_deleted=0 and D.is_active=1", $clinic_id ) )
 			->get();
-
-		foreach($all_sessions as $session_data) {
-			$output[] = EntityConsultant($session_data);
+		foreach($all_sessions->result() as $session_data) {
+			$output[] = new EntityConsultant($session_data);
 		}
 
 		return $output;

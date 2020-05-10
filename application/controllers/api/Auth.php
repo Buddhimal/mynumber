@@ -97,9 +97,8 @@ class Auth extends REST_Controller
 
 					$clinic = $this->mclinic->get($consultant_login_data->entity_id);
 					$clinic->holidays = $this->mclinicholidays->get_holidays($clinic->id);
-
-//					$clinic->sessions = $this->mclinicsession->get_sessions($clinic->id);  //issues found
-//					$clinic->consultants = $this->mdoctor->get_consultants($clinic->id);   //issues found
+					$clinic->sessions = $this->mclinicsession->get_sessions($clinic->id);
+					$clinic->consultants = $this->mdoctor->get_consultants($clinic->id);
 
 					//Sending back the reponse
 					$response->status = REST_Controller::HTTP_OK;

@@ -337,6 +337,7 @@ class Consultant extends REST_Controller
 
 							$login_data['username'] = $json_data['email'];
 							$login_data['password'] = $json_data["password"];
+							$login_data['mobile'] = $json_data["telephone"];
 
 							$this->mlogin->set_data($login_data);
 
