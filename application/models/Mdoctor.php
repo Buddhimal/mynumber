@@ -204,7 +204,7 @@ class Mdoctor extends CI_Model
 			->get();
 
 		foreach($all_sessions as $session_data) {
-			$output[] = EntityConsultant($query_result);
+			$output[] = EntityConsultant($session_data);
 		}
 
 		return $output;

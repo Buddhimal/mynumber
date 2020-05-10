@@ -1,58 +1,18 @@
 <?php
 
-
-// $this->ci =& get_instance();
-// $this->ci->load->database();
-
-
-
-
-//region EntityTypes
-
-define("PATIENT", 1);
-define("CONSULTANT", 1);
-define("SALESREP", 1);
-
-//endregion
+class EntityType
+{
+	const Patient = 0;
+	const Consultant = 1;
+	const SalesRep = 2;
+}
 
 
-//region APIResponseCodes
-
-define("SUCCESS", 2000);  // Api response status =200 & all completed successfully
-define("SUCCESS_WITH_ERRORS", 2001);  // Api response status =200 & all completed with errors
-
-
-define("INTERNAL_SERVER_ERROR", 5000);  // Api response status =500
-
-define("BAD_REQUEST", 4000);  // Api response status =400 & all Validations Failed
-
-define("UNAUTHORIZED", 4010);  // Api response status =401 & Unauthorized
-
-define("METHOD_NOT_ALLOWED", 4050);  // Api response status =405 & method not allowed
-
-
-//endregion
-
-
-
-
-//region Set Const From Database
-
-//$query = $this->ci->db->get('system_settings');
-
-//foreach ($query->result() as $row)
-//{
-//	define($row->status_const,$row->status_id);
-//}
-
-//endregion
-
-
-// class EntityType
-// {
-// 	// public=0, consultant=1, salesrep=2
-// 	const Patient = 0;
-// 	const Consultant = 1;
-// 	const SalesRep = 2;
-// }
-
+class APIResponseCode{
+	const SUCCESS = 2000;
+	const SUCCESS_WITH_ERRORS = 2001;
+	const INTERNAL_SERVER_ERROR = 5000;
+	const BAD_REQUEST = 4000;
+	const UNAUTHORIZED = 4010;
+	const METHOD_NOT_ALLOWED = 4050;
+}

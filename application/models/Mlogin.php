@@ -42,7 +42,20 @@ class Mlogin extends CI_Model{
 
 	public function get_login($entity_type){
 
-		return $this->db->get_where( array("username"=>$this->post['username'], 'password' => $this->post['password'], 'entity_type'=> $entity_type , 'is_confirmed' => 1 ) );
+		$this->db->select('*');
+		$this->db->from($this->table);
+		$this->db->where('username',$this->post['username']);
+		$this->db->where('password',$this->post['password']);
+		$this->db->where('entity_type',$entity_type);
+		$this->db->where('is_confirmed',1);
+
+		return $this->db->get()->result();
+
+//		$return= $this->db->get_where( array("username"=>$this->post['username'], 'password' => $this->post['password'], 'entity_type'=> $entity_type , 'is_confirmed' => 1 ) );
+//
+//		var_dump($this->db->last_query());
+//		die();
+
 	}
 
 	/*
@@ -56,8 +69,8 @@ class Mlogin extends CI_Model{
 		$this->post['is_active'] = 1;
 		$this->post['updated'] = date("Y-m-d h:i:s");
 		$this->post['created'] = date("Y-m-d h:i:s");
-		$this->post['updated_by'] = $doctor_id;
-		$this->post['created_by'] = $doctor_id;
+		$this->post['updated_by'] = $clinic_id;
+		$this->post['created_by'] = $clinic_id;
 		$this->post['entity_id'] = $clinic_id;
 		$this->post['password'] = $login_password;
 		$this->post['entity_type'] = $entity_type;
