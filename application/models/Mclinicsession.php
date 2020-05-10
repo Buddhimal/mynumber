@@ -56,10 +56,20 @@ class Mclinicsession extends CI_Model
 			$result = false;
 		}
 
-		if (!(isset($this->post['consultant']) && $this->post['consultant'] != NULL && $this->post['consultant'] != '' && $this->mdoctor->valid_doctor($this->post['consultant']) == TRUE)) {
-			array_push($this->validation_errors, 'Invalid Consultant..');
-			$result = false;
+
+		if ($this->post['consultant'] != NULL && $this->post['consultant'] != '') {
+
+			if ($this->mdoctor->valid_doctor($this->post['consultant'])==FALSE) {
+				array_push($this->validation_errors, 'Invalid Consultant..');
+				$result = false;
+			}
 		}
+
+
+//		if (isset($this->post['consultant']) && $this->post['consultant'] != NULL && $this->post['consultant'] != '' ) {
+//			array_push($this->validation_errors, 'Invalid Consultant..');
+//			$result = false;
+//		}
 
 		if (!(isset($this->post['session_name']) && $this->post['session_name'] != NULL && $this->post['session_name'] != '')) {
 			array_push($this->validation_errors, 'Invalid Session Name..');
@@ -67,13 +77,6 @@ class Mclinicsession extends CI_Model
 		}
 
 		return $result;
-	}
-
-
-	private function is_valied_consultant($consultant, $clinic)
-	{
-
-
 	}
 
 	/*

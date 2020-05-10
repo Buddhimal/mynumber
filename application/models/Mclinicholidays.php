@@ -1,6 +1,7 @@
 <?php 
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 
+
 class Mclinicholidays extends CI_Model
 {
 	public $validation_errors = array();
@@ -80,4 +81,17 @@ class Mclinicholidays extends CI_Model
 		return $this->db->get()->row();
 	}
 
+	public function get_holidays($clinic_id, $year=null){
+		
+		$date = $year;
+		if($date == null){
+			$date = date("Y");
+		}
+
+		$start_date = date("Y-m-d", strtotime( sprintf("%s-01-01", $date )));
+		$end_date = date("Y-m-d", strtotime( sprintf("%s-12-31", $date )));
+
+		return $this->db->select( array('id', 'holiday'))->from($this->table)->where( sprintf("holiday > '%s' and holiday < '%s' clinic_id ='%s'", $start_date, $end_date, $clinic_id) )->get();
+
+	}
 }

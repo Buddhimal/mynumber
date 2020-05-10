@@ -16,7 +16,7 @@ class Mlogin extends CI_Model{
 
 	public function set_data($post_array)
 	{
-		$this->post = $post_array
+		$this->post = $post_array;
 	}
 
 	public function is_valid()
@@ -31,7 +31,7 @@ class Mlogin extends CI_Model{
 			$result = false;
 		}
 
-		if ( !isset($this->post['username']) || $this->mvalidation->email($this->post['username']))) {
+		if ( !isset($this->post['username']) || $this->mvalidation->email($this->post['username']) ) {
 			array_push($this->validation_errors, "Username isn't a valid email address");
 			$result = false;
 		}
@@ -48,9 +48,22 @@ class Mlogin extends CI_Model{
 	/*
 	*
 	*/
-	public function create()
+	public function create($clinic_id,  $entity_type)
 	{
-
+		$login_password = $this->UtilityHandler->_salt($this->post["password"], $this->post['username']);
+		$this->post['id'] = trim($this->mmodel->getGUID(), '{}');
+		$this->post['is_deleted'] = 0;
+		$this->post['is_active'] = 1;
+		$this->post['updated'] = date("Y-m-d h:i:s");
+		$this->post['created'] = date("Y-m-d h:i:s");
+		$this->post['updated_by'] = $doctor_id;
+		$this->post['created_by'] = $doctor_id;
+		$this->post['entity_id'] = $clinic_id;
+		$this->post['password'] = $login_password;
+		$this->post['entity_type'] = $entity_type;
+		$this->post['is_confirmed'] = 0;
+		$this->mmodel->insert($this->table, $this->post);
+		return ($this->db->affected_rows() > 0);
 	}
 
 
