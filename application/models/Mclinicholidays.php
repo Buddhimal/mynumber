@@ -82,7 +82,8 @@ class Mclinicholidays extends CI_Model
 	}
 
 	public function get_holidays($clinic_id, $year=null){
-		
+
+		$output = array();
 		$date = $year;
 		if($date == null){
 			$date = date("Y");
@@ -91,7 +92,15 @@ class Mclinicholidays extends CI_Model
 		$start_date = date("Y-m-d", strtotime( sprintf("%s-01-01", $date )));
 		$end_date = date("Y-m-d", strtotime( sprintf("%s-12-31", $date )));
 
-		return $this->db->select( array('id', 'holiday'))->from($this->table)->where( sprintf("holiday > '%s' and holiday < '%s' clinic_id ='%s'", $start_date, $end_date, $clinic_id) )->get();
+		$all_holidays= $this->db->select( array('id', 'holiday'))->from($this->table)->where( sprintf("holiday > '%s' and holiday < '%s' and clinic_id ='%s'", $start_date, $end_date, $clinic_id) )->get();
+
+		foreach($all_holidays->result() as $holiday_data) {
+			$holiday['id'] = $holiday_data->id;
+			$holiday['holiday'] = $holiday_data->holiday;
+			$output[] = $holiday;
+		}
+		return $output;
+
 
 	}
 }

@@ -76,27 +76,30 @@ class Auth extends REST_Controller
 
 				$inputs = $this->post('json_data');
 
-				$this->load->library("UtilityHandler", null);
-				$inputs['password'] = $this->utilityhandler->_salt($inputs["password"], $inputs['username']);
+//				$this->load->library("UtilityHandler", null);
+//				$inputs['password'] = $this->utilityhandler->_salt($inputs["password"], $inputs['username']);
 
 				$this->mlogin->set_data($inputs);
 				if ($this->mlogin->is_valid()) {
 
+					$this->mlogin->post['password']=$this->utilityhandler->_salt($inputs["password"], $inputs['username']);
+
 					$consultant_login_data = $this->mlogin->get_login(EntityType::Consultant);
 
-					if (sizeof($consultant_login_data) == 0)
+					if ($consultant_login_data == NULL)
 						throw new Exception("Account not found");
 
 					if ($consultant_login_data->is_deleted == true)
 						throw new Exception("Trying to access deleted account");
 
-					if ($consultant_login_data->is_active)
+					if ($consultant_login_data->is_active===0)
 						throw new Exception("Trying to access inactive account");
 
 					$clinic = $this->mclinic->get($consultant_login_data->entity_id);
 					$clinic->holidays = $this->mclinicholidays->get_holidays($clinic->id);
-					$clinic->sessions = $this->mclinicsession->get_sessions($clinic->id);
-					$clinic->consultants = $this->mdoctor->get_consultants($clinic->id);
+
+//					$clinic->sessions = $this->mclinicsession->get_sessions($clinic->id);  //issues found
+//					$clinic->consultants = $this->mdoctor->get_consultants($clinic->id);   //issues found
 
 					//Sending back the reponse
 					$response->status = REST_Controller::HTTP_OK;
@@ -108,7 +111,7 @@ class Auth extends REST_Controller
 					// Either username is empty or not an email or else password is empty
 					$response->status = REST_Controller::HTTP_BAD_REQUEST;
 					$response->msg = 'Invalid Request.';
-					$response->error_msg = 'Invalid Request.';
+					$response->error_msg = $this->mlogin->validation_errors;
 					$response->response = NULL;
 				}
 			}

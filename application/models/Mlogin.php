@@ -1,22 +1,32 @@
-<?php 
+<?php
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-class Mlogin extends CI_Model{
+class Mlogin extends CI_Model
+{
 
 	public $validation_errors = array();
-	private $post = array();
+	public $post = array();
 	protected $table = "muliti_user_login";
 
 	function __construct()
 	{
 		parent::__construct();
 		$this->load->model('mvalidation');
+		$this->load->library('utilityhandler');
+
 	}
 
 
 	public function set_data($post_array)
 	{
-		$this->post = $post_array;
+		if (isset($post_array['username']))
+			$this->post['username'] = $post_array['username'];
+		else
+			$this->post['username'] = NULL;
+
+		if (isset($post_array['password'])) {
+			$this->post['password'] = $post_array['password'];
+		}
 	}
 
 	public function is_valid()
@@ -26,13 +36,14 @@ class Mlogin extends CI_Model{
 		/*
 		 Validation logics goes here
 		*/
-		 if (!isset($this->post['password']) || empty($this->post['password']) ) {
-		 	array_push($this->validation_errors, 'Invalid Clinic Name.');
+
+		if (!(isset($this->post['username']) && $this->post['username'] != NULL && $this->post['username'] != '' && $this->mvalidation->email($this->post['username']))) {
+			array_push($this->validation_errors, "Username isn't a valid email address.");
 			$result = false;
 		}
 
-		if ( !isset($this->post['username']) || $this->mvalidation->email($this->post['username']) ) {
-			array_push($this->validation_errors, "Username isn't a valid email address");
+		if (!(isset($this->post['password']) && $this->post['password'] != NULL && $this->post['password'] != '')) {
+			array_push($this->validation_errors, 'Invalid Password.');
 			$result = false;
 		}
 
@@ -40,30 +51,24 @@ class Mlogin extends CI_Model{
 	}
 
 
-	public function get_login($entity_type){
+	public function get_login($entity_type)
+	{
 
 		$this->db->select('*');
 		$this->db->from($this->table);
-		$this->db->where('username',$this->post['username']);
-		$this->db->where('password',$this->post['password']);
-		$this->db->where('entity_type',$entity_type);
-		$this->db->where('is_confirmed',1);
+		$this->db->where('username', $this->post['username']);
+		$this->db->where('password', $this->post['password']);
+		$this->db->where('entity_type', $entity_type);
+		$this->db->where('is_confirmed', 1);
 
-		return $this->db->get()->result();
-
-//		$return= $this->db->get_where( array("username"=>$this->post['username'], 'password' => $this->post['password'], 'entity_type'=> $entity_type , 'is_confirmed' => 1 ) );
-//
-//		var_dump($this->db->last_query());
-//		die();
+		return $this->db->get()->row();
 
 	}
 
-	/*
-	*
-	*/
-	public function create($clinic_id,  $entity_type)
+
+	public function create($clinic_id, $entity_type)
 	{
-		$login_password = $this->UtilityHandler->_salt($this->post["password"], $this->post['username']);
+		$login_password = $this->utilityhandler->_salt($this->post["password"], $this->post['username']);
 		$this->post['id'] = trim($this->mmodel->getGUID(), '{}');
 		$this->post['is_deleted'] = 0;
 		$this->post['is_active'] = 1;

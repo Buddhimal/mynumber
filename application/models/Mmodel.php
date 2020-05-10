@@ -107,6 +107,18 @@ class Mmodel extends CI_Model
 		}
 	}
 
+	public function generateCode()
+	{
+		$length = 6;
+		$characters = "123456789";
+		$charactersLength = strlen($characters);
+		$code = '';
+		for ($i = 0; $i < $length; $i++) {
+			$code .= $characters[rand(0, $charactersLength - 1)];
+		}
+		return $code;
+	}
+
 
 	public function get_all($table) {
 		return $this->db->get($table);

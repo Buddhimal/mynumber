@@ -12,6 +12,7 @@ class Consultant extends REST_Controller
 	{
 		parent::__construct();
 		$this->load->model("mmodel");
+		$this->load->model("mlogin");
 		$this->load->model("mdoctor");
 		$this->load->model("mpublic");
 		$this->load->model("mclinic");
@@ -20,6 +21,8 @@ class Consultant extends REST_Controller
 		$this->load->model("mclinicsession");
 		$this->load->model("mclinicholidays");
 		$this->load->model("mclinicsessionsubstituteconsultant");
+		$this->load->library('utilityhandler');
+
 	}
 
 	//region Index
@@ -62,7 +65,42 @@ class Consultant extends REST_Controller
 		$response->response = NULL;
 		$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
 	}
+
 	//endregion
+
+
+	public function SendVerificationCode_post()
+	{
+		$method = $_SERVER['REQUEST_METHOD'];
+		$response = new stdClass();
+
+		if ($method == 'POST') {
+
+			$check_auth_client = $this->mmodel->check_auth_client();
+
+			if ($check_auth_client == true) {
+
+				//code...
+
+			} else {
+				$response->status = REST_Controller::HTTP_UNAUTHORIZED;
+				$response->status_code = APIResponseCode::UNAUTHORIZED;
+				$response->msg = 'Unauthorized';
+				$response->response = NULL;
+				$response->error_msg = 'Invalid Authentication Key.';
+				$this->response($response, REST_Controller::HTTP_UNAUTHORIZED);
+			}
+
+		} else {
+			$response->status = REST_Controller::HTTP_METHOD_NOT_ALLOWED;
+			$response->status_code = APIResponseCode::METHOD_NOT_ALLOWED;
+			$response->msg = 'Method Not Allowed';
+			$response->response = NULL;
+			$response->error_msg = 'Invalid Request Method.';
+			$this->response($response, REST_Controller::HTTP_METHOD_NOT_ALLOWED);
+		}
+	}
+
 
 
 	//region All API for Consultant
@@ -288,6 +326,8 @@ class Consultant extends REST_Controller
 					//Validate location data
 					if ($this->mlocations->is_valid()) {
 
+						$this->db->trans_start();
+
 						// create the Location record as the given data is valid
 						$locations = $this->mlocations->create();
 
@@ -295,8 +335,11 @@ class Consultant extends REST_Controller
 							// create the Clinic record as the given data is valid
 							$clinic = $this->mclinic->create($locations->id);
 
+							$login_data['username'] = $json_data['email'];
+							$login_data['password'] = $json_data["password"];
 
-							$this->mlogin->set_data($json_data);
+							$this->mlogin->set_data($login_data);
+
 							$this->mlogin->create($clinic->id, EntityType::Consultant); // return true or false
 
 							if (!is_null($clinic)) {
@@ -324,6 +367,14 @@ class Consultant extends REST_Controller
 							$response->error_msg = 'Internal Server Error';
 							$response->response = NULL;
 							$this->response($response, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+						}
+
+						$this->db->trans_complete();
+
+						if ($this->db->trans_status() == FALSE) {
+							$this->db->trans_rollback();
+						} else {
+							$this->db->trans_commit();
 						}
 					} else {
 						$response->status = REST_Controller::HTTP_BAD_REQUEST;
@@ -358,6 +409,7 @@ class Consultant extends REST_Controller
 			$response->error_msg = 'Invalid Request Method.';
 			$this->response($response, REST_Controller::HTTP_METHOD_NOT_ALLOWED);
 		}
+
 	}
 
 	public function ClinicByUniqueId_get($clinic_id = '')
