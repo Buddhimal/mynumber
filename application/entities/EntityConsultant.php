@@ -9,8 +9,6 @@ class EntityConsultant
 	public $lastname = null;
 	public $nic = null;
 	public $contact_telephone = null;
-	public $contact_mobile = null;
-	public $device_mobile = null;
 	public $email = null;
 	public $wellknownas = null;
 	public $location = null;
@@ -29,8 +27,6 @@ class EntityConsultant
 			$this->wellknownas = $data->known_name;
 			$this->location = $data->location;
 			$this->contact_telephone = $data->contact_telephone;
-			$this->contact_mobile = $data->contact_mobile;
-			$this->device_mobile = $data->device_mobile;
 			$this->email = $data->email;
 			$this->specialities = $data->specialities;
 			$this->slmc_reg_number = $data->slmc_reg_number;

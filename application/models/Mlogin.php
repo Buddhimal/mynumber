@@ -27,6 +27,9 @@ class Mlogin extends CI_Model
 		if (isset($post_array['password'])) {
 			$this->post['password'] = $post_array['password'];
 		}
+		if (isset($post_array['mobile'])) {
+			$this->post['mobile'] = $post_array['mobile'];
+		}
 	}
 
 	public function is_valid()

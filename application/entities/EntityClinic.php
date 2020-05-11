@@ -6,7 +6,9 @@ class EntityClinic
 {
 	public $id=null;
 	public $name = null;
-	public $telephone = null;
+	public $contact_telephone = null;
+	public $contact_mobile = null;
+	public $device_mobile = null;
 	public $email = null;
 	public $web = null;
 	public $location = null;
@@ -18,7 +20,9 @@ class EntityClinic
 		if(!is_null($data)){
 			$this->id = $data->id;
 			$this->name = $data->clinic_name;
-			$this->telephone = $data->telephone;
+			$this->contact_telephone = $data->contact_telephone;
+			$this->contact_mobile = $data->contact_mobile;
+			$this->device_mobile = $data->device_mobile;
 			$this->email = $data->email;
 			$this->web = $data->web;
 			$this->location = $data->location_id;

@@ -48,14 +48,21 @@ class Mlocations extends CI_Model{
 			array_push($this->validation_errors, 'Invalid Location City.');
 			$result = false;
 		}
-		if (!(isset($this->post['district']) && $this->post['district'] != NULL && $this->post['district'] != '')) {
-			array_push($this->validation_errors, 'Invalid Location District.');
-			$result = false;
-		}
-		if (!(isset($this->post['province']) && $this->post['province'] != NULL && $this->post['province'] != '')) {
-			array_push($this->validation_errors, 'Invalid Location Province.');
-			$result = false;
-		}
+
+//		if (!(isset($this->post['location_long_lat']) && $this->post['location_long_lat'] != NULL && $this->post['location_long_lat'] != '')) {
+//			array_push($this->validation_errors, 'Invalid Location Long lat.');
+//			$result = false;
+//		}
+
+
+//		if (!(isset($this->post['district']) && $this->post['district'] != NULL && $this->post['district'] != '')) {
+//			array_push($this->validation_errors, 'Invalid Location District.');
+//			$result = false;
+//		}
+//		if (!(isset($this->post['province']) && $this->post['province'] != NULL && $this->post['province'] != '')) {
+//			array_push($this->validation_errors, 'Invalid Location Province.');
+//			$result = false;
+//		}
 
 		return $result;
 	}

@@ -16,7 +16,7 @@ class Mvalidation extends CI_Model
 	function telephone($tp = '')
 	{
 		$length = strlen($tp);
-		return ($length <= 15);
+		return ($length == 10);
 	}
 
 	function already_exists($table, $column, $value)

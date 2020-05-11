@@ -23,4 +23,21 @@ class MessageSender
 		}
 
 	}
+
+	private function get_web_page($url)
+	{
+		$options = array(
+			CURLOPT_RETURNTRANSFER => true, // return web page
+			CURLOPT_HEADER => false, // don't return headers
+			CURLOPT_TIMEOUT=>500,
+		);
+
+		$ch = curl_init($url);
+		curl_setopt_array($ch, $options);
+		$content = curl_exec($ch);
+		$header = curl_getinfo($ch);
+		curl_close($ch);
+
+		return $content;
+	}
 }

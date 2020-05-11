@@ -21,6 +21,7 @@ class Consultant extends REST_Controller
 		$this->load->model("mclinicsession");
 		$this->load->model("mclinicholidays");
 		$this->load->model("mclinicsessionsubstituteconsultant");
+		$this->load->model("motpcode");
 		$this->load->library('utilityhandler');
 
 	}
@@ -326,7 +327,7 @@ class Consultant extends REST_Controller
 					//Validate location data
 					if ($this->mlocations->is_valid()) {
 
-						$this->db->trans_start();
+//						$this->db->trans_start();
 
 						// create the Location record as the given data is valid
 						$locations = $this->mlocations->create();
@@ -335,15 +336,20 @@ class Consultant extends REST_Controller
 							// create the Clinic record as the given data is valid
 							$clinic = $this->mclinic->create($locations->id);
 
-							$login_data['username'] = $json_data['email'];
-							$login_data['password'] = $json_data["password"];
-							$login_data['mobile'] = $json_data["telephone"];
-
-							$this->mlogin->set_data($login_data);
-
-							$this->mlogin->create($clinic->id, EntityType::Consultant); // return true or false
 
 							if (!is_null($clinic)) {
+
+								$login_data['username'] = $json_data['email'];
+								$login_data['password'] = $json_data["password"];
+								$login_data['mobile'] = $json_data["device_mobile"];
+
+								$this->mlogin->set_data($login_data);
+
+								$login = $this->mlogin->create($clinic->id, EntityType::Consultant); // return true or false
+
+								if ($login) {
+									$this->motpcode->create($clinic->id, $login_data['mobile']);
+								}
 
 								$clinic->location = $locations;
 
@@ -370,13 +376,13 @@ class Consultant extends REST_Controller
 							$this->response($response, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
 						}
 
-						$this->db->trans_complete();
-
-						if ($this->db->trans_status() == FALSE) {
-							$this->db->trans_rollback();
-						} else {
-							$this->db->trans_commit();
-						}
+//						$this->db->trans_complete();
+//
+//						if ($this->db->trans_status() == FALSE) {
+//							$this->db->trans_rollback();
+//						} else {
+//							$this->db->trans_commit();
+//						}
 					} else {
 						$response->status = REST_Controller::HTTP_BAD_REQUEST;
 						$response->status_code = APIResponseCode::BAD_REQUEST;
@@ -411,6 +417,54 @@ class Consultant extends REST_Controller
 			$this->response($response, REST_Controller::HTTP_METHOD_NOT_ALLOWED);
 		}
 
+	}
+
+	public function ValidateOTP_put($clinic_id = '')
+	{
+		$method = $_SERVER['REQUEST_METHOD'];
+		$response = new stdClass();
+		if ($method == 'PUT') {
+
+			$check_auth_client = $this->mmodel->check_auth_client();
+
+			if ($check_auth_client == true) {
+
+				$this->motpcode->set_data($this->put('json_data'));
+
+
+				if ($this->motpcode->is_valid($clinic_id)) {
+
+					$response->status = REST_Controller::HTTP_OK;
+					$response->status_code = APIResponseCode::SUCCESS;
+					$response->msg = 'OTP Validation Successful..';
+					$response->error_msg = NULL;
+					$response->response = NULL;
+					$this->response($response, REST_Controller::HTTP_OK);
+
+				} else {
+					$response->status = REST_Controller::HTTP_BAD_REQUEST;
+					$response->status_code = APIResponseCode::BAD_REQUEST;
+					$response->msg = 'Validation Failed.';
+					$response->response = NULL;
+					$response->error_msg = $this->motpcode->validation_errors;
+					$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
+				}
+			} else {
+				$response->status = REST_Controller::HTTP_UNAUTHORIZED;
+				$response->status_code = APIResponseCode::UNAUTHORIZED;
+				$response->msg = 'Unauthorized';
+				$response->response = NULL;
+				$response->error_msg = 'Invalid Authentication Key.';
+				$this->response($response, REST_Controller::HTTP_UNAUTHORIZED);
+			}
+		} else {
+			$response->status = REST_Controller::HTTP_METHOD_NOT_ALLOWED;
+			$response->status_code = APIResponseCode::METHOD_NOT_ALLOWED;
+			$response->msg = 'Method Not Allowed';
+			$response->response = NULL;
+			$response->error_msg = 'Invalid Request Method.';
+			$this->response($response, REST_Controller::HTTP_METHOD_NOT_ALLOWED);
+		}
 	}
 
 	public function ClinicByUniqueId_get($clinic_id = '')

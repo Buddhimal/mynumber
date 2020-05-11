@@ -20,8 +20,12 @@ class Mclinic extends CI_Model
 	{
 		if (isset($post_array['name']))
 			$this->post['clinic_name'] = $post_array['name'];
-		if (isset($post_array['telephone']))
-			$this->post['telephone'] = $post_array['telephone'];
+		if (isset($post_array['contact_telephone']))
+			$this->post['contact_telephone'] = $post_array['contact_telephone'];
+		if (isset($post_array['contact_mobile']))
+			$this->post['contact_mobile'] = $post_array['contact_mobile'];
+		if (isset($post_array['device_mobile']))
+			$this->post['device_mobile'] = $post_array['device_mobile'];
 		if (isset($post_array['email']))
 			$this->post['email'] = $post_array['email'];
 		if (isset($post_array['web']))
@@ -45,10 +49,14 @@ class Mclinic extends CI_Model
 			$result = false;
 		}
 
-		if (!(isset($this->post['telephone']) && $this->mvalidation->telephone($this->post['telephone']))) {
+		if (!(isset($this->post['device_mobile']) && $this->mvalidation->telephone($this->post['device_mobile']))) {
 			array_push($this->validation_errors, 'Invalid Telephone.');
 			$result = false;
 		}
+//		elseif ($this->mvalidation->already_exists($this->table, 'device_mobile', $this->post['device_mobile']) == TRUE) {
+//			array_push($this->validation_errors, 'Mobile already registered.');
+//			$result = false;
+//		}    //Uncomment when goes live. comment for testing purposes
 
 		return $result;
 	}
