@@ -24,6 +24,8 @@ class Mvalidation extends CI_Model
 		$this->db->select($column);
 		$this->db->from($table);
 		$this->db->where($column, $value);
+		$this->db->where('is_active', 1);
+		$this->db->where('is_deleted', 0);
 		$result = $this->db->get();
 		return ($result->num_rows() > 0) ;
 	}
@@ -34,6 +36,8 @@ class Mvalidation extends CI_Model
 		$this->db->select('id');
 		$this->db->from($table);
 		$this->db->where('id', $value);
+		$this->db->where('is_active', 1);
+		$this->db->where('is_deleted', 0);
 		$result = $this->db->get();
 		return ($result->num_rows() > 0) ;
 	}

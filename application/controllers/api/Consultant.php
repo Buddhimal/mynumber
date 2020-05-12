@@ -27,7 +27,7 @@ class Consultant extends REST_Controller
 	}
 
 	//region Index
-	function index_get()
+	public function index_get()
 	{
 		$response = new stdClass();
 		$response->status = REST_Controller::HTTP_BAD_REQUEST;
@@ -37,7 +37,7 @@ class Consultant extends REST_Controller
 		$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
 	}
 
-	function index_post()
+	public function index_post()
 	{
 		$response = new stdClass();
 		$response->status = REST_Controller::HTTP_BAD_REQUEST;
@@ -47,7 +47,7 @@ class Consultant extends REST_Controller
 		$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
 	}
 
-	function index_put()
+	public function index_put()
 	{
 		$response = new stdClass();
 		$response->status = REST_Controller::HTTP_BAD_REQUEST;
@@ -57,7 +57,7 @@ class Consultant extends REST_Controller
 		$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
 	}
 
-	function index_delete()
+	public function index_delete()
 	{
 		$response = new stdClass();
 		$response->status = REST_Controller::HTTP_BAD_REQUEST;
@@ -327,8 +327,6 @@ class Consultant extends REST_Controller
 					//Validate location data
 					if ($this->mlocations->is_valid()) {
 
-//						$this->db->trans_start();
-
 						// create the Location record as the given data is valid
 						$locations = $this->mlocations->create();
 
@@ -375,14 +373,6 @@ class Consultant extends REST_Controller
 							$response->response = NULL;
 							$this->response($response, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
 						}
-
-//						$this->db->trans_complete();
-//
-//						if ($this->db->trans_status() == FALSE) {
-//							$this->db->trans_rollback();
-//						} else {
-//							$this->db->trans_commit();
-//						}
 					} else {
 						$response->status = REST_Controller::HTTP_BAD_REQUEST;
 						$response->status_code = APIResponseCode::BAD_REQUEST;
@@ -449,6 +439,55 @@ class Consultant extends REST_Controller
 					$response->error_msg = $this->motpcode->validation_errors;
 					$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
 				}
+			} else {
+				$response->status = REST_Controller::HTTP_UNAUTHORIZED;
+				$response->status_code = APIResponseCode::UNAUTHORIZED;
+				$response->msg = 'Unauthorized';
+				$response->response = NULL;
+				$response->error_msg = 'Invalid Authentication Key.';
+				$this->response($response, REST_Controller::HTTP_UNAUTHORIZED);
+			}
+		} else {
+			$response->status = REST_Controller::HTTP_METHOD_NOT_ALLOWED;
+			$response->status_code = APIResponseCode::METHOD_NOT_ALLOWED;
+			$response->msg = 'Method Not Allowed';
+			$response->response = NULL;
+			$response->error_msg = 'Invalid Request Method.';
+			$this->response($response, REST_Controller::HTTP_METHOD_NOT_ALLOWED);
+		}
+	}
+
+	public function ResendOTP_put($clinic_id = '')
+	{
+		$method = $_SERVER['REQUEST_METHOD'];
+		$response = new stdClass();
+		if ($method == 'PUT') {
+
+			$check_auth_client = $this->mmodel->check_auth_client();
+
+			if ($check_auth_client == true) {
+
+				if ($this->mclinic->valid_clinic($clinic_id)) {
+
+					if ($this->motpcode->resend_otp($clinic_id)) {
+						$response->status = REST_Controller::HTTP_OK;
+						$response->status_code = APIResponseCode::SUCCESS;
+						$response->msg = 'OTP send successfully..';
+						$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
+					} else {
+						$response->status = REST_Controller::HTTP_INTERNAL_SERVER_ERROR;
+						$response->status_code = APIResponseCode::INTERNAL_SERVER_ERROR;
+						$response->msg = 'Failed to send OTP..';
+						$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
+					}
+				} else {
+					$response->status = REST_Controller::HTTP_BAD_REQUEST;
+					$response->status_code = APIResponseCode::BAD_REQUEST;
+					$response->msg = 'Invalid Clinic Id';
+					$response->request_data = $this->post();
+					$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
+				}
+
 			} else {
 				$response->status = REST_Controller::HTTP_UNAUTHORIZED;
 				$response->status_code = APIResponseCode::UNAUTHORIZED;

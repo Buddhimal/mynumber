@@ -13,6 +13,7 @@ class Motpcode extends CI_Model
 		parent::__construct();
 		$this->load->model('mvalidation');
 		$this->load->model('mmodel');
+		$this->load->model('mlogin');
 		$this->load->library('messagesender');
 
 	}
@@ -42,7 +43,6 @@ class Motpcode extends CI_Model
 
 	public function create($clinic_id, $mobile)
 	{
-
 		$otp_id = trim($this->mmodel->getGUID(), '{}');
 		$this->post['id'] = $otp_id;
 		$this->post['clinic_id'] = $clinic_id;
@@ -51,7 +51,6 @@ class Motpcode extends CI_Model
 		$this->post['send_at'] = date("Y-m-d h:i:s");
 		$this->post['expire_at'] = date('Y-m-d h:i:s', strtotime('+1 hour', strtotime($this->post['send_at'])));
 		$this->post['is_confirmed'] = 0;
-
 		$this->post['is_deleted'] = 0;
 		$this->post['is_active'] = 1;
 		$this->post['updated'] = date("Y-m-d h:i:s");
@@ -59,8 +58,7 @@ class Motpcode extends CI_Model
 		$this->post['updated_by'] = $otp_id;
 		$this->post['created_by'] = $otp_id;
 
-
-		if ($this->messagesender->send_msg($this->post['device_mobile'], $this->post['otp_code'])) {
+		if ($this->messagesender->send_otp($this->post['device_mobile'], $this->post['otp_code'])) {
 
 			$this->mmodel->insert($this->table, $this->post);
 
@@ -68,7 +66,6 @@ class Motpcode extends CI_Model
 		}
 
 		return false;
-
 	}
 
 
@@ -76,7 +73,7 @@ class Motpcode extends CI_Model
 	{
 		$length = strlen($otp);
 
-		if (is_numeric($otp) && $length == 6 && $this->get($clinic_id) == $otp) {
+		if (is_numeric($otp) && $length == 6 && $this->get_otp_code($clinic_id) == $otp) {
 
 			$this->db
 				->set('is_confirmed', 1)
@@ -91,8 +88,27 @@ class Motpcode extends CI_Model
 		return false;
 	}
 
+	public function resend_otp($clinic_id = '')
+	{
+		$login_details = $this->mlogin->get_login_for_entity($clinic_id);
 
-	public function get($clinic_id)
+		if ($this->get_otp_code($clinic_id) == null) {
+
+			if ($login_details != null) {
+
+				return $this->create($clinic_id, $login_details->mobile);
+
+			} else {
+				return false;
+			}
+		} else {
+			return $this->messagesender->send_otp($login_details->mobile, $this->get_otp_code($clinic_id));
+		}
+
+	}
+
+
+	public function get_otp_code($clinic_id)
 	{
 		$query_result = $this->db
 			->select('otp_code')

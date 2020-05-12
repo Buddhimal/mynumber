@@ -3,11 +3,11 @@
 
 class MessageSender
 {
-	public function send_msg($number,$msg)
+	public function send_otp($number,$msg)
 	{
 		$user = "94714102030";
 		$password = "1923";
-		$text = urlencode($msg);
+		$text = urlencode('MyNumber.lk OTP code : '.$msg);
 		$to = $number;
 
 		$baseurl ="http://www.textit.biz/sendmsg";

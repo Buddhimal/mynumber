@@ -11,6 +11,7 @@ class Auth extends REST_Controller
 		parent::__construct();
 
 		$this->load->model("mmodel");
+		$this->load->model("mvalidation");
 		$this->load->model("mlogin");
 		$this->load->model("mclinic");
 		$this->load->model("mclinicholidays");
@@ -21,7 +22,7 @@ class Auth extends REST_Controller
 	}
 
 	//region Index
-	function index_get()
+	public function index_get()
 	{
 		$response = new stdClass();
 		$response->status = REST_Controller::HTTP_BAD_REQUEST;
@@ -31,7 +32,7 @@ class Auth extends REST_Controller
 		$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
 	}
 
-	function index_post()
+	public function index_post()
 	{
 		$response = new stdClass();
 		$response->status = REST_Controller::HTTP_BAD_REQUEST;
@@ -41,7 +42,7 @@ class Auth extends REST_Controller
 		$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
 	}
 
-	function index_put()
+	public function index_put()
 	{
 		$response = new stdClass();
 		$response->status = REST_Controller::HTTP_BAD_REQUEST;
@@ -51,7 +52,7 @@ class Auth extends REST_Controller
 		$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
 	}
 
-	function index_delete()
+	public function index_delete()
 	{
 		$response = new stdClass();
 		$response->status = REST_Controller::HTTP_BAD_REQUEST;
@@ -64,11 +65,9 @@ class Auth extends REST_Controller
 	//endregion
 
 
-	function checkin_post()
+	public function checkin_post()
 	{
-
 		$response = new stdClass();
-
 		try {
 
 			$check_auth_client = $this->mmodel->check_auth_client();
@@ -122,6 +121,69 @@ class Auth extends REST_Controller
 		}
 
 		$this->response($response, $response->status);
+	}
+
+	public function ResetPassword_put()
+	{
+		$method = $_SERVER['REQUEST_METHOD'];
+		$response = new stdClass();
+		if ($method == 'PUT') {
+
+			$check_auth_client = $this->mmodel->check_auth_client();
+
+			if ($check_auth_client == true) {
+
+				$json_data=$this->put('json_data');
+
+				if ($this->mlogin->check_valid_account($json_data['username'])) {
+
+					//to be continue...
+
+					echo "came";
+
+				} else{
+					$response->status = REST_Controller::HTTP_BAD_REQUEST;
+					$response->status_code = APIResponseCode::BAD_REQUEST;
+					$response->msg = 'Validation Failed.';
+					$response->response = NULL;
+					$response->error_msg = $this->mlogin->validation_errors;
+					$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
+				}
+
+
+
+
+//					if ($this->motpcode->resend_otp($clinic_id)) {
+//
+//						$response->status = REST_Controller::HTTP_OK;
+//						$response->status_code = APIResponseCode::SUCCESS;
+//						$response->msg = 'OTP send successfully..';
+//						$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
+//
+//					} else {
+//						$response->status = REST_Controller::HTTP_INTERNAL_SERVER_ERROR;
+//						$response->status_code = APIResponseCode::INTERNAL_SERVER_ERROR;
+//						$response->msg = 'Failed to Reset password..';
+//						$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
+//					}
+
+
+			} else {
+				$response->status = REST_Controller::HTTP_UNAUTHORIZED;
+				$response->status_code = APIResponseCode::UNAUTHORIZED;
+				$response->msg = 'Unauthorized';
+				$response->response = NULL;
+				$response->error_msg = 'Invalid Authentication Key.';
+				$this->response($response, REST_Controller::HTTP_UNAUTHORIZED);
+			}
+		} else {
+			$response->status = REST_Controller::HTTP_METHOD_NOT_ALLOWED;
+			$response->status_code = APIResponseCode::METHOD_NOT_ALLOWED;
+			$response->msg = 'Method Not Allowed';
+			$response->response = NULL;
+			$response->error_msg = 'Invalid Request Method.';
+			$this->response($response, REST_Controller::HTTP_METHOD_NOT_ALLOWED);
+		}
 	}
 
 }

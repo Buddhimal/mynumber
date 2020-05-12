@@ -64,10 +64,12 @@ $route['api/clinic/(:any)/holidays']['POST'] = 'api/consultant/AddHolidays/$1';
 $route['api/clinic/(:any)/session/(:any)/start']['PUT'] = 'api/consultant/StartSession/$1/$2';
 
 
-$route['api/clinic/(:any)/validate/otp']['PUT'] = 'api/consultant/ValidateOTP/$1';
+$route['api/clinic/(:any)/otp/validate']['PUT'] = 'api/consultant/ValidateOTP/$1';
+$route['api/clinic/(:any)/otp/resend']['PUT'] = 'api/consultant/ResendOTP/$1';
 
 
 $route['api/clinic/auth/checkin']['POST'] = 'api/auth/checkin';
+$route['api/clinic/auth/reset']['PUT'] = 'api/auth/ResetPassword';
 //endregion
 
 
