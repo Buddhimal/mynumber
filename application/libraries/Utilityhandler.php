@@ -2,7 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 
-class UtilityHandler{
+class Utilityhandler{
 
 
 	function _salt($password, $username){

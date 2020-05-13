@@ -1,7 +1,7 @@
 <?php
 
 
-class MessageSender
+class Messagesender
 {
 	public function send_otp($number,$msg)
 	{

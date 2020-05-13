@@ -14,7 +14,7 @@ class Motpcode extends CI_Model
 		$this->load->model('mvalidation');
 		$this->load->model('mmodel');
 		$this->load->model('mlogin');
-		$this->load->library('messagesender');
+		$this->load->library('Messagesender');
 
 	}
 

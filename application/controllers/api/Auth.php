@@ -17,7 +17,7 @@ class Auth extends REST_Controller
 		$this->load->model("mclinicholidays");
 		$this->load->model("mclinicsession");
 		$this->load->model("mdoctor");
-		$this->load->library('utilityhandler');
+		$this->load->library('Utilityhandler');
 
 	}
 
@@ -81,7 +81,7 @@ class Auth extends REST_Controller
 				$this->mlogin->set_data($inputs);
 				if ($this->mlogin->is_valid()) {
 
-					$this->mlogin->post['password']=$this->utilityhandler->_salt($inputs["password"], $inputs['username']);
+					$this->mlogin->post['password'] = $this->utilityhandler->_salt($inputs["password"], $inputs['username']);
 
 					$consultant_login_data = $this->mlogin->get_login(EntityType::Consultant);
 
@@ -91,7 +91,7 @@ class Auth extends REST_Controller
 					if ($consultant_login_data->is_deleted == true)
 						throw new Exception("Trying to access deleted account");
 
-					if ($consultant_login_data->is_active===0)
+					if ($consultant_login_data->is_active === 0)
 						throw new Exception("Trying to access inactive account");
 
 					$clinic = $this->mclinic->get($consultant_login_data->entity_id);
@@ -133,15 +133,33 @@ class Auth extends REST_Controller
 
 			if ($check_auth_client == true) {
 
-				$json_data=$this->put('json_data');
+				$inputs = $this->put('json_data');
 
-				if ($this->mlogin->check_valid_account($json_data['username'])) {
+				if ($this->mlogin->check_valid_account($inputs['username'])) {
 
-					//to be continue...
+					$this->mlogin->set_data($inputs);
 
-					echo "came";
+					if ($this->mlogin->is_valid()) {
 
-				} else{
+						$this->mlogin->post['password'] = $this->utilityhandler->_salt($inputs["password"], $inputs['username']);
+
+						if ($this->mlogin->reset_password()) {
+							$response->status = REST_Controller::HTTP_OK;
+							$response->msg = 'Password Reset Successful';
+							$response->error_msg = null;
+							$response->response = null;
+							$this->response($response, REST_Controller::HTTP_OK);
+						}
+
+					} else {
+						$response->status = REST_Controller::HTTP_BAD_REQUEST;
+						$response->msg = 'Validation Failed.';
+						$response->error_msg = $this->mlogin->validation_errors;
+						$response->response = NULL;
+						$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
+					}
+
+				} else {
 					$response->status = REST_Controller::HTTP_BAD_REQUEST;
 					$response->status_code = APIResponseCode::BAD_REQUEST;
 					$response->msg = 'Validation Failed.';
@@ -149,24 +167,6 @@ class Auth extends REST_Controller
 					$response->error_msg = $this->mlogin->validation_errors;
 					$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
 				}
-
-
-
-
-//					if ($this->motpcode->resend_otp($clinic_id)) {
-//
-//						$response->status = REST_Controller::HTTP_OK;
-//						$response->status_code = APIResponseCode::SUCCESS;
-//						$response->msg = 'OTP send successfully..';
-//						$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
-//
-//					} else {
-//						$response->status = REST_Controller::HTTP_INTERNAL_SERVER_ERROR;
-//						$response->status_code = APIResponseCode::INTERNAL_SERVER_ERROR;
-//						$response->msg = 'Failed to Reset password..';
-//						$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
-//					}
-
 
 			} else {
 				$response->status = REST_Controller::HTTP_UNAUTHORIZED;

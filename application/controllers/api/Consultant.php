@@ -22,7 +22,7 @@ class Consultant extends REST_Controller
 		$this->load->model("mclinicholidays");
 		$this->load->model("mclinicsessionsubstituteconsultant");
 		$this->load->model("motpcode");
-		$this->load->library('utilityhandler');
+		$this->load->library('Utilityhandler');
 
 	}
 
@@ -299,6 +299,113 @@ class Consultant extends REST_Controller
 			$this->response($response, REST_Controller::HTTP_METHOD_NOT_ALLOWED);
 		}
 	}
+
+	public function BookAppointment_post()
+	{
+		$method = $_SERVER['REQUEST_METHOD'];
+		$response = new stdClass();
+		if ($method == 'POST') {
+
+			$check_auth_client = $this->mmodel->check_auth_client();
+
+			if ($check_auth_client == true) {
+
+				$json_data = $this->post('json_data');
+
+				// Passing post array to the model.
+				$this->mclinic->set_data($json_data);
+
+				// model it self will validate the input data
+				if ($this->mclinic->is_valid()) {
+
+					$this->mlocations->set_data($json_data);
+
+					//Validate location data
+					if ($this->mlocations->is_valid()) {
+
+						// create the Location record as the given data is valid
+						$locations = $this->mlocations->create();
+
+						if (!is_null($locations)) {
+							// create the Clinic record as the given data is valid
+							$clinic = $this->mclinic->create($locations->id);
+
+
+							if (!is_null($clinic)) {
+
+								$login_data['username'] = $json_data['email'];
+								$login_data['password'] = $json_data["password"];
+								$login_data['mobile'] = $json_data["device_mobile"];
+
+								$this->mlogin->set_data($login_data);
+
+								$login = $this->mlogin->create($clinic->id, EntityType::Consultant); // return true or false
+
+								if ($login) {
+									$this->motpcode->create($clinic->id, $login_data['mobile']);
+								}
+
+								$clinic->location = $locations;
+
+								$response->status = REST_Controller::HTTP_OK;
+								$response->status_code = APIResponseCode::SUCCESS;
+								$response->msg = 'New Clinic Added Successfully';
+								$response->error_msg = NULL;
+								$response->response = $clinic;
+								$this->response($response, REST_Controller::HTTP_OK);
+							} else {
+								$response->status = REST_Controller::HTTP_INTERNAL_SERVER_ERROR;
+								$response->status_code = APIResponseCode::INTERNAL_SERVER_ERROR;
+								$response->msg = NULL;
+								$response->error_msg = 'Internal Server Error';
+								$response->response = NULL;
+								$this->response($response, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+							}
+						} else {
+							$response->status = REST_Controller::HTTP_INTERNAL_SERVER_ERROR;
+							$response->status_code = APIResponseCode::INTERNAL_SERVER_ERROR;
+							$response->msg = NULL;
+							$response->error_msg = 'Internal Server Error';
+							$response->response = NULL;
+							$this->response($response, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+						}
+					} else {
+						$response->status = REST_Controller::HTTP_BAD_REQUEST;
+						$response->status_code = APIResponseCode::BAD_REQUEST;
+						$response->msg = 'Validation Failed.';
+						$response->response = NULL;
+						$response->error_msg = $this->mlocations->validation_errors;
+						$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
+					}
+
+				} else {
+					$response->status = REST_Controller::HTTP_BAD_REQUEST;
+					$response->status_code = APIResponseCode::BAD_REQUEST;
+					$response->msg = 'Validation Failed.';
+					$response->response = NULL;
+					$response->error_msg = $this->mclinic->validation_errors;
+					$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
+				}
+			} else {
+				$response->status = REST_Controller::HTTP_UNAUTHORIZED;
+				$response->status_code = APIResponseCode::UNAUTHORIZED;
+				$response->msg = 'Unauthorized';
+				$response->response = NULL;
+				$response->error_msg = 'Invalid Authentication Key.';
+				$this->response($response, REST_Controller::HTTP_UNAUTHORIZED);
+			}
+		} else {
+			$response->status = REST_Controller::HTTP_METHOD_NOT_ALLOWED;
+			$response->status_code = APIResponseCode::METHOD_NOT_ALLOWED;
+			$response->msg = 'Method Not Allowed';
+			$response->response = NULL;
+			$response->error_msg = 'Invalid Request Method.';
+			$this->response($response, REST_Controller::HTTP_METHOD_NOT_ALLOWED);
+		}
+
+	}
+
+
 	//endregion
 
 
@@ -487,7 +594,56 @@ class Consultant extends REST_Controller
 					$response->request_data = $this->post();
 					$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
 				}
+			} else {
+				$response->status = REST_Controller::HTTP_UNAUTHORIZED;
+				$response->status_code = APIResponseCode::UNAUTHORIZED;
+				$response->msg = 'Unauthorized';
+				$response->response = NULL;
+				$response->error_msg = 'Invalid Authentication Key.';
+				$this->response($response, REST_Controller::HTTP_UNAUTHORIZED);
+			}
+		} else {
+			$response->status = REST_Controller::HTTP_METHOD_NOT_ALLOWED;
+			$response->status_code = APIResponseCode::METHOD_NOT_ALLOWED;
+			$response->msg = 'Method Not Allowed';
+			$response->response = NULL;
+			$response->error_msg = 'Invalid Request Method.';
+			$this->response($response, REST_Controller::HTTP_METHOD_NOT_ALLOWED);
+		}
+	}
 
+	public function SendOTPforUsername_put()
+	{
+		$method = $_SERVER['REQUEST_METHOD'];
+		$response = new stdClass();
+		if ($method == 'PUT') {
+
+			$check_auth_client = $this->mmodel->check_auth_client();
+
+			if ($check_auth_client == true) {
+
+				$json_data = $this->put('json_data');
+
+				if ($this->mlogin->check_valid_account($json_data['username'])) {
+
+					if ($this->mlogin->get_login_for_username($json_data['username'])->entity_id != null) {
+
+						$this->ResendOTP_put($this->mlogin->get_login_for_username($json_data['username'])->entity_id);
+
+					} else {
+						$response->status = REST_Controller::HTTP_BAD_REQUEST;
+						$response->status_code = APIResponseCode::BAD_REQUEST;
+						$response->msg = 'Invalid Username..';
+						$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
+					}
+				} else {
+					$response->status = REST_Controller::HTTP_BAD_REQUEST;
+					$response->status_code = APIResponseCode::BAD_REQUEST;
+					$response->msg = 'Validation Failed.';
+					$response->response = NULL;
+					$response->error_msg = $this->mlogin->validation_errors;
+					$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
+				}
 			} else {
 				$response->status = REST_Controller::HTTP_UNAUTHORIZED;
 				$response->status_code = APIResponseCode::UNAUTHORIZED;
@@ -933,6 +1089,7 @@ class Consultant extends REST_Controller
 
 
 	//endregion
+
 
 
 }

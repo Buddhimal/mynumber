@@ -63,14 +63,28 @@ $route['api/clinic/(:any)/sessions']['POST'] = 'api/consultant/AddClinicSessions
 $route['api/clinic/(:any)/holidays']['POST'] = 'api/consultant/AddHolidays/$1';
 $route['api/clinic/(:any)/session/(:any)/start']['PUT'] = 'api/consultant/StartSession/$1/$2';
 
+//endregion
+
+
+//region Login & OTP Routes
 
 $route['api/clinic/(:any)/otp/validate']['PUT'] = 'api/consultant/ValidateOTP/$1';
 $route['api/clinic/(:any)/otp/resend']['PUT'] = 'api/consultant/ResendOTP/$1';
-
-
+$route['api/otp/send/username']['PUT'] = 'api/consultant/SendOTPforUsername';
 $route['api/clinic/auth/checkin']['POST'] = 'api/auth/checkin';
 $route['api/clinic/auth/reset']['PUT'] = 'api/auth/ResetPassword';
+
 //endregion
+
+
+
+//region Public Routes
+
+$route['api/patient/(:any)/session/(:any)/appointment']['POST'] = 'api/consultant/BookAppointment/$1/$2';
+
+//endregion
+
+
 
 
 $route['404_override'] = 'errors/index';

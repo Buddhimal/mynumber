@@ -12,7 +12,7 @@ class Mlogin extends CI_Model
 	{
 		parent::__construct();
 		$this->load->model('mvalidation');
-		$this->load->library('utilityhandler');
+		$this->load->library('Utilityhandler');
 
 	}
 
@@ -101,13 +101,28 @@ class Mlogin extends CI_Model
 	}
 
 
+	public function get_login_for_username($username)
+	{
+		$result = $this->db
+			->select('*')
+			->from($this->table)
+			->where('username', $username)
+			->where('is_active', 1)
+			->where('is_confirmed', 1)
+			->where('is_deleted', 0)
+			->get();
+
+		return $result->row();
+	}
+
+
 	public function check_valid_account($username = '')
 	{
 		$result = true;
 
 		if ($this->mvalidation->email($username)) {
 
-			$res=$this->db
+			$res = $this->db
 				->select('entity_id,username')
 				->from($this->table)
 				->where('username', $username)
@@ -116,20 +131,29 @@ class Mlogin extends CI_Model
 				->where('is_confirmed', 1)
 				->get();
 
-			if($res->num_rows()==0){
+			if ($res->num_rows() == 0) {
 				array_push($this->validation_errors, "Username not exists.");
 				$result = false;
 			}
-		} else{
+		} else {
 			array_push($this->validation_errors, "Username isn't a valid email address.");
 			$result = false;
 		}
 		return $result;
 	}
 
-	public function reset_password($username = '')
+	public function reset_password()
 	{
-		$this->mvalidation->email($this->post['username']);
+		$this->db
+			->set('password', $this->post['password'])
+			->set('updated', date("Y-m-d h:i:s"))
+			->where('username', $this->post['username'])
+			->where('is_deleted', 0)
+			->where('is_active', 1)
+			->where('is_confirmed', 1)
+			->update($this->table);
+
+		return ($this->db->affected_rows() > 0);
 	}
 
 
