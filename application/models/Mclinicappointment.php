@@ -17,7 +17,8 @@ class Mclinicappointment extends CI_Model
 
 	public function set_data($post_array)
 	{
-		// $this->post = $post_array
+		if (isset($post_array['serial_number']))
+			$this->post['serial_number'] = $post_array['serial_number'];
 	}
 
 	public function is_valid()
@@ -37,5 +38,24 @@ class Mclinicappointment extends CI_Model
 	public function create()
 	{
 
+		$result = null;
+
+		$appointment_id = trim($this->mmodel->getGUID(), '{}');
+
+		$this->post['id'] = $appointment_id;
+		$this->post['is_deleted'] = 0;
+		$this->post['is_active'] = 1;
+		$this->post['updated'] = date("Y-m-d h:i:s");
+		$this->post['created'] = date("Y-m-d h:i:s");
+		$this->post['updated_by'] = $appointment_id;
+		$this->post['created_by'] = $appointment_id;
+
+		$this->mmodel->insert($this->table, $this->post);
+
+		if ($this->db->affected_rows() > 0) {
+			//$result = $this->get($appointment_id);
+		}
+
+		return $result;
 	}
 }

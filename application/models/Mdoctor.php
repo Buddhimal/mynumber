@@ -87,7 +87,7 @@ class Mdoctor extends CI_Model
 	}
 
 
-	public function create($clinic_id)
+	public function create()
 	{
 
 		$result = null;

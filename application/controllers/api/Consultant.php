@@ -300,7 +300,42 @@ class Consultant extends REST_Controller
 		}
 	}
 
-	public function BookAppointment_post()
+	public function GetAppointmentNumber_get($patient_id='',$session_id='')
+	{
+		$method = $_SERVER['REQUEST_METHOD'];
+		$response = new stdClass();
+		if ($method == 'GET') {
+
+			$check_auth_client = $this->mmodel->check_auth_client();
+
+			if ($check_auth_client == true) {
+
+				$public = $this->mpublic->get($this->input->get('id'));
+
+				$response->status = REST_Controller::HTTP_OK;
+				$response->msg = 'Public Details';
+				$response->error_msg = NULL;
+				$response->response = $public;
+				$this->response($response, REST_Controller::HTTP_OK);
+
+
+			} else {
+				$response->status = REST_Controller::HTTP_UNAUTHORIZED;
+				$response->msg = 'Unauthorized';
+				$response->response = NULL;
+				$response->error_msg = 'Invalid Authentication Key.';
+				$this->response($response, REST_Controller::HTTP_UNAUTHORIZED);
+			}
+		} else {
+			$response->status = REST_Controller::HTTP_METHOD_NOT_ALLOWED;
+			$response->msg = 'Method Not Allowed';
+			$response->response = NULL;
+			$response->error_msg = 'Invalid Request Method.';
+			$this->response($response, REST_Controller::HTTP_METHOD_NOT_ALLOWED);
+		}
+	}
+
+	public function BookAppointment_post($patient_id='',$session_id='')
 	{
 		$method = $_SERVER['REQUEST_METHOD'];
 		$response = new stdClass();
@@ -313,79 +348,79 @@ class Consultant extends REST_Controller
 				$json_data = $this->post('json_data');
 
 				// Passing post array to the model.
-				$this->mclinic->set_data($json_data);
-
-				// model it self will validate the input data
-				if ($this->mclinic->is_valid()) {
-
-					$this->mlocations->set_data($json_data);
-
-					//Validate location data
-					if ($this->mlocations->is_valid()) {
-
-						// create the Location record as the given data is valid
-						$locations = $this->mlocations->create();
-
-						if (!is_null($locations)) {
-							// create the Clinic record as the given data is valid
-							$clinic = $this->mclinic->create($locations->id);
-
-
-							if (!is_null($clinic)) {
-
-								$login_data['username'] = $json_data['email'];
-								$login_data['password'] = $json_data["password"];
-								$login_data['mobile'] = $json_data["device_mobile"];
-
-								$this->mlogin->set_data($login_data);
-
-								$login = $this->mlogin->create($clinic->id, EntityType::Consultant); // return true or false
-
-								if ($login) {
-									$this->motpcode->create($clinic->id, $login_data['mobile']);
-								}
-
-								$clinic->location = $locations;
-
-								$response->status = REST_Controller::HTTP_OK;
-								$response->status_code = APIResponseCode::SUCCESS;
-								$response->msg = 'New Clinic Added Successfully';
-								$response->error_msg = NULL;
-								$response->response = $clinic;
-								$this->response($response, REST_Controller::HTTP_OK);
-							} else {
-								$response->status = REST_Controller::HTTP_INTERNAL_SERVER_ERROR;
-								$response->status_code = APIResponseCode::INTERNAL_SERVER_ERROR;
-								$response->msg = NULL;
-								$response->error_msg = 'Internal Server Error';
-								$response->response = NULL;
-								$this->response($response, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
-							}
-						} else {
-							$response->status = REST_Controller::HTTP_INTERNAL_SERVER_ERROR;
-							$response->status_code = APIResponseCode::INTERNAL_SERVER_ERROR;
-							$response->msg = NULL;
-							$response->error_msg = 'Internal Server Error';
-							$response->response = NULL;
-							$this->response($response, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
-						}
-					} else {
-						$response->status = REST_Controller::HTTP_BAD_REQUEST;
-						$response->status_code = APIResponseCode::BAD_REQUEST;
-						$response->msg = 'Validation Failed.';
-						$response->response = NULL;
-						$response->error_msg = $this->mlocations->validation_errors;
-						$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
-					}
-
-				} else {
-					$response->status = REST_Controller::HTTP_BAD_REQUEST;
-					$response->status_code = APIResponseCode::BAD_REQUEST;
-					$response->msg = 'Validation Failed.';
-					$response->response = NULL;
-					$response->error_msg = $this->mclinic->validation_errors;
-					$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
-				}
+//				$this->mclinic->set_data($json_data);
+//
+//				// model it self will validate the input data
+//				if ($this->mclinic->is_valid()) {
+//
+//					$this->mlocations->set_data($json_data);
+//
+//					//Validate location data
+//					if ($this->mlocations->is_valid()) {
+//
+//						// create the Location record as the given data is valid
+//						$locations = $this->mlocations->create();
+//
+//						if (!is_null($locations)) {
+//							// create the Clinic record as the given data is valid
+//							$clinic = $this->mclinic->create($locations->id);
+//
+//
+//							if (!is_null($clinic)) {
+//
+//								$login_data['username'] = $json_data['email'];
+//								$login_data['password'] = $json_data["password"];
+//								$login_data['mobile'] = $json_data["device_mobile"];
+//
+//								$this->mlogin->set_data($login_data);
+//
+//								$login = $this->mlogin->create($clinic->id, EntityType::Consultant); // return true or false
+//
+//								if ($login) {
+//									$this->motpcode->create($clinic->id, $login_data['mobile']);
+//								}
+//
+//								$clinic->location = $locations;
+//
+//								$response->status = REST_Controller::HTTP_OK;
+//								$response->status_code = APIResponseCode::SUCCESS;
+//								$response->msg = 'New Clinic Added Successfully';
+//								$response->error_msg = NULL;
+//								$response->response = $clinic;
+//								$this->response($response, REST_Controller::HTTP_OK);
+//							} else {
+//								$response->status = REST_Controller::HTTP_INTERNAL_SERVER_ERROR;
+//								$response->status_code = APIResponseCode::INTERNAL_SERVER_ERROR;
+//								$response->msg = NULL;
+//								$response->error_msg = 'Internal Server Error';
+//								$response->response = NULL;
+//								$this->response($response, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+//							}
+//						} else {
+//							$response->status = REST_Controller::HTTP_INTERNAL_SERVER_ERROR;
+//							$response->status_code = APIResponseCode::INTERNAL_SERVER_ERROR;
+//							$response->msg = NULL;
+//							$response->error_msg = 'Internal Server Error';
+//							$response->response = NULL;
+//							$this->response($response, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+//						}
+//					} else {
+//						$response->status = REST_Controller::HTTP_BAD_REQUEST;
+//						$response->status_code = APIResponseCode::BAD_REQUEST;
+//						$response->msg = 'Validation Failed.';
+//						$response->response = NULL;
+//						$response->error_msg = $this->mlocations->validation_errors;
+//						$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
+//					}
+//
+//				} else {
+//					$response->status = REST_Controller::HTTP_BAD_REQUEST;
+//					$response->status_code = APIResponseCode::BAD_REQUEST;
+//					$response->msg = 'Validation Failed.';
+//					$response->response = NULL;
+//					$response->error_msg = $this->mclinic->validation_errors;
+//					$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
+//				}
 			} else {
 				$response->status = REST_Controller::HTTP_UNAUTHORIZED;
 				$response->status_code = APIResponseCode::UNAUTHORIZED;
