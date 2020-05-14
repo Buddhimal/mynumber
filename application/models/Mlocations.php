@@ -40,10 +40,10 @@ class Mlocations extends CI_Model{
 			array_push($this->validation_errors, 'Invalid Street Address.');
 			$result = false;
 		}
-		if (!(isset($this->post['address_line_ii']) && $this->post['address_line_ii'] != NULL && $this->post['address_line_ii'] != '')) {
-			array_push($this->validation_errors, 'Invalid Address Line ii.');
-			$result = false;
-		}
+//		if (!(isset($this->post['address_line_ii']) && $this->post['address_line_ii'] != NULL && $this->post['address_line_ii'] != '')) {
+//			array_push($this->validation_errors, 'Invalid Address Line ii.');
+//			$result = false;
+//		}
 		if (!(isset($this->post['city']) && $this->post['city'] != NULL && $this->post['city'] != '')) {
 			array_push($this->validation_errors, 'Invalid Location City.');
 			$result = false;

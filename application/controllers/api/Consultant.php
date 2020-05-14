@@ -1049,7 +1049,6 @@ class Consultant extends REST_Controller
 				$response->response = NULL;
 				$this->response($response, REST_Controller::HTTP_UNAUTHORIZED);
 			}
-
 		} else {
 			$response->status = REST_Controller::HTTP_METHOD_NOT_ALLOWED;
 			$response->status_code = APIResponseCode::METHOD_NOT_ALLOWED;
