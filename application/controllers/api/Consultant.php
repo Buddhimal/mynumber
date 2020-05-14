@@ -300,7 +300,7 @@ class Consultant extends REST_Controller
 		}
 	}
 
-	public function GetAppointmentNumber_get($patient_id='',$session_id='')
+	public function GetAppointmentNumber_get($patient_id = '', $session_id = '')
 	{
 		$method = $_SERVER['REQUEST_METHOD'];
 		$response = new stdClass();
@@ -335,7 +335,7 @@ class Consultant extends REST_Controller
 		}
 	}
 
-	public function BookAppointment_post($patient_id='',$session_id='')
+	public function BookAppointment_post($patient_id = '', $session_id = '')
 	{
 		$method = $_SERVER['REQUEST_METHOD'];
 		$response = new stdClass();
@@ -503,7 +503,7 @@ class Consultant extends REST_Controller
 								$response->status = REST_Controller::HTTP_INTERNAL_SERVER_ERROR;
 								$response->status_code = APIResponseCode::INTERNAL_SERVER_ERROR;
 								$response->msg = NULL;
-								$response->error_msg = 'Internal Server Error';
+								$response->error_msg[] = 'Internal Server Error';
 								$response->response = NULL;
 								$this->response($response, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
 							}
@@ -537,7 +537,7 @@ class Consultant extends REST_Controller
 				$response->status_code = APIResponseCode::UNAUTHORIZED;
 				$response->msg = 'Unauthorized';
 				$response->response = NULL;
-				$response->error_msg = 'Invalid Authentication Key.';
+				$response->error_msg[] = 'Invalid Authentication Key.';
 				$this->response($response, REST_Controller::HTTP_UNAUTHORIZED);
 			}
 		} else {
@@ -545,7 +545,7 @@ class Consultant extends REST_Controller
 			$response->status_code = APIResponseCode::METHOD_NOT_ALLOWED;
 			$response->msg = 'Method Not Allowed';
 			$response->response = NULL;
-			$response->error_msg = 'Invalid Request Method.';
+			$response->error_msg[] = 'Invalid Request Method.';
 			$this->response($response, REST_Controller::HTTP_METHOD_NOT_ALLOWED);
 		}
 
@@ -586,7 +586,7 @@ class Consultant extends REST_Controller
 				$response->status_code = APIResponseCode::UNAUTHORIZED;
 				$response->msg = 'Unauthorized';
 				$response->response = NULL;
-				$response->error_msg = 'Invalid Authentication Key.';
+				$response->error_msg[] = 'Invalid Authentication Key.';
 				$this->response($response, REST_Controller::HTTP_UNAUTHORIZED);
 			}
 		} else {
@@ -594,7 +594,7 @@ class Consultant extends REST_Controller
 			$response->status_code = APIResponseCode::METHOD_NOT_ALLOWED;
 			$response->msg = 'Method Not Allowed';
 			$response->response = NULL;
-			$response->error_msg = 'Invalid Request Method.';
+			$response->error_msg[] = 'Invalid Request Method.';
 			$this->response($response, REST_Controller::HTTP_METHOD_NOT_ALLOWED);
 		}
 	}
@@ -615,34 +615,39 @@ class Consultant extends REST_Controller
 						$response->status = REST_Controller::HTTP_OK;
 						$response->status_code = APIResponseCode::SUCCESS;
 						$response->msg = 'OTP send successfully..';
+						$response->error_msg = NULL;
+						$response->response = NULL;
 						$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
 					} else {
 						$response->status = REST_Controller::HTTP_INTERNAL_SERVER_ERROR;
 						$response->status_code = APIResponseCode::INTERNAL_SERVER_ERROR;
 						$response->msg = 'Failed to send OTP..';
+						$response->error_msg[] = 'Failed to send OTP..';
+						$response->response = NULL;
 						$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
 					}
 				} else {
 					$response->status = REST_Controller::HTTP_BAD_REQUEST;
 					$response->status_code = APIResponseCode::BAD_REQUEST;
 					$response->msg = 'Invalid Clinic Id';
-					$response->request_data = $this->post();
+					$response->error_msg[] = 'Invalid Clinic Id';
+					$response->response = NULL;
 					$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
 				}
 			} else {
 				$response->status = REST_Controller::HTTP_UNAUTHORIZED;
 				$response->status_code = APIResponseCode::UNAUTHORIZED;
 				$response->msg = 'Unauthorized';
+				$response->error_msg[] = 'Invalid Authentication Key.';
 				$response->response = NULL;
-				$response->error_msg = 'Invalid Authentication Key.';
 				$this->response($response, REST_Controller::HTTP_UNAUTHORIZED);
 			}
 		} else {
 			$response->status = REST_Controller::HTTP_METHOD_NOT_ALLOWED;
 			$response->status_code = APIResponseCode::METHOD_NOT_ALLOWED;
 			$response->msg = 'Method Not Allowed';
+			$response->error_msg[] = 'Invalid Request Method.';
 			$response->response = NULL;
-			$response->error_msg = 'Invalid Request Method.';
 			$this->response($response, REST_Controller::HTTP_METHOD_NOT_ALLOWED);
 		}
 	}
@@ -669,30 +674,32 @@ class Consultant extends REST_Controller
 						$response->status = REST_Controller::HTTP_BAD_REQUEST;
 						$response->status_code = APIResponseCode::BAD_REQUEST;
 						$response->msg = 'Invalid Username..';
+						$response->error_msg[] = 'Invalid Username..';
+						$response->response = NULL;
 						$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
 					}
 				} else {
 					$response->status = REST_Controller::HTTP_BAD_REQUEST;
 					$response->status_code = APIResponseCode::BAD_REQUEST;
 					$response->msg = 'Validation Failed.';
-					$response->response = NULL;
 					$response->error_msg = $this->mlogin->validation_errors;
+					$response->response = NULL;
 					$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
 				}
 			} else {
 				$response->status = REST_Controller::HTTP_UNAUTHORIZED;
 				$response->status_code = APIResponseCode::UNAUTHORIZED;
 				$response->msg = 'Unauthorized';
+				$response->error_msg[] = 'Invalid Authentication Key.';
 				$response->response = NULL;
-				$response->error_msg = 'Invalid Authentication Key.';
 				$this->response($response, REST_Controller::HTTP_UNAUTHORIZED);
 			}
 		} else {
 			$response->status = REST_Controller::HTTP_METHOD_NOT_ALLOWED;
 			$response->status_code = APIResponseCode::METHOD_NOT_ALLOWED;
 			$response->msg = 'Method Not Allowed';
+			$response->error_msg[] = 'Invalid Request Method.';
 			$response->response = NULL;
-			$response->error_msg = 'Invalid Request Method.';
 			$this->response($response, REST_Controller::HTTP_METHOD_NOT_ALLOWED);
 		}
 	}
@@ -723,7 +730,7 @@ class Consultant extends REST_Controller
 				$response->status_code = APIResponseCode::UNAUTHORIZED;
 				$response->msg = 'Unauthorized';
 				$response->response = NULL;
-				$response->error_msg = 'Invalid Authentication Key.';
+				$response->error_msg[] = 'Invalid Authentication Key.';
 				$this->response($response, REST_Controller::HTTP_UNAUTHORIZED);
 			}
 		} else {
@@ -731,7 +738,7 @@ class Consultant extends REST_Controller
 			$response->status_code = APIResponseCode::METHOD_NOT_ALLOWED;
 			$response->msg = 'Method Not Allowed';
 			$response->response = NULL;
-			$response->error_msg = 'Invalid Request Method.';
+			$response->error_msg[] = 'Invalid Request Method.';
 			$this->response($response, REST_Controller::HTTP_METHOD_NOT_ALLOWED);
 		}
 	}
@@ -778,15 +785,18 @@ class Consultant extends REST_Controller
 					$response->status = REST_Controller::HTTP_OK;
 					$response->status_code = APIResponseCode::SUCCESS;
 					$response->msg = 'Success';
-					$response->clinic = $clinic_id;
-					$response->substitutes = $inserted_records;
-					$response->validation_errors = $validation_errors;
+					$response->error_msg = NULL;
+					$response->response['clinic'] = $clinic_id;
+					$response->response['substitutes'] = $inserted_records;
+					$response->error_msg = $validation_errors;
 					$this->response($response, REST_Controller::HTTP_OK);
 				} else {
 					$response->status = REST_Controller::HTTP_BAD_REQUEST;
 					$response->status_code = APIResponseCode::BAD_REQUEST;
 					$response->msg = 'Invalid Clinic Id';
-					$response->request_data = $this->post();
+					$response->error_msg[] = 'Invalid Clinic Id';
+					$response->response = NULL;
+//					$response->request_data = $this->post();
 					$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
 				}
 			} else {
@@ -794,7 +804,7 @@ class Consultant extends REST_Controller
 				$response->status_code = APIResponseCode::UNAUTHORIZED;
 				$response->msg = 'Unauthorized';
 				$response->response = NULL;
-				$response->error_msg = 'Invalid Authentication Key.';
+				$response->error_msg[] = 'Invalid Authentication Key.';
 				$this->response($response, REST_Controller::HTTP_UNAUTHORIZED);
 			}
 		} else {
@@ -802,7 +812,7 @@ class Consultant extends REST_Controller
 			$response->status_code = APIResponseCode::METHOD_NOT_ALLOWED;
 			$response->msg = 'Method Not Allowed';
 			$response->response = NULL;
-			$response->error_msg = 'Invalid Request Method.';
+			$response->error_msg[] = 'Invalid Request Method.';
 			$this->response($response, REST_Controller::HTTP_METHOD_NOT_ALLOWED);
 		}
 	}
@@ -833,7 +843,7 @@ class Consultant extends REST_Controller
 				$response->status_code = APIResponseCode::UNAUTHORIZED;
 				$response->msg = 'Unauthorized';
 				$response->response = NULL;
-				$response->error_msg = 'Invalid Authentication Key.';
+				$response->error_msg[] = 'Invalid Authentication Key.';
 				$this->response($response, REST_Controller::HTTP_UNAUTHORIZED);
 			}
 		} else {
@@ -841,7 +851,7 @@ class Consultant extends REST_Controller
 			$response->status_code = APIResponseCode::METHOD_NOT_ALLOWED;
 			$response->msg = 'Method Not Allowed';
 			$response->response = NULL;
-			$response->error_msg = 'Invalid Request Method.';
+			$response->error_msg[] = 'Invalid Request Method.';
 			$this->response($response, REST_Controller::HTTP_METHOD_NOT_ALLOWED);
 		}
 	}
@@ -948,8 +958,9 @@ class Consultant extends REST_Controller
 					}
 					$response->status = REST_Controller::HTTP_OK;
 					$response->status_code = APIResponseCode::SUCCESS;
-					$response->msg = 'Success';//				$response->error_msg = NULL;
-					$response->sessions = $inserted_records;
+					$response->msg = 'Success';
+					$response->error_msg = NULL;
+					$response->response['sessions'] = $inserted_records;
 					$response->validation_errors = $validation_errors;
 					$this->response($response, REST_Controller::HTTP_OK);
 
@@ -957,7 +968,8 @@ class Consultant extends REST_Controller
 					$response->status = REST_Controller::HTTP_BAD_REQUEST;
 					$response->status_code = APIResponseCode::BAD_REQUEST;
 					$response->msg = 'Invalid Clinic Id';
-					$response->request_data = $this->post();
+					$response->error_msg = NULL;
+					$response->response = NULL;
 					$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
 				}
 
@@ -965,8 +977,8 @@ class Consultant extends REST_Controller
 				$response->status = REST_Controller::HTTP_UNAUTHORIZED;
 				$response->status_code = APIResponseCode::UNAUTHORIZED;
 				$response->msg = 'Unauthorized';
+				$response->error_msg[] = 'Invalid Authentication Key.';
 				$response->response = NULL;
-				$response->error_msg = 'Invalid Authentication Key.';
 				$this->response($response, REST_Controller::HTTP_UNAUTHORIZED);
 			}
 
@@ -974,8 +986,8 @@ class Consultant extends REST_Controller
 			$response->status = REST_Controller::HTTP_METHOD_NOT_ALLOWED;
 			$response->status_code = APIResponseCode::METHOD_NOT_ALLOWED;
 			$response->msg = 'Method Not Allowed';
+			$response->error_msg[] = 'Invalid Request Method.';
 			$response->response = NULL;
-			$response->error_msg = 'Invalid Request Method.';
 			$this->response($response, REST_Controller::HTTP_METHOD_NOT_ALLOWED);
 		}
 	}
@@ -1007,15 +1019,15 @@ class Consultant extends REST_Controller
 							$response->status_code = APIResponseCode::SUCCESS;
 							$response->msg = 'New Holiday Added Successfully';
 							$response->error_msg = NULL;
-							$response->response = $holiday;
+							$response->response['holiday'] = $holiday;
 							$this->response($response, REST_Controller::HTTP_OK);
 						}
 					} else {
 						$response->status = REST_Controller::HTTP_BAD_REQUEST;
 						$response->status_code = APIResponseCode::BAD_REQUEST;
 						$response->msg = 'Validation Failed.';
-						$response->response = NULL;
 						$response->error_msg = $this->mclinicholidays->validation_errors;
+						$response->response = NULL;
 						$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
 					}
 
@@ -1024,7 +1036,8 @@ class Consultant extends REST_Controller
 					$response->status = REST_Controller::HTTP_BAD_REQUEST;
 					$response->status_code = APIResponseCode::BAD_REQUEST;
 					$response->msg = 'Invalid Clinic Id';
-					$response->request_data = $this->post();
+					$response->error_msg[] = 'Invalid Clinic Id';
+					$response->response = NULL;
 					$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
 				}
 
@@ -1032,8 +1045,8 @@ class Consultant extends REST_Controller
 				$response->status = REST_Controller::HTTP_UNAUTHORIZED;
 				$response->status_code = APIResponseCode::UNAUTHORIZED;
 				$response->msg = 'Unauthorized';
+				$response->error_msg[] = 'Invalid Authentication Key.';
 				$response->response = NULL;
-				$response->error_msg = 'Invalid Authentication Key.';
 				$this->response($response, REST_Controller::HTTP_UNAUTHORIZED);
 			}
 
@@ -1041,8 +1054,8 @@ class Consultant extends REST_Controller
 			$response->status = REST_Controller::HTTP_METHOD_NOT_ALLOWED;
 			$response->status_code = APIResponseCode::METHOD_NOT_ALLOWED;
 			$response->msg = 'Method Not Allowed';
+			$response->error_msg[] = 'Invalid Request Method.';
 			$response->response = NULL;
-			$response->error_msg = 'Invalid Request Method.';
 			$this->response($response, REST_Controller::HTTP_METHOD_NOT_ALLOWED);
 		}
 	}
@@ -1124,7 +1137,6 @@ class Consultant extends REST_Controller
 
 
 	//endregion
-
 
 
 }
