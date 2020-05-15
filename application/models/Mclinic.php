@@ -144,11 +144,13 @@ class Mclinic extends CI_Model
 	}
 
 
-	function valid_clinic($id)
+	public function valid_clinic($id)
 	{
 		$this->db->select('id');
 		$this->db->from($this->table);
 		$this->db->where('id', $id);
+		$this->db->where('is_deleted', 0);
+		$this->db->where('is_active', 1);
 
 		$result = $this->db->get();
 

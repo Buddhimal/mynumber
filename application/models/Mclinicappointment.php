@@ -1,4 +1,4 @@
-<?php 
+<?php
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 class Mclinicappointment extends CI_Model
@@ -12,6 +12,7 @@ class Mclinicappointment extends CI_Model
 	{
 		parent::__construct();
 		$this->load->model('mvalidation');
+		$this->load->model('appointmentserialnumber');
 	}
 
 
@@ -35,14 +36,21 @@ class Mclinicappointment extends CI_Model
 	/*
 	*
 	*/
-	public function create()
+	public function create($patient_id, $session_id, $serial_number_id, $appointment_serial_number_id)
 	{
+
+		$this->db->trans_start();
 
 		$result = null;
 
 		$appointment_id = trim($this->mmodel->getGUID(), '{}');
 
 		$this->post['id'] = $appointment_id;
+		$this->post['session_id'] = $session_id;
+		$this->post['appointment_date'] = date("Y-m-d");
+		$this->post['serial_number_id'] = $serial_number_id;
+		$this->post['patient_id'] = $patient_id;
+		$this->post['is_canceled'] = 0;
 		$this->post['is_deleted'] = 0;
 		$this->post['is_active'] = 1;
 		$this->post['updated'] = date("Y-m-d h:i:s");
@@ -53,9 +61,33 @@ class Mclinicappointment extends CI_Model
 		$this->mmodel->insert($this->table, $this->post);
 
 		if ($this->db->affected_rows() > 0) {
-			//$result = $this->get($appointment_id);
+
+			//confirm number
+			if ($this->appointmentserialnumber->confirm_number($appointment_serial_number_id)) {
+				return $this->get($appointment_id);
+			}
 		}
 
+		$this->db->trans_complete();
 		return $result;
 	}
+
+
+	public function get($id)
+	{
+		$query_result = $this->get_record($id);
+		return $query_result;
+	}
+
+	private function get_record($id)
+	{
+		$this->db->select('id, patient_id, session_id, serial_number_id');
+		$this->db->from($this->table);
+		$this->db->where('id', $id);
+		$this->db->where('is_canceled', 0);
+		$this->db->where('is_deleted', 0);
+		$this->db->where('is_active', 1);
+		return $this->db->get()->row();
+	}
+
 }

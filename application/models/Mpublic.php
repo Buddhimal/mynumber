@@ -151,4 +151,22 @@ class Mpublic extends CI_Model
 		return $CI->public_response;
 	}
 
+
+	public function valid_public($id)
+	{
+		$this->db->select('id');
+		$this->db->from($this->table);
+		$this->db->where('id', $id);
+		$this->db->where('is_deleted', 0);
+		$this->db->where('is_active', 1);
+
+		$result = $this->db->get();
+
+		if ($result->num_rows() > 0) {
+			return TRUE;
+		} else {
+			return FALSE;
+		}
+	}
+
 }

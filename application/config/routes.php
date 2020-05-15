@@ -81,6 +81,7 @@ $route['api/clinic/auth/reset']['PUT'] = 'api/auth/ResetPassword';
 //region Public Routes
 
 $route['api/patient/(:any)/session/(:any)/appointment']['POST'] = 'api/consultant/BookAppointment/$1/$2';
+$route['api/patient/(:any)/session/(:any)/number']['GET'] = 'api/consultant/GetAppointmentNumber/$1/$2';
 
 //endregion
 

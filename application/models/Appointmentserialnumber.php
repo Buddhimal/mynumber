@@ -31,42 +31,53 @@ class Appointmentserialnumber extends CI_Model
 		return $result;
 	}
 
-
-	public function create()
+	public function create($patient_id, $session_id)
 	{
 		$result = null;
 
-		$appointment_id = trim($this->mmodel->getGUID(), '{}');
+		$number_id = trim($this->mmodel->getGUID(), '{}');
 
-		$this->post['id'] = $appointment_id;
-		$this->post['is_deleted'] = 0;
-		$this->post['is_active'] = 1;
-		$this->post['is_confirmed'] = 0;
-		$this->post['appointment_date'] = date("Y-m-d");
-		$this->post['serial_number_id'] = '';//call the function
-		$this->post['issued_at'] = date("Y-m-d h:i:s");
-		$this->post['expire_at'] = date('Y-m-d h:i:s', strtotime('+3 minutes', strtotime($this->post['issued_at'])));
-		$this->post['updated'] = date("Y-m-d h:i:s");
-		$this->post['created'] = date("Y-m-d h:i:s");
-		$this->post['updated_by'] = $appointment_id;
-		$this->post['created_by'] = $appointment_id;
+		$this->db->trans_start();
 
-		$this->mmodel->insert($this->table, $this->post);
+		if ($this->get_appointment_number($patient_id, $session_id) == null) {
 
-		if ($this->db->affected_rows() > 0) {
-			$result = $this->get($appointment_id);
+			$this->post['id'] = $number_id;
+			$this->post['patient_id'] = $patient_id;
+			$this->post['session_id'] = $session_id;
+			$this->post['is_deleted'] = 0;
+			$this->post['is_active'] = 1;
+			$this->post['is_confirmed'] = 0;
+			$this->post['appointment_date'] = date("Y-m-d");
+			$this->post['serial_number_id'] = $this->get_next_available_number($patient_id, $session_id);
+			$this->post['issued_at'] = date("Y-m-d h:i:s");
+			$this->post['expire_at'] = date('Y-m-d h:i:s', strtotime('+3 minutes', strtotime($this->post['issued_at'])));
+			$this->post['updated'] = date("Y-m-d h:i:s");
+			$this->post['created'] = date("Y-m-d h:i:s");
+			$this->post['updated_by'] = $number_id;
+			$this->post['created_by'] = $number_id;
+
+			$this->db->insert($this->table, $this->post);
+
+			if ($this->db->affected_rows() > 0) {
+				$result = $this->get($number_id);
+			}
+
+		} else {
+			return $this->get_appointment_number($patient_id, $session_id);
 		}
 
+		$this->db->trans_complete();
 		return $result;
 	}
 
-	public function get_next_available_number($patient_id = '', $session_id = '')
+	public function get_appointment_number($patient_id = '', $session_id = '')
 	{
 		$res = $this->db
-			->select('serial_number_id')
+			->select('id,	patient_id,	session_id,	serial_number_id,	appointment_date,	issued_at,	expire_at')
 			->from($this->table)
 			->where('patient_id', $patient_id)
 			->where('session_id', $session_id)
+			->where('appointment_date', date("Y-m-d"))
 			->where('expire_at >', date("Y-m-d h:i:s"))
 			->where('is_confirmed', 0)
 			->where('is_active', 1)
@@ -75,12 +86,13 @@ class Appointmentserialnumber extends CI_Model
 			->order_by('issued_at', 'DESC')
 			->get()->row();
 
-		if ($res->serial_number_id == null) {
+		return $res;
+	}
 
-			//generate new number
-
-			$res = $this->db
-				->query("SELECT
+	public function get_next_available_number($patient_id = '', $session_id = '')
+	{
+		$res = $this->db
+			->query("SELECT 
 								sn.id AS serial_number_id,
 								sn.serial_number 
 							FROM
@@ -94,8 +106,8 @@ class Appointmentserialnumber extends CI_Model
 								FROM
 									appointment_serial_number AS asn 
 								WHERE
-									( asn.is_confirmed = 1 OR asn.expire_at < CURRENT_TIMESTAMP () ) 
-									AND asn.appointment_date = CAST( CURRENT_DATE () AS DATE ) 
+									( asn.is_confirmed = 1 OR '" . date("Y-m-d  h:i:s") . "' < asn.expire_at   ) 
+									AND asn.appointment_date = '" . date("Y-m-d") . "' 
 									AND asn.is_active = 1 
 									AND asn.is_deleted = 0 
 									AND asn.session_id='$session_id'
@@ -103,24 +115,32 @@ class Appointmentserialnumber extends CI_Model
 							ORDER BY
 								serial_number ASC 
 								LIMIT 1")
-				->get()->row();
-			return $res->serial_number_id;
-		} else {
-			return $res->serial_number_id;
-		}
+			->row();
+		return $res->serial_number_id;
+	}
 
+	public function confirm_number($appointment_serial_number_id)
+	{
+		$this->db
+			->set('is_confirmed', 1)
+			->set('confirmed', date("Y-m-d  h:i:s"))
+			->set('updated', date("Y-m-d  h:i:s"))
+			->where('id', $appointment_serial_number_id)
+			->update($this->table);
+
+		return true;
 	}
 
 
 	public function get($id)
 	{
 		$query_result = $this->get_record($id);
-		return new EntityConsultant($query_result);
+		return $query_result;
 	}
 
 	private function get_record($id)
 	{
-		$this->db->select('*');
+		$this->db->select('id,	patient_id,	session_id,	serial_number_id,	appointment_date,	issued_at,	expire_at');
 		$this->db->from($this->table);
 		$this->db->where('id', $id);
 		return $this->db->get()->row();
