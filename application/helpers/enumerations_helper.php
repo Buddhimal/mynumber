@@ -16,3 +16,12 @@ class APIResponseCode{
 	const UNAUTHORIZED = 4010;
 	const METHOD_NOT_ALLOWED = 4050;
 }
+
+class AppointmentStatus{
+	const PENDING =0;
+	const FINISH =0;
+	const SKIPPED =0;
+	const CANCELED =0;
+
+
+}
