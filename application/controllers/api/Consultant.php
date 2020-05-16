@@ -602,7 +602,8 @@ class Consultant extends REST_Controller
 					$response->status_code = APIResponseCode::SUCCESS;
 					$response->msg = 'OTP Validation Successful..';
 					$response->error_msg = NULL;
-					$response->response = NULL;
+//					$response->response = (object) array('OTP Validation Successful..');
+					$response->response['msg'] = 'OTP Validation Successful..';
 					$this->response($response, REST_Controller::HTTP_OK);
 
 				} else {
@@ -1024,6 +1025,11 @@ class Consultant extends REST_Controller
 		}
 	}
 
+	public function ViewSessions($date='')
+	{
+
+	}
+
 	public function AddHolidays_post($clinic_id = '')
 	{
 		$method = $_SERVER['REQUEST_METHOD'];
@@ -1169,6 +1175,5 @@ class Consultant extends REST_Controller
 
 
 	//endregion
-
 
 }
