@@ -22,6 +22,10 @@ class AppointmentStatus{
 	const FINISH =0;
 	const SKIPPED =0;
 	const CANCELED =0;
+}
 
 
+class StatusCode{
+	const TRUE = 1;
+	const FALSE = 0;
 }

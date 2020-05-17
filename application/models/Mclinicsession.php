@@ -134,7 +134,6 @@ class Mclinicsession extends CI_Model
 
 	public function get_sessions($clinic_id)
 	{
-
 		$output = null;
 
 		$all_sessions = $this->db
@@ -146,10 +145,30 @@ class Mclinicsession extends CI_Model
 		foreach ($all_sessions->result() as $session_data) {
 			$output[] = new EntityClinicSession($session_data);
 		}
-
 		return $output;
 	}
 
+	public function get_sessions_for_day($clinic_id='',$date='')
+	{
+		$output = null;
+		if ($date == '') {
+			$day = date('N');
+		} else{
+			$day = date('N', strtotime($date));
+		}
+
+		$all_sessions=$this->db
+			->select('*')
+			->from($this->table)
+			->where(sprintf("clinic_id='%s' and is_deleted=0 and is_active=1", $clinic_id))
+			->where('day',$day)
+			->get();
+
+		foreach ($all_sessions->result() as $session_data) {
+			$output[] = new EntityClinicSession($session_data);
+		}
+		return $output;
+	}
 
 
 }
