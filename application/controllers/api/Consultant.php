@@ -26,7 +26,7 @@ class Consultant extends REST_Controller
 		$this->load->model('appointmentserialnumber');
 		$this->load->model('mserialnumber');
 		$this->load->model('mclinicappointment');
-		$this->load->model('Mclinicsessiontrans');
+		$this->load->model('mclinicsessiontrans');
 	}
 
 	//region Index
@@ -786,7 +786,6 @@ class Consultant extends REST_Controller
 		$validation_errors = array();
 
 
-
 		if ($method == 'POST') {
 
 			$json_data = ($this->post('json_data'));
@@ -821,7 +820,7 @@ class Consultant extends REST_Controller
 						}
 					}
 
-					if(sizeof($validation_errors)==0){
+					if (sizeof($validation_errors) == 0) {
 						$response->status = REST_Controller::HTTP_OK;
 						$response->status_code = APIResponseCode::SUCCESS;
 						$response->msg = 'Success';
@@ -830,7 +829,7 @@ class Consultant extends REST_Controller
 						$response->response['substitutes'] = $inserted_records;
 						$response->error_msg = null;
 						$this->response($response, REST_Controller::HTTP_OK);
-					} else{
+					} else {
 						$response->status = REST_Controller::HTTP_OK;
 						$response->status_code = APIResponseCode::SUCCESS_WITH_ERRORS;
 						$response->msg = 'Success';
@@ -1296,11 +1295,11 @@ class Consultant extends REST_Controller
 
 					if ($this->mclinicsession->valid_session($session_id)) {
 
-						if ($this->Mclinicsessiontrans->start_session($session_id)) {
+						if ($this->mclinicsessiontrans->start_session($session_id)) {
 
 							$appointment = $this->mclinicappointment->get_next_appointment($session_id);
 
-							if(! is_null($appointment)){
+							if (!is_null($appointment)) {
 
 								$response->status = REST_Controller::HTTP_OK;
 								$response->status_code = APIResponseCode::SUCCESS;
@@ -1308,14 +1307,14 @@ class Consultant extends REST_Controller
 								$response->response = $appointment;
 								$this->response($response, REST_Controller::HTTP_OK);
 
-							} else{
+							} else {
 								$response->status = REST_Controller::HTTP_OK;
 								$response->status_code = APIResponseCode::SUCCESS;
 								$response->msg = 'No Appointments for today';
 								$response->response = NULL;
 								$this->response($response, REST_Controller::HTTP_OK);
 							}
-						} else{
+						} else {
 							$response->status = REST_Controller::HTTP_INTERNAL_SERVER_ERROR;
 							$response->status_code = APIResponseCode::INTERNAL_SERVER_ERROR;
 							$response->msg = 'Internal Server Error';
@@ -1358,8 +1357,7 @@ class Consultant extends REST_Controller
 		}
 	}
 
-
-	public function NextNumber_put($session_id = '',$current_number_id='')
+	public function NextNumber_put($session_id = '', $appointment_id = '')
 	{
 		$method = $_SERVER['REQUEST_METHOD'];
 		$response = new stdClass();
@@ -1370,15 +1368,13 @@ class Consultant extends REST_Controller
 
 			if ($check_auth_client == true) {
 
-//				if ($this->mclinic->valid_clinic($clinic_id)) {
+				if ($this->mclinicsession->valid_session($session_id)) {
 
-					if ($this->mclinicsession->valid_session($session_id)) {
-
-						if ($this->Mclinicsessiontrans->start_session($session_id)) {
+					if ($this->mclinicappointment->update_appointment_status($appointment_id, AppointmentStatus::CONSULTED)) {
 
 							$appointment = $this->mclinicappointment->get_next_appointment($session_id);
 
-							if(! is_null($appointment)){
+							if (!is_null($appointment)) {
 
 								$response->status = REST_Controller::HTTP_OK;
 								$response->status_code = APIResponseCode::SUCCESS;
@@ -1386,36 +1382,99 @@ class Consultant extends REST_Controller
 								$response->response = $appointment;
 								$this->response($response, REST_Controller::HTTP_OK);
 
-							} else{
+							} else {
 								$response->status = REST_Controller::HTTP_OK;
 								$response->status_code = APIResponseCode::SUCCESS;
 								$response->msg = 'No Appointments for today';
 								$response->response = NULL;
 								$this->response($response, REST_Controller::HTTP_OK);
 							}
-						} else{
-							$response->status = REST_Controller::HTTP_INTERNAL_SERVER_ERROR;
-							$response->status_code = APIResponseCode::INTERNAL_SERVER_ERROR;
-							$response->msg = 'Internal Server Error';
-							$response->response[] = "Internal Server Error";
-							$this->response($response, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
-						}
 
 					} else {
 						$response->status = REST_Controller::HTTP_BAD_REQUEST;
 						$response->status_code = APIResponseCode::BAD_REQUEST;
-						$response->msg = 'Invalid Session Id';
+						$response->msg = null;
+						$response->error_msg = 'Invalid Appointment Number';
 						$response->response = NULL;
 						$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
 					}
 
-//				} else {
-//					$response->status = REST_Controller::HTTP_BAD_REQUEST;
-//					$response->status_code = APIResponseCode::BAD_REQUEST;
-//					$response->msg = 'Invalid Clinic Id';
-//					$response->response = NULL;
-//					$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
-//				}
+				} else {
+					$response->status = REST_Controller::HTTP_BAD_REQUEST;
+					$response->status_code = APIResponseCode::BAD_REQUEST;
+					$response->msg = 'Invalid Session Id';
+					$response->response = NULL;
+					$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
+				}
+
+			} else {
+				$response->status = REST_Controller::HTTP_UNAUTHORIZED;
+				$response->status_code = APIResponseCode::UNAUTHORIZED;
+				$response->msg = 'Unauthorized';
+				$response->response = NULL;
+				$response->error_msg = 'Invalid Authentication Key.';
+				$this->response($response, REST_Controller::HTTP_UNAUTHORIZED);
+			}
+
+		} else {
+			$response->status = REST_Controller::HTTP_METHOD_NOT_ALLOWED;
+			$response->status_code = APIResponseCode::METHOD_NOT_ALLOWED;
+			$response->msg = 'Method Not Allowed';
+			$response->response = NULL;
+			$response->error_msg = 'Invalid Request Method.';
+			$this->response($response, REST_Controller::HTTP_METHOD_NOT_ALLOWED);
+		}
+	}
+
+	public function SkipNumber_put($session_id = '', $appointment_id = '')
+	{
+		$method = $_SERVER['REQUEST_METHOD'];
+		$response = new stdClass();
+
+		if ($method == 'PUT') {
+
+			$check_auth_client = $this->mmodel->check_auth_client();
+
+			if ($check_auth_client == true) {
+
+				if ($this->mclinicsession->valid_session($session_id)) {
+
+					if ($this->mclinicappointment->update_appointment_status($appointment_id, AppointmentStatus::SKIPPED)) {
+
+							$appointment = $this->mclinicappointment->get_next_appointment($session_id);
+
+							if (!is_null($appointment)) {
+
+								$response->status = REST_Controller::HTTP_OK;
+								$response->status_code = APIResponseCode::SUCCESS;
+								$response->msg = 'Session Start Successfully';
+								$response->response = $appointment;
+								$this->response($response, REST_Controller::HTTP_OK);
+
+							} else {
+								$response->status = REST_Controller::HTTP_OK;
+								$response->status_code = APIResponseCode::SUCCESS;
+								$response->msg = 'No Appointments for today';
+								$response->response = NULL;
+								$this->response($response, REST_Controller::HTTP_OK);
+							}
+
+					} else {
+						$response->status = REST_Controller::HTTP_BAD_REQUEST;
+						$response->status_code = APIResponseCode::BAD_REQUEST;
+						$response->msg = null;
+						$response->error_msg = 'Invalid Appointment Number';
+						$response->response = NULL;
+						$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
+					}
+
+				} else {
+					$response->status = REST_Controller::HTTP_BAD_REQUEST;
+					$response->status_code = APIResponseCode::BAD_REQUEST;
+					$response->msg = 'Invalid Session Id';
+					$response->response = NULL;
+					$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
+				}
 
 			} else {
 				$response->status = REST_Controller::HTTP_UNAUTHORIZED;

@@ -50,7 +50,9 @@ class Mclinicappointment extends CI_Model
 		$this->post['appointment_date'] = date("Y-m-d");
 		$this->post['serial_number_id'] = $serial_number_id;
 		$this->post['patient_id'] = $patient_id;
-		$this->post['is_canceled'] = 0;
+//		$this->post['is_canceled'] = 0;
+		$this->post['appointment_status'] = AppointmentStatus::PENDING;
+		$this->post['appointment_status_updated'] = date("Y-m-d h:i:s");
 		$this->post['is_deleted'] = 0;
 		$this->post['is_active'] = 1;
 		$this->post['updated'] = date("Y-m-d h:i:s");
@@ -84,7 +86,7 @@ class Mclinicappointment extends CI_Model
 		$this->db->select('id, patient_id, session_id, serial_number_id,appointment_date');
 		$this->db->from($this->table);
 		$this->db->where('id', $id);
-		$this->db->where('is_canceled', 0);
+//		$this->db->where('appointment_status', AppointmentStatus::PENDING);
 		$this->db->where('is_deleted', 0);
 		$this->db->where('is_active', 1);
 		return $this->db->get()->row();
@@ -112,7 +114,7 @@ class Mclinicappointment extends CI_Model
 												)) 
 											AND a.session_id = '".$session_id."' 
 											AND a.appointment_date = '".date('Y-m-d')."' 
-											AND a.is_canceled = 0 
+											AND a.appointment_status = ".AppointmentStatus::PENDING." 
 											AND a.is_deleted = 0 
 											AND a.is_active = 1 
 										ORDER BY
@@ -128,8 +130,23 @@ class Mclinicappointment extends CI_Model
 		return $appointment;
 	}
 
-	public function finish_appointment($appointment_id){
+	public function update_appointment_status($appointment_id,$status){
 
+		$result = false;
+
+		$this->db
+			->set('appointment_status', $status)
+			->set('appointment_status_updated', date("Y-m-d h:i:s"))
+			->set('updated', date("Y-m-d h:i:s"))
+			->where('id', $appointment_id);
+
+		if ($this->db->affected_rows() > 0) {
+
+			if ($this->mclinicappointmenttrans->create($appointment_id, $status)) {
+				$result= true;
+			}
+		}
+		return $result;
 
 	}
 
