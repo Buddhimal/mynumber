@@ -26,6 +26,7 @@ class Consultant extends REST_Controller
 		$this->load->model('appointmentserialnumber');
 		$this->load->model('mserialnumber');
 		$this->load->model('mclinicappointment');
+		$this->load->model('Mclinicsessiontrans');
 	}
 
 	//region Index
@@ -783,6 +784,9 @@ class Consultant extends REST_Controller
 		$response = new stdClass();
 		$inserted_records = array();
 		$validation_errors = array();
+
+
+
 		if ($method == 'POST') {
 
 			$json_data = ($this->post('json_data'));
@@ -811,26 +815,39 @@ class Consultant extends REST_Controller
 							}
 						} else {
 							$errors['msg'] = 'Validation Failed.';
-							$errors['request_data'] = $substitute;
+//							$errors['request_data'] = $substitute;
 							$errors['errors'] = $this->mdoctor->validation_errors;
 							$validation_errors[] = $errors;
 						}
 					}
-					$response->status = REST_Controller::HTTP_OK;
-					$response->status_code = APIResponseCode::SUCCESS;
-					$response->msg = 'Success';
-					$response->error_msg = NULL;
-					$response->response['clinic'] = $clinic_id;
-					$response->response['substitutes'] = $inserted_records;
-					$response->error_msg = $validation_errors;
-					$this->response($response, REST_Controller::HTTP_OK);
+
+					if(sizeof($validation_errors)==0){
+						$response->status = REST_Controller::HTTP_OK;
+						$response->status_code = APIResponseCode::SUCCESS;
+						$response->msg = 'Success';
+						$response->error_msg = NULL;
+						$response->response['clinic'] = $clinic_id;
+						$response->response['substitutes'] = $inserted_records;
+						$response->error_msg = null;
+						$this->response($response, REST_Controller::HTTP_OK);
+					} else{
+						$response->status = REST_Controller::HTTP_OK;
+						$response->status_code = APIResponseCode::SUCCESS_WITH_ERRORS;
+						$response->msg = 'Success';
+						$response->error_msg = NULL;
+						$response->response['clinic'] = $clinic_id;
+						$response->response['substitutes'] = $inserted_records;
+						$response->error_msg = $validation_errors;
+						$this->response($response, REST_Controller::HTTP_OK);
+					}
+
+
 				} else {
 					$response->status = REST_Controller::HTTP_BAD_REQUEST;
 					$response->status_code = APIResponseCode::BAD_REQUEST;
 					$response->msg = 'Invalid Clinic Id';
 					$response->error_msg[] = 'Invalid Clinic Id';
 					$response->response = NULL;
-//					$response->request_data = $this->post();
 					$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
 				}
 			} else {
@@ -1279,47 +1296,126 @@ class Consultant extends REST_Controller
 
 					if ($this->mclinicsession->valid_session($session_id)) {
 
-						$this->mclinicsessionsubstituteconsultant->set_data($this->put('json_data'));
+						if ($this->Mclinicsessiontrans->start_session($session_id)) {
 
-						if ($this->mclinicsessionsubstituteconsultant->is_valid()) {
+							$appointment = $this->mclinicappointment->get_next_appointment($session_id);
 
+							if(! is_null($appointment)){
 
-							// create the holiday record as the given data is valid
-							$holiday = $this->mclinicsessionsubstituteconsultant->create($session_id);
-
-							if (!is_null($holiday)) {
 								$response->status = REST_Controller::HTTP_OK;
 								$response->status_code = APIResponseCode::SUCCESS;
-								$response->msg = 'New Session Added Successfully';
-								$response->error_msg = NULL;
-								$response->response = $holiday;
+								$response->msg = 'Session Start Successfully';
+								$response->response = $appointment;
+								$this->response($response, REST_Controller::HTTP_OK);
+
+							} else{
+								$response->status = REST_Controller::HTTP_OK;
+								$response->status_code = APIResponseCode::SUCCESS;
+								$response->msg = 'No Appointments for today';
+								$response->response = NULL;
 								$this->response($response, REST_Controller::HTTP_OK);
 							}
-
-						} else {
-							$response->status = REST_Controller::HTTP_BAD_REQUEST;
-							$response->status_code = APIResponseCode::BAD_REQUEST;
-							$response->msg = 'Validation Failed.';
-							$response->response = NULL;
-							$response->error_msg = $this->mclinicsessionsubstituteconsultant->validation_errors;
-							$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
+						} else{
+							$response->status = REST_Controller::HTTP_INTERNAL_SERVER_ERROR;
+							$response->status_code = APIResponseCode::INTERNAL_SERVER_ERROR;
+							$response->msg = 'Internal Server Error';
+							$response->response[] = "Internal Server Error";
+							$this->response($response, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
 						}
+
 					} else {
 						$response->status = REST_Controller::HTTP_BAD_REQUEST;
 						$response->status_code = APIResponseCode::BAD_REQUEST;
 						$response->msg = 'Invalid Session Id';
-						$response->request_data = $this->post();
+						$response->response = NULL;
 						$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
 					}
-
 
 				} else {
 					$response->status = REST_Controller::HTTP_BAD_REQUEST;
 					$response->status_code = APIResponseCode::BAD_REQUEST;
 					$response->msg = 'Invalid Clinic Id';
-					$response->request_data = $this->post();
+					$response->response = NULL;
 					$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
 				}
+
+			} else {
+				$response->status = REST_Controller::HTTP_UNAUTHORIZED;
+				$response->status_code = APIResponseCode::UNAUTHORIZED;
+				$response->msg = 'Unauthorized';
+				$response->response = NULL;
+				$response->error_msg = 'Invalid Authentication Key.';
+				$this->response($response, REST_Controller::HTTP_UNAUTHORIZED);
+			}
+
+		} else {
+			$response->status = REST_Controller::HTTP_METHOD_NOT_ALLOWED;
+			$response->status_code = APIResponseCode::METHOD_NOT_ALLOWED;
+			$response->msg = 'Method Not Allowed';
+			$response->response = NULL;
+			$response->error_msg = 'Invalid Request Method.';
+			$this->response($response, REST_Controller::HTTP_METHOD_NOT_ALLOWED);
+		}
+	}
+
+
+	public function NextNumber_put($session_id = '',$current_number_id='')
+	{
+		$method = $_SERVER['REQUEST_METHOD'];
+		$response = new stdClass();
+
+		if ($method == 'PUT') {
+
+			$check_auth_client = $this->mmodel->check_auth_client();
+
+			if ($check_auth_client == true) {
+
+//				if ($this->mclinic->valid_clinic($clinic_id)) {
+
+					if ($this->mclinicsession->valid_session($session_id)) {
+
+						if ($this->Mclinicsessiontrans->start_session($session_id)) {
+
+							$appointment = $this->mclinicappointment->get_next_appointment($session_id);
+
+							if(! is_null($appointment)){
+
+								$response->status = REST_Controller::HTTP_OK;
+								$response->status_code = APIResponseCode::SUCCESS;
+								$response->msg = 'Session Start Successfully';
+								$response->response = $appointment;
+								$this->response($response, REST_Controller::HTTP_OK);
+
+							} else{
+								$response->status = REST_Controller::HTTP_OK;
+								$response->status_code = APIResponseCode::SUCCESS;
+								$response->msg = 'No Appointments for today';
+								$response->response = NULL;
+								$this->response($response, REST_Controller::HTTP_OK);
+							}
+						} else{
+							$response->status = REST_Controller::HTTP_INTERNAL_SERVER_ERROR;
+							$response->status_code = APIResponseCode::INTERNAL_SERVER_ERROR;
+							$response->msg = 'Internal Server Error';
+							$response->response[] = "Internal Server Error";
+							$this->response($response, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+						}
+
+					} else {
+						$response->status = REST_Controller::HTTP_BAD_REQUEST;
+						$response->status_code = APIResponseCode::BAD_REQUEST;
+						$response->msg = 'Invalid Session Id';
+						$response->response = NULL;
+						$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
+					}
+
+//				} else {
+//					$response->status = REST_Controller::HTTP_BAD_REQUEST;
+//					$response->status_code = APIResponseCode::BAD_REQUEST;
+//					$response->msg = 'Invalid Clinic Id';
+//					$response->response = NULL;
+//					$this->response($response, REST_Controller::HTTP_BAD_REQUEST);
+//				}
 
 			} else {
 				$response->status = REST_Controller::HTTP_UNAUTHORIZED;

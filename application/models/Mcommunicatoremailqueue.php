@@ -1,7 +1,7 @@
 <?php 
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-class McommunicatorEmailQueue extends CI_Model{
+class Mcommunicatormailqueue extends CI_Model{
 
 	public $validation_errors = array();
 	private $post = array();

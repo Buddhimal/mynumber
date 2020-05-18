@@ -147,4 +147,10 @@ class Appointmentserialnumber extends CI_Model
 	}
 
 
+	public function valid_serial_number($session_id,$serial_number_id)
+	{
+
+	}
+
+
 }

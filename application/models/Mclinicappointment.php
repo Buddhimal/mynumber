@@ -81,7 +81,7 @@ class Mclinicappointment extends CI_Model
 
 	private function get_record($id)
 	{
-		$this->db->select('id, patient_id, session_id, serial_number_id');
+		$this->db->select('id, patient_id, session_id, serial_number_id,appointment_date');
 		$this->db->from($this->table);
 		$this->db->where('id', $id);
 		$this->db->where('is_canceled', 0);
@@ -89,5 +89,49 @@ class Mclinicappointment extends CI_Model
 		$this->db->where('is_active', 1);
 		return $this->db->get()->row();
 	}
+
+
+	public function get_next_appointment($session_id){
+
+		$appointment = null;
+
+		$res = $this->db->query("SELECT
+											a.id,
+											a.session_id,
+											a.serial_number_id,
+											a.patient_id 
+										FROM
+											clinic_appointments AS a
+											INNER JOIN serial_number AS sn ON a.serial_number_id = sn.id 
+										WHERE
+											a.id NOT IN ((
+												SELECT
+													cat.clinic_appointment_id 
+												FROM
+													clinic_appointment_trans cat 
+												)) 
+											AND a.session_id = '".$session_id."' 
+											AND a.appointment_date = '".date('Y-m-d')."' 
+											AND a.is_canceled = 0 
+											AND a.is_deleted = 0 
+											AND a.is_active = 1 
+										ORDER BY
+											sn.serial_number ASC 
+											LIMIT 1");
+
+		if($res->num_rows()>0){
+//			$appointment['appointment'] = $this->get($res->row()->id);
+			$appointment['patient'] = $this->mpublic->get($res->row()->patient_id);
+			$appointment['serial_number'] = $this->mserialnumber->get($res->row()->serial_number_id);
+		}
+
+		return $appointment;
+	}
+
+	public function finish_appointment($appointment_id){
+
+
+	}
+
 
 }

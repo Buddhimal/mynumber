@@ -19,13 +19,24 @@ class APIResponseCode{
 
 class AppointmentStatus{
 	const PENDING =0;
-	const FINISH =0;
-	const SKIPPED =0;
-	const CANCELED =0;
+	const CANCELED =1;
+	const SKIPPED =2;
+	const FINISH =3;
+	const CONSULTED =1;
+	const NOT_CONSULTED =2;
+
 }
 
 
 class StatusCode{
 	const TRUE = 1;
 	const FALSE = 0;
+}
+
+class SessionStatus{
+	const START = 1;
+	const CANCELED = 2;
+	const TIME_REVERSED = 3;
+	const FINISHED = 4;
+	const TERMINATED = 5;
 }
