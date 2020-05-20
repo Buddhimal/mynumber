@@ -79,6 +79,7 @@ class Auth extends REST_Controller
 //				$inputs['password'] = $this->utilityhandler->_salt($inputs["password"], $inputs['username']);
 
 				$this->mlogin->set_data($inputs);
+
 				if ($this->mlogin->is_valid()) {
 
 					$this->mlogin->post['password'] = $this->utilityhandler->_salt($inputs["password"], $inputs['username']);
@@ -101,6 +102,7 @@ class Auth extends REST_Controller
 
 					//Sending back the reponse
 					$response->status = REST_Controller::HTTP_OK;
+					$response->status_code = APIResponseCode::SUCCESS;
 					$response->msg = 'Login Successfull';
 					$response->error_msg = null;
 					$response->response = $clinic;
@@ -108,15 +110,17 @@ class Auth extends REST_Controller
 				} else {
 					// Either username is empty or not an email or else password is empty
 					$response->status = REST_Controller::HTTP_BAD_REQUEST;
+					$response->status_code = APIResponseCode::BAD_REQUEST;
 					$response->msg = 'Invalid Request.';
-					$response->error_msg = $this->mlogin->validation_errors;
+					$response->error_msg[] = $this->mlogin->validation_errors;
 					$response->response = NULL;
 				}
 			}
 		} catch (Exception $ex) {
 			$response->status = REST_Controller::HTTP_BAD_REQUEST;
+			$response->status_code = APIResponseCode::BAD_REQUEST;
 			$response->msg = 'Failed to serve your request';
-			$response->error_msg = $ex->getMessage();
+			$response->error_msg[] = $ex->getMessage();
 			$response->response = NULL;
 		}
 
@@ -145,6 +149,7 @@ class Auth extends REST_Controller
 
 						if ($this->mlogin->reset_password()) {
 							$response->status = REST_Controller::HTTP_OK;
+							$response->status_code = APIResponseCode::SUCCESS;
 							$response->msg = 'Password Reset Successful';
 							$response->error_msg = null;
 							$response->response = null;
@@ -153,6 +158,7 @@ class Auth extends REST_Controller
 
 					} else {
 						$response->status = REST_Controller::HTTP_BAD_REQUEST;
+						$response->status_code = APIResponseCode::BAD_REQUEST;
 						$response->msg = 'Validation Failed.';
 						$response->error_msg = $this->mlogin->validation_errors;
 						$response->response = NULL;
@@ -173,15 +179,15 @@ class Auth extends REST_Controller
 				$response->status_code = APIResponseCode::UNAUTHORIZED;
 				$response->msg = 'Unauthorized';
 				$response->response = NULL;
-				$response->error_msg = 'Invalid Authentication Key.';
+				$response->error_msg[] = 'Invalid Authentication Key.';
 				$this->response($response, REST_Controller::HTTP_UNAUTHORIZED);
 			}
 		} else {
 			$response->status = REST_Controller::HTTP_METHOD_NOT_ALLOWED;
 			$response->status_code = APIResponseCode::METHOD_NOT_ALLOWED;
 			$response->msg = 'Method Not Allowed';
+			$response->error_msg[] = 'Invalid Request Method.';
 			$response->response = NULL;
-			$response->error_msg = 'Invalid Request Method.';
 			$this->response($response, REST_Controller::HTTP_METHOD_NOT_ALLOWED);
 		}
 	}
