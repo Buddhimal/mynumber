@@ -59,6 +59,7 @@ class Mclinicappointmenttrans extends CI_Model
 			$result = true;
 		}
 
+
 		return $result;
 	}
 

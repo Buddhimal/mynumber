@@ -64,7 +64,10 @@ $route['api/clinic/(:any)/sessions']['POST'] = 'api/consultant/AddClinicSessions
 $route['api/clinic/(:any)/holidays']['POST'] = 'api/consultant/AddHolidays/$1';
 $route['api/clinic/(:any)/session/day/(:any)']['GET'] = 'api/consultant/ViewSessionsByDay/$1/$2';
 $route['api/clinic/(:any)/session/(:any)']['GET'] = 'api/consultant/ViewSessionsByID/$1/$2';
+$route['api/clinic/(:any)/consultant/(:any)/sessions']['GET'] = 'api/consultant/ViewSessionsByConsultant/$1/$2';
 $route['api/clinic/(:any)/session/(:any)/start']['PUT'] = 'api/consultant/StartSession/$1/$2';
+$route['api/clinic/session/(:any)/appointment/(:any)/next']['PUT'] = 'api/consultant/NextNumber/$1/$2';
+$route['api/clinic/session/(:any)/appointment/(:any)/skip']['PUT'] = 'api/consultant/SkipNumber/$1/$2';
 
 //endregion
 

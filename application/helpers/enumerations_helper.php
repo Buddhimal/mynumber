@@ -19,11 +19,11 @@ class APIResponseCode{
 
 class AppointmentStatus{
 	const PENDING =0;
-	const CANCELED =1;
-	const SKIPPED =2;
-	const FINISH =3;
 	const CONSULTED =1;
 	const NOT_CONSULTED =2;
+	const CANCELED =3;
+	const SKIPPED =4;
+	const FINISH =5;
 
 }
 

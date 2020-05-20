@@ -13,6 +13,7 @@ class Mclinicappointment extends CI_Model
 		parent::__construct();
 		$this->load->model('mvalidation');
 		$this->load->model('appointmentserialnumber');
+		$this->load->model('mclinicappointmenttrans');
 	}
 
 
@@ -138,9 +139,11 @@ class Mclinicappointment extends CI_Model
 			->set('appointment_status', $status)
 			->set('appointment_status_updated', date("Y-m-d h:i:s"))
 			->set('updated', date("Y-m-d h:i:s"))
-			->where('id', $appointment_id);
+			->where('id', $appointment_id)
+			->update($this->table);
 
 		if ($this->db->affected_rows() > 0) {
+
 
 			if ($this->mclinicappointmenttrans->create($appointment_id, $status)) {
 				$result= true;

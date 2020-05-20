@@ -170,5 +170,21 @@ class Mclinicsession extends CI_Model
 		return $output;
 	}
 
+	public function get_sessions_for_consultant($clinic_id='',$consultant_id='')
+	{
+
+		$all_sessions=$this->db
+			->select('*')
+			->from($this->table)
+			->where(sprintf("clinic_id='%s' and is_deleted=0 and is_active=1", $clinic_id))
+			->where('consultant',$consultant_id)
+			->get();
+
+		foreach ($all_sessions->result() as $session_data) {
+			$output[] = new EntityClinicSession($session_data);
+		}
+		return $output;
+	}
+
 
 }
