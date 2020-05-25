@@ -101,6 +101,5 @@ class Mclinicholidays extends CI_Model
 		}
 		return $output;
 
-
 	}
 }
