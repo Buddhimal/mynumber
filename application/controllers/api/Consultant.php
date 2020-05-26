@@ -1333,7 +1333,6 @@ class Consultant extends REST_Controller
                             $response->msg = 'Session Details for Consultant';
                             $response->error_msg = NULL;
                             $response->response['sessions'] = $sessions;
-//                            $response->response['sessions']['days'] = $this->mclinicsessiondays->get_days_by_session($sessions->id);
                             $this->response($response, REST_Controller::HTTP_OK);
                         } else{
                             $response->status = REST_Controller::HTTP_OK;
@@ -1343,11 +1342,6 @@ class Consultant extends REST_Controller
                             $response->response['sessions'] = NULL;
                             $this->response($response, REST_Controller::HTTP_OK);
                         }
-
-
-
-
-
                 } else {
                     $response->status = REST_Controller::HTTP_BAD_REQUEST;
                     $response->status_code = APIResponseCode::BAD_REQUEST;
@@ -1356,7 +1350,6 @@ class Consultant extends REST_Controller
                     $response->response = NULL;
                     $this->response($response, REST_Controller::HTTP_BAD_REQUEST);
                 }
-
             } else {
                 $response->status = REST_Controller::HTTP_UNAUTHORIZED;
                 $response->status_code = APIResponseCode::UNAUTHORIZED;

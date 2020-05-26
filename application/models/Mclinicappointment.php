@@ -153,5 +153,16 @@ class Mclinicappointment extends CI_Model
 
 	}
 
+    public function get_appointment_count_for_today($session_id='')
+    {
+        $this->db->select('id, patient_id, session_id, serial_number_id,appointment_date');
+        $this->db->from($this->table);
+        $this->db->where('session_id', $session_id);
+		$this->db->where('appointment_status !=', AppointmentStatus::CANCELED);
+        $this->db->where('is_deleted', 0);
+        $this->db->where('is_active', 1);
+        return $this->db->get()->num_rows();
+    }
+
 
 }

@@ -114,7 +114,11 @@ class Mclinicsession extends CI_Model
 
 		$query_result = $this->get_record($id);
 
-		return new EntityClinicSession($query_result);
+        $sessions = new EntityClinicSession($query_result);
+        $sessions->days = $this->mclinicsessiondays->get_days_by_session($sessions->id);
+        $output[] = $sessions;
+
+        return $output;
 	}
 
 	private function get_record($id)
@@ -176,10 +180,10 @@ class Mclinicsession extends CI_Model
 
 		foreach ($all_sessions->result() as $session_data) {
 			$sessions = new EntityClinicSession($session_data);
-            $sessions->days = $this->mclinicsessiondays->get_days_by_session($sessions->id);
+            $sessions->days = $this->mclinicsessiondays->get_today_session($sessions->id,$day);
+            $sessions->days->appointment_count = $this->mclinicappointment->get_appointment_count_for_today($sessions->id);
             $output[] = $sessions;
         }
-
 
         return $output;
 	}

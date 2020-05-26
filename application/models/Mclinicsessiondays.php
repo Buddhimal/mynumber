@@ -86,7 +86,6 @@ class Mclinicsessiondays extends CI_Model
 
     public function get($id)
     {
-
         $query_result = $this->get_record($id);
         return $query_result;
     }
@@ -102,13 +101,27 @@ class Mclinicsessiondays extends CI_Model
         return $this->db->get()->row();
     }
 
+    public function get_today_session($session_id,$day){
+        $this->db->select('id,day,starting_time,end_time,off');
+        $this->db->from($this->table);
+        $this->db->where('session_id', $session_id);
+        $this->db->where('day', $day);
+        $this->db->where('is_deleted', 0);
+        $this->db->where('is_active', 1);
+        return $this->db->get()->row();
+    }
+
     public function get_days_by_session($session_id){
         $this->db->select('id,day,starting_time,end_time,off');
         $this->db->from($this->table);
         $this->db->where('session_id', $session_id);
         $this->db->where('is_deleted', 0);
         $this->db->where('is_active', 1);
-        return $this->db->get()->row();
+
+        foreach ($this->db->get()->result() as $days) {
+            $output[] = $days;
+        }
+        return $output;
     }
 
 
