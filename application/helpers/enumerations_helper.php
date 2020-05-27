@@ -40,3 +40,9 @@ class SessionStatus{
 	const FINISHED = 4;
 	const TERMINATED = 5;
 }
+
+class APIKeys{
+    const SMS_API_KEY = '0OgHuQ8UEbBrwrvpJCIVqAlqHE6DNtKy';
+    const SMS_API_TOKEN = 'l7vQ1590532075';
+    const SMS_SENDER_ID = 'DEMO_SMS';
+}
