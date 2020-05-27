@@ -1593,7 +1593,7 @@ class Consultant extends REST_Controller
                         } else {
                             $response->status = REST_Controller::HTTP_OK;
                             $response->status_code = APIResponseCode::SUCCESS;
-                            $response->msg = 'No Appointments for today';
+                            $response->msg = 'No More Appointments for today';
                             $response->response = NULL;
                             $this->response($response, REST_Controller::HTTP_OK);
                         }
@@ -1662,7 +1662,7 @@ class Consultant extends REST_Controller
                         } else {
                             $response->status = REST_Controller::HTTP_OK;
                             $response->status_code = APIResponseCode::SUCCESS;
-                            $response->msg = 'No Appointments for today';
+                            $response->msg = 'No More Appointments for today';
                             $response->response = NULL;
                             $this->response($response, REST_Controller::HTTP_OK);
                         }
