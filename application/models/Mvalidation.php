@@ -61,5 +61,14 @@ class Mvalidation extends CI_Model
 		}
 	}
 
+	function valid_day($day)
+	{
+		if (preg_match("/^[1-7]{1}+$/",$day)) {
+			return TRUE;
+		} else {
+			return FALSE;
+		}
+	}
+
 
 }

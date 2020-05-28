@@ -123,7 +123,8 @@ class Mclinicappointment extends CI_Model
 											LIMIT 1");
 
 		if($res->num_rows()>0){
-//			$appointment['appointment'] = $this->get($res->row()->id);
+			$appointment['id'] = $res->row()->id;
+			$appointment['default_charge'] = Payments::DEFAULT_CHARGE;
 			$appointment['patient'] = $this->mpublic->get($res->row()->patient_id);
 			$appointment['serial_number'] = $this->mserialnumber->get($res->row()->serial_number_id);
 		}
@@ -133,22 +134,21 @@ class Mclinicappointment extends CI_Model
 
 	public function update_appointment_status($appointment_id,$status){
 
-		$result = false;
+//		$result = false;
 
 		$this->db
 			->set('appointment_status', $status)
 			->set('appointment_status_updated', date("Y-m-d h:i:s"))
 			->set('updated', date("Y-m-d h:i:s"))
 			->where('id', $appointment_id)
+			->where('appointment_status !=', $status)       //this is add to skip updating same status twice. for better validation if call next_number() two times with same appointment number
 			->update($this->table);
 
 		if ($this->db->affected_rows() > 0) {
-
-
 			if ($this->mclinicappointmenttrans->create($appointment_id, $status)) {
 				$result= true;
 			}
-		}
+		} else $result = true;
 		return $result;
 
 	}
@@ -162,6 +162,20 @@ class Mclinicappointment extends CI_Model
         $this->db->where('is_deleted', 0);
         $this->db->where('is_active', 1);
         return $this->db->get()->num_rows();
+    }
+
+    public function get_appointment_count($session_id,$status){
+        $res=$this->db
+            ->select('*')
+            ->from($this->table)
+            ->where('session_id',$session_id)
+            ->where('appointment_date',date("Y-m-d"))
+            ->where('appointment_status', $status)
+            ->where('is_active', 1)
+            ->where('is_deleted', 0)
+            ->get();
+
+        return $res->num_rows();
     }
 
 

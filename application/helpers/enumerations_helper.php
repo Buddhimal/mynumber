@@ -46,3 +46,7 @@ class APIKeys{
     const SMS_API_TOKEN = 'l7vQ1590532075';
     const SMS_SENDER_ID = 'DEMO_SMS';
 }
+
+class Payments{
+    const DEFAULT_CHARGE=30.00;
+}
