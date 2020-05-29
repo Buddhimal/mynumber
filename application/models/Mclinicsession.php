@@ -176,6 +176,7 @@ class Mclinicsession extends CI_Model
             $sessions = new EntityClinicSession($session_data);
             $sessions->days = $this->mclinicsessiondays->get_today_session($sessions->id, $day);
             $sessions->days->appointment_count = $this->mclinicappointment->get_appointment_count_for_today($sessions->id);
+            $sessions->consultant = $this->mdoctor->get($sessions->consultant);
             $output[] = $sessions;
         }
 
