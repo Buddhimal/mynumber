@@ -47,14 +47,14 @@ class Mclinicsessiontrans extends CI_Model
             $this->post['action'] = SessionStatus::START;
 
             $additional_data['action'] = "start";
-            $additional_data['action_datetime'] = date("Y-m-d h:i:s");
+            $additional_data['action_datetime'] = date("Y-m-d H:i:s");
 
             $this->post['additional_data'] = json_encode($additional_data);
-            $this->post['action_datetime'] = date("Y-m-d h:i:s");
+            $this->post['action_datetime'] = date("Y-m-d H:i:s");
             $this->post['is_deleted'] = 0;
             $this->post['is_active'] = 1;
-            $this->post['updated'] = date("Y-m-d h:i:s");
-            $this->post['created'] = date("Y-m-d h:i:s");
+            $this->post['updated'] = date("Y-m-d H:i:s");
+            $this->post['created'] = date("Y-m-d H:i:s");
             $this->post['updated_by'] = $id;
             $this->post['created_by'] = $id;
 
@@ -75,11 +75,11 @@ class Mclinicsessiontrans extends CI_Model
             $this->post['clinic_session_id'] = $session_id;
             $this->post['action'] = SessionStatus::FINISHED;
             $this->post['additional_data'] = NULL;
-            $this->post['action_datetime'] = date("Y-m-d h:i:s");
+            $this->post['action_datetime'] = date("Y-m-d H:i:s");
             $this->post['is_deleted'] = 0;
             $this->post['is_active'] = 1;
-            $this->post['updated'] = date("Y-m-d h:i:s");
-            $this->post['created'] = date("Y-m-d h:i:s");
+            $this->post['updated'] = date("Y-m-d H:i:s");
+            $this->post['created'] = date("Y-m-d H:i:s");
             $this->post['updated_by'] = $id;
             $this->post['created_by'] = $id;
 
@@ -110,6 +110,22 @@ class Mclinicsessiontrans extends CI_Model
             ->where('is_deleted', 0)
             ->get();
         return ($res->num_rows() == 0);
+    }
+
+    public function get_session_trans_by_action($session_id,$action)
+    {
+        $res=$this->db
+            ->select('*')
+            ->from($this->table)
+            ->where('clinic_session_id',$session_id)
+            ->where('action',$action)
+            ->where('clinic_date',date("Y-m-d"))
+            ->where('is_active', 1)
+            ->where('is_deleted', 0)
+            ->get();
+
+        return $res->row();
+
     }
 
 

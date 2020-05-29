@@ -48,13 +48,13 @@ class Motpcode extends CI_Model
 		$this->post['clinic_id'] = $clinic_id;
 		$this->post['device_mobile'] = $mobile;
 		$this->post['otp_code'] = $this->generateCode();
-		$this->post['send_at'] = date("Y-m-d h:i:s");
-		$this->post['expire_at'] = date('Y-m-d h:i:s', strtotime('+1 hour', strtotime($this->post['send_at'])));
+		$this->post['send_at'] = date("Y-m-d H:i:s");
+		$this->post['expire_at'] = date('Y-m-d H:i:s', strtotime('+1 hour', strtotime($this->post['send_at'])));
 		$this->post['is_confirmed'] = 0;
 		$this->post['is_deleted'] = 0;
 		$this->post['is_active'] = 1;
-		$this->post['updated'] = date("Y-m-d h:i:s");
-		$this->post['created'] = date("Y-m-d h:i:s");
+		$this->post['updated'] = date("Y-m-d H:i:s");
+		$this->post['created'] = date("Y-m-d H:i:s");
 		$this->post['updated_by'] = $otp_id;
 		$this->post['created_by'] = $otp_id;
 
@@ -77,8 +77,8 @@ class Motpcode extends CI_Model
 
 			$this->db
 				->set('is_confirmed', 1)
-				->set('confirmed_at', date("Y-m-d h:i:s"))
-				->set('updated', date("Y-m-d h:i:s"))
+				->set('confirmed_at', date("Y-m-d H:i:s"))
+				->set('updated', date("Y-m-d H:i:s"))
 				->where('clinic_id', $clinic_id)
 				->where('otp_code', $otp)
 				->update($this->table);
@@ -114,7 +114,7 @@ class Motpcode extends CI_Model
 			->select('otp_code')
 			->from($this->table)
 			->where('clinic_id', $clinic_id)
-			->where('expire_at >', date("Y-m-d h:i:s"))
+			->where('expire_at >', date("Y-m-d H:i:s"))
 			->where('is_confirmed', 0)
 			->where('is_active', 1)
 			->where('is_deleted', 0)

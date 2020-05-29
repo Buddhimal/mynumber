@@ -78,8 +78,8 @@ class Mlocations extends CI_Model{
 		$this->post['id'] = $location_id;
 		$this->post['is_deleted'] = 0;
 		$this->post['is_active'] = 0;
-		$this->post['updated'] = date("Y-m-d h:i:s");
-		$this->post['created'] = date("Y-m-d h:i:s");
+		$this->post['updated'] = date("Y-m-d H:i:s");
+		$this->post['created'] = date("Y-m-d H:i:s");
 		$this->post['updated_by'] = $location_id;
 		$this->post['created_by'] = $location_id;
 

@@ -71,8 +71,8 @@ class Mclinic extends CI_Model
 		$this->post['location_id'] = $location_id;
 		$this->post['is_deleted'] = 0;
 		$this->post['is_active'] = 0;
-		$this->post['updated'] = date("Y-m-d h:i:s");
-		$this->post['created'] = date("Y-m-d h:i:s");
+		$this->post['updated'] = date("Y-m-d H:i:s");
+		$this->post['created'] = date("Y-m-d H:i:s");
 		$this->post['updated_by'] = $clinic_id;
 		$this->post['created_by'] = $clinic_id;
 
@@ -114,7 +114,7 @@ class Mclinic extends CI_Model
 	//			$update_data['patient_code'] = $this->post['patient_code'];
 	//
 	//		if (sizeof($update_data) > 0) {
-	//			$update_data['updated'] = date("Y-m-d h:i:s");
+	//			$update_data['updated'] = date("Y-m-d H:i:s");
 	//			$update_data['updated_by'] = $public_id;
 	//
 	//			$this->db->where('id', $public_id);

@@ -94,8 +94,8 @@ class Mclinicsession extends CI_Model
         $this->post['clinic_id'] = $clinic_id;
         $this->post['is_deleted'] = 0;
         $this->post['is_active'] = 1;
-        $this->post['updated'] = date("Y-m-d h:i:s");
-        $this->post['created'] = date("Y-m-d h:i:s");
+        $this->post['updated'] = date("Y-m-d H:i:s");
+        $this->post['created'] = date("Y-m-d H:i:s");
         $this->post['updated_by'] = $session_id;
         $this->post['created_by'] = $session_id;
 
@@ -219,11 +219,29 @@ class Mclinicsession extends CI_Model
         $session_meta['total_consulted'] = $this->mclinicappointment->get_appointment_count($session_id, AppointmentStatus::CONSULTED);
         $session_meta['total_skipped'] = $this->mclinicappointment->get_appointment_count($session_id, AppointmentStatus::SKIPPED);
 
+        $this->get_session_time_elapsed($session_id);
+
 //        total_time_elapsed
 //        cumulative_amount
 
-
         return $session_meta;
+    }
+
+    public function get_session_time_elapsed($session_id)
+    {
+        $started_at=$this->mclinicsessiontrans->get_session_trans_by_action($session_id,SessionStatus::START)->action_datetime;
+//        $start_time = $this->mclinicsessiondays->get_today_session($session_id,date('N'))->starting_time;
+
+
+        var_dump(date("Y-m-d H:i:s"));
+        die();
+
+        $total_time_elapsed = strtotime(date('h:i')) - strtotime($started_at);
+        var_dump($started_at);
+        var_dump($total_time_elapsed);
+        var_dump(gmdate("H:i:s", $total_time_elapsed));
+        die();
+
 
     }
 

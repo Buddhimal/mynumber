@@ -53,8 +53,8 @@ class Mclinicsessionsubstituteconsultant  extends CI_Model{
 		$this->post['clinic_session_id'] = $clinic_session_id;
 		$this->post['is_deleted'] = 0;
 		$this->post['is_active'] = 1;
-		$this->post['updated'] = date("Y-m-d h:i:s");
-		$this->post['created'] = date("Y-m-d h:i:s");
+		$this->post['updated'] = date("Y-m-d H:i:s");
+		$this->post['created'] = date("Y-m-d H:i:s");
 		$this->post['updated_by'] = $id;
 		$this->post['created_by'] = $id;
 

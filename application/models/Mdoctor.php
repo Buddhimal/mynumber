@@ -97,8 +97,8 @@ class Mdoctor extends CI_Model
 		$this->post['id'] = $doctor_id;
 		$this->post['is_deleted'] = 0;
 		$this->post['is_active'] = 1;
-		$this->post['updated'] = date("Y-m-d h:i:s");
-		$this->post['created'] = date("Y-m-d h:i:s");
+		$this->post['updated'] = date("Y-m-d H:i:s");
+		$this->post['created'] = date("Y-m-d H:i:s");
 		$this->post['updated_by'] = $doctor_id;
 		$this->post['created_by'] = $doctor_id;
 
@@ -159,7 +159,7 @@ class Mdoctor extends CI_Model
 
 
 		if (sizeof($update_data) > 0) {
-			$update_data['updated'] = date("Y-m-d h:i:s");
+			$update_data['updated'] = date("Y-m-d H:i:s");
 			$update_data['updated_by'] = $doctor_id;
 
 			$this->db->where('id', $doctor_id);

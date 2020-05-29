@@ -44,12 +44,12 @@ class Mclinicappointmenttrans extends CI_Model
         $this->post['id'] = $id;
         $this->post['clinic_appointment_id'] = $appointment_id;
         $this->post['action'] = $status;
-        $this->post['action_datetime'] = date("Y-m-d h:i:s");
+        $this->post['action_datetime'] = date("Y-m-d H:i:s");
         $this->post['additional_data'] = null;
         $this->post['is_deleted'] = 0;
         $this->post['is_active'] = 1;
-        $this->post['updated'] = date("Y-m-d h:i:s");
-        $this->post['created'] = date("Y-m-d h:i:s");
+        $this->post['updated'] = date("Y-m-d H:i:s");
+        $this->post['created'] = date("Y-m-d H:i:s");
         $this->post['updated_by'] = $id;
         $this->post['created_by'] = $id;
 

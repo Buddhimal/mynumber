@@ -53,11 +53,11 @@ class Mclinicappointment extends CI_Model
 		$this->post['patient_id'] = $patient_id;
 //		$this->post['is_canceled'] = 0;
 		$this->post['appointment_status'] = AppointmentStatus::PENDING;
-		$this->post['appointment_status_updated'] = date("Y-m-d h:i:s");
+		$this->post['appointment_status_updated'] = date("Y-m-d H:i:s");
 		$this->post['is_deleted'] = 0;
 		$this->post['is_active'] = 1;
-		$this->post['updated'] = date("Y-m-d h:i:s");
-		$this->post['created'] = date("Y-m-d h:i:s");
+		$this->post['updated'] = date("Y-m-d H:i:s");
+		$this->post['created'] = date("Y-m-d H:i:s");
 		$this->post['updated_by'] = $appointment_id;
 		$this->post['created_by'] = $appointment_id;
 
@@ -138,8 +138,8 @@ class Mclinicappointment extends CI_Model
 
 		$this->db
 			->set('appointment_status', $status)
-			->set('appointment_status_updated', date("Y-m-d h:i:s"))
-			->set('updated', date("Y-m-d h:i:s"))
+			->set('appointment_status_updated', date("Y-m-d H:i:s"))
+			->set('updated', date("Y-m-d H:i:s"))
 			->where('id', $appointment_id)
 			->where('appointment_status !=', $status)       //this is add to skip updating same status twice. for better validation if call next_number() two times with same appointment number
 			->update($this->table);

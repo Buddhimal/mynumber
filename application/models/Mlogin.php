@@ -74,8 +74,8 @@ class Mlogin extends CI_Model
 		$this->post['id'] = trim($this->mmodel->getGUID(), '{}');
 		$this->post['is_deleted'] = 0;
 		$this->post['is_active'] = 1;
-		$this->post['updated'] = date("Y-m-d h:i:s");
-		$this->post['created'] = date("Y-m-d h:i:s");
+		$this->post['updated'] = date("Y-m-d H:i:s");
+		$this->post['created'] = date("Y-m-d H:i:s");
 		$this->post['updated_by'] = $clinic_id;
 		$this->post['created_by'] = $clinic_id;
 		$this->post['entity_id'] = $clinic_id;
@@ -146,7 +146,7 @@ class Mlogin extends CI_Model
 	{
 		$this->db
 			->set('password', $this->post['password'])
-			->set('updated', date("Y-m-d h:i:s"))
+			->set('updated', date("Y-m-d H:i:s"))
 			->where('username', $this->post['username'])
 			->where('is_deleted', 0)
 			->where('is_active', 1)
