@@ -1566,23 +1566,14 @@ class Consultant extends REST_Controller
 
                             $appointment = $this->mclinicappointment->get_next_appointment($session_id);
 
+                            $response->status = REST_Controller::HTTP_OK;
+                            $response->status_code = APIResponseCode::SUCCESS;
+                            $response->msg = 'Session Start Successfully';
+                            $response->error_msg = null;
+                            $response->response['appointment'] = $appointment;
                             $response->response['session_meta'] = $this->mclinicsession->get_session_meta($clinic_id, $session_id);
+                            $this->response($response, REST_Controller::HTTP_OK);
 
-                            if (!is_null($appointment)) {
-
-                                $response->status = REST_Controller::HTTP_OK;
-                                $response->status_code = APIResponseCode::SUCCESS;
-                                $response->msg = 'Session Start Successfully';
-                                $response->response['appointment'] = $appointment;
-                                $this->response($response, REST_Controller::HTTP_OK);
-
-                            } else {
-                                $response->status = REST_Controller::HTTP_OK;
-                                $response->status_code = APIResponseCode::SUCCESS;
-                                $response->msg = 'No Appointments for today';
-                                $response->response = NULL;
-                                $this->response($response, REST_Controller::HTTP_OK);
-                            }
                         } else {
                             $response->status = REST_Controller::HTTP_INTERNAL_SERVER_ERROR;
                             $response->status_code = APIResponseCode::INTERNAL_SERVER_ERROR;
