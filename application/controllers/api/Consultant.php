@@ -1095,15 +1095,13 @@ class Consultant extends REST_Controller
                         $response->msg = 'Success';
                         $response->error_msg = NULL;
                         $response->response['sessions'] = $inserted_records;
-                        $response->validation_errors = null;
                         $this->response($response, REST_Controller::HTTP_OK);
                     } else {
                         $response->status = REST_Controller::HTTP_OK;
                         $response->status_code = APIResponseCode::SUCCESS_WITH_ERRORS;
                         $response->msg = 'Success with errors';
-                        $response->error_msg = 'Success with error';
+                        $response->error_msg = $validation_errors;
                         $response->response['sessions'] = $inserted_records;
-                        $response->validation_errors = $validation_errors;
                         $this->response($response, REST_Controller::HTTP_OK);
                     }
 

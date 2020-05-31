@@ -68,7 +68,8 @@ class Mclinicsession extends CI_Model
             $result = false;
         }
 
-        if (!(isset($this->post['avg_time_per_patient']) && $this->post['avg_time_per_patient'] != NULL && $this->post['avg_time_per_patient'] != '' && $this->mvalidation->valid_time($this->post['avg_time_per_patient']) == TRUE)) {
+//        if (!(isset($this->post['avg_time_per_patient']) && $this->post['avg_time_per_patient'] != NULL && $this->post['avg_time_per_patient'] != '' && $this->mvalidation->valid_time($this->post['avg_time_per_patient']) == TRUE)) {
+        if (!(isset($this->post['avg_time_per_patient']) && $this->post['avg_time_per_patient'] != NULL && $this->post['avg_time_per_patient'] != '' )) {
             array_push($this->validation_errors, 'Invalid average time per patient.');
             $result = false;
         }
