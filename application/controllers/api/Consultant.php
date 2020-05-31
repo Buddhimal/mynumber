@@ -483,6 +483,17 @@ class Consultant extends REST_Controller
 
     public function CreateClinic_post()
     {
+
+        $response = new stdClass();
+        $response->status = REST_Controller::HTTP_METHOD_NOT_ALLOWED;
+        $response->status_code = APIResponseCode::METHOD_NOT_ALLOWED;
+        $response->msg = 'Method Not Allowed';
+        $response->response = NULL;
+        $response->error_msg[] = 'Invalid Request Method.';
+        $this->response($response, REST_Controller::HTTP_METHOD_NOT_ALLOWED);
+
+        die();
+
         $method = $_SERVER['REQUEST_METHOD'];
         $response = new stdClass();
         if ($method == 'POST') {
