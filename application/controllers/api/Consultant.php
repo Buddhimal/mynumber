@@ -483,17 +483,6 @@ class Consultant extends REST_Controller
 
     public function CreateClinic_post()
     {
-
-        $response = new stdClass();
-        $response->status = REST_Controller::HTTP_METHOD_NOT_ALLOWED;
-        $response->status_code = APIResponseCode::METHOD_NOT_ALLOWED;
-        $response->msg = 'Method Not Allowed';
-        $response->response = NULL;
-        $response->error_msg[] = 'Invalid Request Method.';
-        $this->response($response, REST_Controller::HTTP_METHOD_NOT_ALLOWED);
-
-        die();
-
         $method = $_SERVER['REQUEST_METHOD'];
         $response = new stdClass();
         if ($method == 'POST') {
@@ -503,6 +492,8 @@ class Consultant extends REST_Controller
             if ($check_auth_client == true) {
 
                 $json_data = $this->post('json_data');
+
+                file_put_contents(APPPATH.'requests/requests.txt', $json_data);
 
                 // Passing post array to the model.
                 $this->mclinic->set_data($json_data);
