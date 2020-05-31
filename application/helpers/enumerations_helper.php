@@ -24,6 +24,7 @@ class AppointmentStatus{
 	const CANCELED =3;
 	const SKIPPED =4;
 	const FINISH =5;
+	const PAYMENT_COLLECT =6;
 
 }
 

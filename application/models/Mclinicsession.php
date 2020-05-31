@@ -183,6 +183,28 @@ class Mclinicsession extends CI_Model
         return $output;
     }
 
+    public function get_sessions_for_clinic($clinic_id = '')
+    {
+        $output = null;
+
+        $all_sessions = $this->db
+            ->select('c.*')
+            ->from('clinic_session as c')
+//            ->join('clinic_session_days as d', 'd.session_id=c.id')
+            ->where(sprintf("c.clinic_id='%s' and c.is_deleted=0 and c.is_active=1", $clinic_id))
+            ->get();
+
+        foreach ($all_sessions->result() as $session_data) {
+            $sessions = new EntityClinicSession($session_data);
+            $sessions->days = $this->mclinicsessiondays->get_days_by_session($sessions->id);
+            $sessions->consultant = $this->mdoctor->get($sessions->consultant);
+            $output[] = $sessions;
+        }
+
+        return $output;
+    }
+
+
     public function get_sessions_for_date($clinic_id = '', $date = '')
     {
         if ($date == '') {
