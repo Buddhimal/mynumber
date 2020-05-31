@@ -115,8 +115,20 @@ class Mclinicsession extends CI_Model
 
         $query_result = $this->get_record($id);
 
+        return  ($query_result);
+//        $sessions->days = $this->mclinicsessiondays->get_days_by_session($sessions->id);
+//        $output[] = $sessions;
+
+//        return $output;
+    }
+
+    public function get_full_session($session_id)
+    {
+
+        $query_result = $this->get_record($session_id);
+
         $sessions = new EntityClinicSession($query_result);
-        $sessions->days = $this->mclinicsessiondays->get_days_by_session($sessions->id);
+        $sessions->days = $this->mclinicsessiondays->get_days_by_session($session_id);
         $output[] = $sessions;
 
         return $output;
@@ -125,7 +137,7 @@ class Mclinicsession extends CI_Model
     private function get_record($id)
     {
 
-        $this->db->select('*');
+        $this->db->select('id,clinic_id,consultant,session_name,session_description,avg_time_per_patient,max_patients,');
         $this->db->from($this->table);
         $this->db->where('id', $id);
         $this->db->where('is_deleted', 0);
@@ -156,7 +168,8 @@ class Mclinicsession extends CI_Model
             ->get();
 
         foreach ($all_sessions->result() as $session_data) {
-            $output[] = new EntityClinicSession($session_data);
+//            $output[] = new EntityClinicSession($session_data);
+            $output[] = ($session_data);
         }
         return $output;
     }

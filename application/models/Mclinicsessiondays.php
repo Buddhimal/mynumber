@@ -112,6 +112,9 @@ class Mclinicsessiondays extends CI_Model
     }
 
     public function get_days_by_session($session_id){
+
+        $output = null;
+
         $this->db->select('id,day,starting_time,end_time,off');
         $this->db->from($this->table);
         $this->db->where('session_id', $session_id);
