@@ -1433,12 +1433,12 @@ class Consultant extends REST_Controller
                 if ($this->mclinic->valid_clinic($clinic_id)) {
 
 
-                    $sessions = $this->mclinicsession->get_sessions_for_day($clinic_id, '');
+                    $sessions = $this->mclinicsession->get_sessions_for_day($clinic_id, date('N'));
 
                     if (!is_null($sessions)) {
                         $response->status = REST_Controller::HTTP_OK;
                         $response->status_code = APIResponseCode::SUCCESS;
-                        $response->msg = 'Session Details for Consultant';
+                        $response->msg = 'Session Details for today';
                         $response->error_msg = NULL;
                         $response->response['sessions'] = $sessions;
                         $this->response($response, REST_Controller::HTTP_OK);
