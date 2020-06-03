@@ -43,9 +43,9 @@ class SessionStatus{
 }
 
 class APIKeys{
-    const SMS_API_KEY = '0OgHuQ8UEbBrwrvpJCIVqAlqHE6DNtKy';
-    const SMS_API_TOKEN = 'l7vQ1590532075';
-    const SMS_SENDER_ID = 'DEMO_SMS';
+    const SMS_API_KEY = 'eE1A9BvAe0ginsLlP9nhXvCbPAD5jJBw';
+    const SMS_API_TOKEN = '2rRC1591199529';
+    const SMS_SENDER_ID = 'MyNumber.lk';
 }
 
 class Payments{

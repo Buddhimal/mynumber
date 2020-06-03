@@ -6,7 +6,7 @@ class Messagesender
 {
 
 
-    public function send_otp_new($Mobile, $TEXT)
+    public function send_otp($Mobile, $TEXT)
     {
         $newsletters = new Newsletterslk;
         $newsletters->setUser(APIKeys::SMS_API_KEY, APIKeys::SMS_API_TOKEN);// Initializing User Api Key and Api Token
@@ -26,7 +26,7 @@ class Messagesender
     }
 
 
-    public function send_otp($number, $msg)
+    public function send_otp_old($number, $msg)
     {
 
         $user = "94714102030";
