@@ -475,7 +475,6 @@ class Consultant extends REST_Controller
 
     }
 
-
     //endregion
 
 
@@ -607,7 +606,7 @@ class Consultant extends REST_Controller
                     $response->status_code = APIResponseCode::SUCCESS;
                     $response->msg = 'OTP Validation Successful..';
                     $response->error_msg = NULL;
-//					$response->response = (object) array('OTP Validation Successful..');
+                    // $response->response = (object) array('OTP Validation Successful..');
                     $response->response['msg'] = 'OTP Validation Successful..';
                     $this->response($response, REST_Controller::HTTP_OK);
 
@@ -817,7 +816,7 @@ class Consultant extends REST_Controller
                             }
                         } else {
                             $errors['msg'] = 'Validation Failed.';
-//							$errors['request_data'] = $substitute;
+                            // $errors['request_data'] = $substitute;
                             $errors['errors'] = $this->mdoctor->validation_errors;
                             $validation_errors[] = $errors;
                         }
@@ -937,7 +936,7 @@ class Consultant extends REST_Controller
                     $response->msg = 'Invalid Clinic Id';
                     $response->error_msg[] = 'Invalid Clinic Id';
                     $response->response = NULL;
-//					$response->request_data = $this->post();
+                    // $response->request_data = $this->post();
                     $this->response($response, REST_Controller::HTTP_BAD_REQUEST);
 
                 }
@@ -1849,11 +1848,11 @@ class Consultant extends REST_Controller
         $ci = get_instance();
         $ci->email->initialize($config);
 
-//		$ci->email->from('noreply@smartloan.lk', 'Smartloan.lk');
-//		$ci->email->to("info@smartloan.lk");
-//		$ci->email->subject("Message From Customer");
-//		$ci->email->message("Customer Name ");
-//		$ci->email->send();
+        // $ci->email->from('noreply@smartloan.lk', 'Smartloan.lk');
+        // $ci->email->to("info@smartloan.lk");
+        // $ci->email->subject("Message From Customer");
+        // $ci->email->message("Customer Name ");
+        // $ci->email->send();
         $data = null;
 
         $body = $this->load->view('fogot_password', $data, TRUE);
@@ -1864,12 +1863,10 @@ class Consultant extends REST_Controller
         $ci->email->message($body);
 
         var_dump($this->email->send());
-
-
-//		$this->load->view('fogot_password',$data);
+        // $this->load->view('fogot_password',$data);
     }
 
 
-//endregion
+    //endregion
 
 }
