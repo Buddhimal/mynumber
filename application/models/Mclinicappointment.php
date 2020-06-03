@@ -53,6 +53,7 @@ class Mclinicappointment extends CI_Model
 		$this->post['patient_id'] = $patient_id;
 //		$this->post['is_canceled'] = 0;
 		$this->post['appointment_status'] = AppointmentStatus::PENDING;
+		$this->post['appointment_charge'] = Payments::DEFAULT_CHARGE;
 		$this->post['appointment_status_updated'] = date("Y-m-d H:i:s");
 		$this->post['is_deleted'] = 0;
 		$this->post['is_active'] = 1;
@@ -94,7 +95,7 @@ class Mclinicappointment extends CI_Model
 	}
 
 
-	public function get_next_appointment($session_id){
+	public function get_next_appointment($session_id,$patient_id){
 
 		$appointment = null;
 
@@ -127,7 +128,9 @@ class Mclinicappointment extends CI_Model
 			$appointment['default_charge'] = Payments::DEFAULT_CHARGE;
 			$appointment['patient'] = $this->mpublic->get($res->row()->patient_id);
 			$appointment['serial_number'] = $this->mserialnumber->get($res->row()->serial_number_id);
-		}
+            if(!is_null($patient_id))
+                $appointment['payment_dues'] = $this->get_payment_dues($patient_id);
+        }
 
 		return $appointment;
 	}
@@ -176,6 +179,46 @@ class Mclinicappointment extends CI_Model
             ->get();
 
         return $res->num_rows();
+    }
+
+    public function get_cumulative_amount($session_id)
+    {
+
+        $utc_date=DateHelper::utc_date(date("Y-m-d"));
+
+        $res=$this->db
+            ->select('COALESCE(sum(appointment_charge),0) as cumulative_amount')
+            ->from($this->table)
+            ->where('session_id',$session_id)
+            ->where('appointment_date',date("Y-m-d"))
+            ->where("(appointment_status =". AppointmentStatus::CONSULTED ." OR (appointment_status=".AppointmentStatus::PAYMENT_COLLECT ." AND CAST(appointment_status_updated AS DATE) ='".$utc_date."')  )")
+            ->where('is_active', 1)
+            ->where('is_deleted', 0)
+            ->get();
+
+        return $res->row()->cumulative_amount;
+    }
+
+    public function get_payment_dues($patient_id)
+    {
+        //check if current session only or all the sessions with the same clinic
+
+        $output[] = null;
+
+        $res = $this->db
+            ->select('appointment_date,appointment_charge')
+            ->from($this->table)
+            ->where('patient_id', $patient_id)
+            ->where('appointment_status', AppointmentStatus::PENDING)
+            ->where('is_active', 1)
+            ->where('is_deleted', 0)
+            ->get();
+
+        foreach ($res->result() as $due){
+            $output[] = $due;
+        }
+        return $output;
+
     }
 
 

@@ -51,3 +51,30 @@ class APIKeys{
 class Payments{
     const DEFAULT_CHARGE=30.00;
 }
+
+//class DateHelper
+//{
+//
+//    public $minutes_to_add = 330;
+//
+//    public function utc_date($date){
+//
+//        $date = new DateTime($date);
+//        $date->add(new DateInterval('PT' . $this->minutes_to_add . 'M'));
+//        return $date->format('Y-m-d');
+//    }
+//
+//    function utc_datetime($date){
+//
+//        $date = new DateTime($date);
+//        $date->add(new DateInterval('PT' . $this->minutes_to_add . 'M'));
+//        return $date->format('Y-m-d H:i:s');
+//    }
+//
+//    function utc_time($date){
+//
+//        $date = new DateTime($date);
+//        $date->add(new DateInterval('PT' . $this->minutes_to_add . 'M'));
+//        return $date->format('H:i:s');
+//    }
+//}

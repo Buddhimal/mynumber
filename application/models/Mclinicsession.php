@@ -255,6 +255,8 @@ class Mclinicsession extends CI_Model
         $session_meta['total_consulted'] = $this->mclinicappointment->get_appointment_count($session_id, AppointmentStatus::CONSULTED);
         $session_meta['total_skipped'] = $this->mclinicappointment->get_appointment_count($session_id, AppointmentStatus::SKIPPED);
         $session_meta['total_time_elapsed'] = $this->get_session_time_elapsed($session_id);
+        $session_meta['cumulative_amount'] =$this->mclinicappointment->get_cumulative_amount($session_id);
+
 
 //        cumulative_amount
 
@@ -266,15 +268,12 @@ class Mclinicsession extends CI_Model
         $started_at=$this->mclinicsessiontrans->get_session_trans_by_action($session_id,SessionStatus::START)->action_datetime;
 //        $start_time = $this->mclinicsessiondays->get_today_session($session_id,date('N'))->starting_time;
 
-        $total_time_elapsed = strtotime(date('H:i')) - strtotime($started_at);
+        $total_time_elapsed = strtotime(date('Y-m-d H:i:s')) - strtotime($started_at);
 
         return gmdate("H:i:s", $total_time_elapsed);
     }
 
-    public function get_cumulative_amount($session_id)
-    {
 
-    }
 
 
 }

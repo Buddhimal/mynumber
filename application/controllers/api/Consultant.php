@@ -1611,7 +1611,7 @@ class Consultant extends REST_Controller
 
                         if ($this->mclinicsessiontrans->start_session($session_id)) {
 
-                            $appointment = $this->mclinicappointment->get_next_appointment($session_id);
+                            $appointment = $this->mclinicappointment->get_next_appointment($session_id,null);
 
                             $response->status = REST_Controller::HTTP_OK;
                             $response->status_code = APIResponseCode::SUCCESS;
@@ -1680,28 +1680,40 @@ class Consultant extends REST_Controller
 
                     if ($this->mclinicsession->valid_session($session_id)) {
 
-                        if ($this->mclinicappointment->update_appointment_status($appointment_id, AppointmentStatus::CONSULTED)) {
+                        $appointment_data = $this->mclinicappointment->get($appointment_id);
 
-                            $appointment = $this->mclinicappointment->get_next_appointment($session_id);
+                        if (!is_null($appointment_data)) {
 
-                            $response->response['session_meta'] = $this->mclinicsession->get_session_meta($clinic_id, $session_id);
+                            if ($this->mclinicappointment->update_appointment_status($appointment_id, AppointmentStatus::CONSULTED)) {
 
-                            if (!is_null($appointment)) {
+                                $appointment = $this->mclinicappointment->get_next_appointment($session_id,$appointment_data->patient_id);
 
-                                $response->status = REST_Controller::HTTP_OK;
-                                $response->status_code = APIResponseCode::SUCCESS;
-                                $response->msg = 'Next Appointment Number';
-                                $response->response['appointment'] = $appointment;
-                                $this->response($response, REST_Controller::HTTP_OK);
+                                $response->response['session_meta'] = $this->mclinicsession->get_session_meta($clinic_id, $session_id);
+
+                                if (!is_null($appointment)) {
+
+                                    $response->status = REST_Controller::HTTP_OK;
+                                    $response->status_code = APIResponseCode::SUCCESS;
+                                    $response->msg = 'Next Appointment Number';
+                                    $response->response['appointment'] = $appointment;
+                                    $this->response($response, REST_Controller::HTTP_OK);
+
+                                } else {
+                                    $response->status = REST_Controller::HTTP_OK;
+                                    $response->status_code = APIResponseCode::SUCCESS;
+                                    $response->msg = 'No More Appointments for today';
+                                    $response->response['appointment'] = NULL;
+                                    $this->response($response, REST_Controller::HTTP_OK);
+                                }
 
                             } else {
-                                $response->status = REST_Controller::HTTP_OK;
-                                $response->status_code = APIResponseCode::SUCCESS;
-                                $response->msg = 'No More Appointments for today';
-                                $response->response['appointment'] = NULL;
-                                $this->response($response, REST_Controller::HTTP_OK);
+                                $response->status = REST_Controller::HTTP_BAD_REQUEST;
+                                $response->status_code = APIResponseCode::BAD_REQUEST;
+                                $response->msg = null;
+                                $response->error_msg[] = 'Invalid Appointment Number';
+                                $response->response = NULL;
+                                $this->response($response, REST_Controller::HTTP_BAD_REQUEST);
                             }
-
                         } else {
                             $response->status = REST_Controller::HTTP_BAD_REQUEST;
                             $response->status_code = APIResponseCode::BAD_REQUEST;
