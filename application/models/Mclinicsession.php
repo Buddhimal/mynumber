@@ -20,8 +20,6 @@ class Mclinicsession extends CI_Model
 
     public function set_data($post_array)
     {
-//		if (isset($post_array['day']))
-//			$this->post['day'] = $post_array['day'];
         if (isset($post_array['consultant']))
             $this->post['consultant'] = $post_array['consultant'];
         if (isset($post_array['session_name']))
@@ -32,10 +30,6 @@ class Mclinicsession extends CI_Model
             $this->post['avg_time_per_patient'] = $post_array['avg_time_per_patient'];
         if (isset($post_array['max_patients']))
             $this->post['max_patients'] = $post_array['max_patients'];
-//		if (isset($post_array['starting_time']))
-//			$this->post['starting_time'] = $post_array['starting_time'];
-//		if (isset($post_array['end_time']))
-//			$this->post['end_time'] = $post_array['end_time'];
     }
 
     public function is_valid()
@@ -44,16 +38,6 @@ class Mclinicsession extends CI_Model
         $this->validation_errors = array();
 
         $result = true;
-
-//		if (!(isset($this->post['day']) && $this->post['day'] != NULL && $this->post['day'] != '')) {
-//			array_push($this->validation_errors, 'Invalid Day.');
-//			$result = false;
-//		}
-
-//		if (!(isset($this->post['starting_time']) && $this->post['starting_time'] != NULL && $this->post['starting_time'] != '' && $this->mvalidation->valid_time($this->post['starting_time']) == TRUE)) {
-//			array_push($this->validation_errors, 'Invalid Start Time.');
-//			$result = false;
-//		}
 
         if (!($this->post['consultant'] != NULL && $this->post['consultant'] != '')) {
             array_push($this->validation_errors, 'Invalid Consultant..');
@@ -68,8 +52,7 @@ class Mclinicsession extends CI_Model
             $result = false;
         }
 
-//        if (!(isset($this->post['avg_time_per_patient']) && $this->post['avg_time_per_patient'] != NULL && $this->post['avg_time_per_patient'] != '' && $this->mvalidation->valid_time($this->post['avg_time_per_patient']) == TRUE)) {
-        if (!(isset($this->post['avg_time_per_patient']) && $this->post['avg_time_per_patient'] != NULL && $this->post['avg_time_per_patient'] != '' )) {
+        if (!(isset($this->post['avg_time_per_patient']) && $this->post['avg_time_per_patient'] != NULL && $this->post['avg_time_per_patient'] != '')) {
             array_push($this->validation_errors, 'Invalid average time per patient.');
             $result = false;
         }
@@ -82,9 +65,7 @@ class Mclinicsession extends CI_Model
         return $result;
     }
 
-    /*
-    *
-    */
+
     public function create($clinic_id)
     {
         $result = null;
@@ -109,22 +90,50 @@ class Mclinicsession extends CI_Model
         return $result;
     }
 
+    public function update($session_id)
+    {
+        $update_data = array();
+
+        $current_session_data = $this->get_record($session_id);
+
+        if (isset($this->post['consultant']) && $this->post['consultant'] != $current_session_data->consultant)
+            $update_data['consultant'] = $this->post['consultant'];
+
+        if (isset($this->post['session_name']) && $this->post['session_name'] != $current_session_data->session_name)
+            $update_data['last_name'] = $this->post['last_name'];
+
+        if (isset($this->post['session_description']) && $this->post['session_description'] != $current_session_data->session_description)
+            $update_data['session_description'] = $this->post['session_description'];
+
+        if (isset($this->post['avg_time_per_patient']) && $this->post['avg_time_per_patient'] != $current_session_data->avg_time_per_patient)
+            $update_data['avg_time_per_patient'] = $this->post['avg_time_per_patient'];
+
+        if (isset($this->post['max_patients']) && $this->post['max_patients'] != $current_session_data->max_patients)
+            $update_data['max_patients'] = $this->post['max_patients'];
+
+
+
+        if (sizeof($update_data) > 0) {
+            $update_data['updated'] = date("Y-m-d H:i:s");
+            $update_data['updated_by'] = $session_id;
+
+            $this->db->where('id', $session_id);
+            $this->db->update($this->table, $update_data);
+        }
+
+        return true;
+    }
+
 
     public function get($id)
     {
-
         $query_result = $this->get_record($id);
 
-        return  ($query_result);
-//        $sessions->days = $this->mclinicsessiondays->get_days_by_session($sessions->id);
-//        $output[] = $sessions;
-
-//        return $output;
+        return ($query_result);
     }
 
     public function get_full_session($session_id)
     {
-
         $query_result = $this->get_record($session_id);
 
         $sessions = new EntityClinicSession($query_result);
@@ -136,7 +145,6 @@ class Mclinicsession extends CI_Model
 
     private function get_record($id)
     {
-
         $this->db->select('id,clinic_id,consultant,session_name,session_description,avg_time_per_patient,max_patients,');
         $this->db->from($this->table);
         $this->db->where('id', $id);
@@ -232,7 +240,6 @@ class Mclinicsession extends CI_Model
 
     public function get_sessions_for_consultant($clinic_id = '', $consultant_id = '')
     {
-
         $all_sessions = $this->db
             ->select('*')
             ->from($this->table)
@@ -255,7 +262,7 @@ class Mclinicsession extends CI_Model
         $session_meta['total_consulted'] = $this->mclinicappointment->get_appointment_count($session_id, AppointmentStatus::CONSULTED);
         $session_meta['total_skipped'] = $this->mclinicappointment->get_appointment_count($session_id, AppointmentStatus::SKIPPED);
         $session_meta['total_time_elapsed'] = $this->get_session_time_elapsed($session_id);
-        $session_meta['cumulative_amount'] =$this->mclinicappointment->get_cumulative_amount($session_id);
+        $session_meta['cumulative_amount'] = $this->mclinicappointment->get_cumulative_amount($session_id);
 
 
 //        cumulative_amount
@@ -265,15 +272,13 @@ class Mclinicsession extends CI_Model
 
     public function get_session_time_elapsed($session_id)
     {
-        $started_at=$this->mclinicsessiontrans->get_session_trans_by_action($session_id,SessionStatus::START)->action_datetime;
+        $started_at = $this->mclinicsessiontrans->get_session_trans_by_action($session_id, SessionStatus::START)->action_datetime;
 //        $start_time = $this->mclinicsessiondays->get_today_session($session_id,date('N'))->starting_time;
 
         $total_time_elapsed = strtotime(date('Y-m-d H:i:s')) - strtotime($started_at);
 
         return gmdate("H:i:s", $total_time_elapsed);
     }
-
-
 
 
 }

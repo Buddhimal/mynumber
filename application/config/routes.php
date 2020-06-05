@@ -61,6 +61,7 @@ $route['api/clinic/consultant/(:any)']['GET'] = 'api/consultant/ConsultantByUniq
 $route['api/clinic/(:any)/consultant']['GET'] = 'api/consultant/GetConsultantforClinic/$1';
 $route['api/clinic/consultant/(:any)']['PUT'] = 'api/consultant/UpdateConsultant/$1';
 $route['api/clinic/(:any)/sessions']['POST'] = 'api/consultant/AddClinicSessions/$1';
+$route['api/clinic/(:any)/sessions/(:any)']['PUT'] = 'api/consultant/UpdateClinicSessions/$1/$2';
 $route['api/clinic/(:any)/holidays']['POST'] = 'api/consultant/AddHolidays/$1';
 $route['api/clinic/(:any)/holidays']['GET'] = 'api/consultant/GetHolidaysByClinic/$1';
 $route['api/clinic/(:any)/session']['GET'] = 'api/consultant/ViewSessionsBClinic/$1';

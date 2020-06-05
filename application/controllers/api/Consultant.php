@@ -492,7 +492,7 @@ class Consultant extends REST_Controller
 
                 $json_data = $this->post('json_data');
 
-                file_put_contents(APPPATH.'requests/requests.txt', $json_data);
+                file_put_contents(APPPATH . 'requests/requests.txt', $json_data);
 
                 // Passing post array to the model.
                 $this->mclinic->set_data($json_data);
@@ -1057,7 +1057,7 @@ class Consultant extends REST_Controller
 
                                     $this->mclinicsessiondays->set_data($days);
 
-                                    if ($this->mclinicsession->is_valid()) {
+                                    if ($this->mclinicsessiondays->is_valid()) {
 
                                         $session_days = $this->mclinicsessiondays->create($clinic_id, $clinic_session->id);
 
@@ -1134,6 +1134,114 @@ class Consultant extends REST_Controller
         }
     }
 
+    public function UpdateClinicSessions_put($clinic_id = '', $session_id = '')
+    {
+        $method = $_SERVER['REQUEST_METHOD'];
+        $response = new stdClass();
+        $inserted_records = array();
+        $validation_errors = array();
+        $sessions = array();
+
+        if ($method == 'PUT') {
+
+            $check_auth_client = $this->mmodel->check_auth_client();
+
+            if ($check_auth_client == true) {
+
+                if ($this->mclinic->valid_clinic($clinic_id)) {
+
+                    if ($this->mclinicsession->valid_session($session_id)) {
+
+                        $json_data = $this->put('json_data');
+
+                        foreach ($json_data['sessions'] as $session) {
+
+                            // Passing post array to the model.
+                            $this->mclinicsession->set_data($session);
+
+                            // model it self will validate the input data
+                            if ($this->mclinicsession->is_valid()) {
+
+                                if ($this->mclinicsession->update($session_id)) {
+
+                                    foreach ($session['days'] as $days) {
+
+                                        $this->mclinicsessiondays->set_data($days);
+
+                                        if ($this->mclinicsessiondays->is_valid()) {
+
+                                            $this->mclinicsessiondays->update($days['id']);
+
+                                        } else {
+                                            $errors['msg'] = 'Validation Failed.';
+                                            $errors['request_data'] = $days;
+                                            $errors['errors'] = $this->mclinicsessiondays->validation_errors;
+                                            $validation_errors[] = $errors;
+                                        }
+                                    }
+                                }
+
+                            } else {
+                                $errors['msg'] = 'Validation Failed.';
+                                $errors['request_data'] = $session;
+                                $errors['errors'] = $this->mclinicsession->validation_errors;
+                                $validation_errors[] = $errors;
+                            }
+                            $sessions = $this->mclinicsession->get_full_session($session_id);
+                        }
+
+                        if (sizeof($validation_errors) == 0) {
+                            $response->status = REST_Controller::HTTP_OK;
+                            $response->status_code = APIResponseCode::SUCCESS;
+                            $response->msg = 'Success';
+                            $response->error_msg = NULL;
+                            $response->response['sessions'] = $sessions;
+                            $this->response($response, REST_Controller::HTTP_OK);
+                        } else {
+                            $response->status = REST_Controller::HTTP_OK;
+                            $response->status_code = APIResponseCode::SUCCESS_WITH_ERRORS;
+                            $response->msg = 'Success with errors';
+                            $response->error_msg = $validation_errors;
+                            $response->response['sessions'] = $sessions;
+                            $this->response($response, REST_Controller::HTTP_OK);
+                        }
+
+                    } else {
+                        $response->status = REST_Controller::HTTP_BAD_REQUEST;
+                        $response->status_code = APIResponseCode::BAD_REQUEST;
+                        $response->msg = 'Invalid Session Id';
+                        $response->error_msg = NULL;
+                        $response->response = NULL;
+                        $this->response($response, REST_Controller::HTTP_BAD_REQUEST);
+                    }
+                } else {
+                    $response->status = REST_Controller::HTTP_BAD_REQUEST;
+                    $response->status_code = APIResponseCode::BAD_REQUEST;
+                    $response->msg = 'Invalid Clinic Id';
+                    $response->error_msg = NULL;
+                    $response->response = NULL;
+                    $this->response($response, REST_Controller::HTTP_BAD_REQUEST);
+                }
+
+            } else {
+                $response->status = REST_Controller::HTTP_UNAUTHORIZED;
+                $response->status_code = APIResponseCode::UNAUTHORIZED;
+                $response->msg = 'Unauthorized';
+                $response->error_msg[] = 'Invalid Authentication Key.';
+                $response->response = NULL;
+                $this->response($response, REST_Controller::HTTP_UNAUTHORIZED);
+            }
+
+        } else {
+            $response->status = REST_Controller::HTTP_METHOD_NOT_ALLOWED;
+            $response->status_code = APIResponseCode::METHOD_NOT_ALLOWED;
+            $response->msg = 'Method Not Allowed';
+            $response->error_msg[] = 'Invalid Request Method.';
+            $response->response = NULL;
+            $this->response($response, REST_Controller::HTTP_METHOD_NOT_ALLOWED);
+        }
+    } // not complete
+
     public function ViewSessionsBClinic_get($clinic_id = '')
     {
         $method = $_SERVER['REQUEST_METHOD'];
@@ -1146,14 +1254,14 @@ class Consultant extends REST_Controller
 
                 if ($this->mclinic->valid_clinic($clinic_id)) {
 
-                        $sessions = $this->mclinicsession->get_sessions_for_clinic($clinic_id);
+                    $sessions = $this->mclinicsession->get_sessions_for_clinic($clinic_id);
 
-                        $response->status = REST_Controller::HTTP_OK;
-                        $response->status_code = APIResponseCode::SUCCESS;
-                        $response->msg = 'Session Details';
-                        $response->error_msg = NULL;
-                        $response->response['sessions'] = $sessions;
-                        $this->response($response, REST_Controller::HTTP_OK);
+                    $response->status = REST_Controller::HTTP_OK;
+                    $response->status_code = APIResponseCode::SUCCESS;
+                    $response->msg = 'Session Details';
+                    $response->error_msg = NULL;
+                    $response->response['sessions'] = $sessions;
+                    $this->response($response, REST_Controller::HTTP_OK);
 
                 } else {
                     $response->status = REST_Controller::HTTP_BAD_REQUEST;
@@ -1316,7 +1424,7 @@ class Consultant extends REST_Controller
 
                     if ($this->mclinicsession->valid_session($session_id)) {
 
-                        $sessions = $this->mclinicsession->get($session_id);
+                        $sessions = $this->mclinicsession->get_full_session($session_id);
 
                         $response->status = REST_Controller::HTTP_OK;
                         $response->status_code = APIResponseCode::SUCCESS;
@@ -1613,7 +1721,7 @@ class Consultant extends REST_Controller
 
                         if ($this->mclinicsessiontrans->start_session($session_id)) {
 
-                            $appointment = $this->mclinicappointment->get_next_appointment($clinic_id,$session_id,null);
+                            $appointment = $this->mclinicappointment->get_next_appointment($clinic_id, $session_id, null);
 
                             $response->status = REST_Controller::HTTP_OK;
                             $response->status_code = APIResponseCode::SUCCESS;
@@ -1688,7 +1796,7 @@ class Consultant extends REST_Controller
 
                             if ($this->mclinicappointment->update_appointment_status($appointment_id, AppointmentStatus::CONSULTED)) {
 
-                                $appointment = $this->mclinicappointment->get_next_appointment($clinic_id,$session_id,$appointment_data->patient_id);
+                                $appointment = $this->mclinicappointment->get_next_appointment($clinic_id, $session_id, $appointment_data->patient_id);
 
                                 $response->status = REST_Controller::HTTP_OK;
                                 $response->status_code = APIResponseCode::SUCCESS;

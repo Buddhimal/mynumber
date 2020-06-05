@@ -55,9 +55,7 @@ class Mclinicsessiondays extends CI_Model
         return $result;
     }
 
-    /*
-    *
-    */
+
     public function create($clinic_id,$session_id)
     {
         $result = null;
@@ -81,6 +79,35 @@ class Mclinicsessiondays extends CI_Model
         }
 
         return $result;
+    }
+
+    public function update($day_id)
+    {
+        $update_data = array();
+
+        $current_session_days = $this->get_record($day_id);
+
+        if (isset($this->post['day']) && $this->post['day'] != $current_session_days->day)
+            $update_data['day'] = $this->post['day'];
+
+        if (isset($this->post['off']) && $this->post['off'] != $current_session_days->off)
+            $update_data['off'] = $this->post['off'];
+
+        if (isset($this->post['starting_time']) && $this->post['starting_time'] != $current_session_days->starting_time)
+            $update_data['starting_time'] = $this->post['starting_time'];
+
+        if (isset($this->post['end_time']) && $this->post['end_time'] != $current_session_days->end_time)
+            $update_data['end_time'] = $this->post['end_time'];
+
+        if (sizeof($update_data) > 0) {
+            $update_data['updated'] = date("Y-m-d H:i:s");
+            $update_data['updated_by'] = $day_id;
+
+            $this->db->where('id', $day_id);
+            $this->db->update($this->table, $update_data);
+        }
+
+        return true;
     }
 
 

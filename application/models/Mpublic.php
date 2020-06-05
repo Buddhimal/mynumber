@@ -24,6 +24,8 @@ class Mpublic extends CI_Model
 			$this->post['last_name'] = $post_array['lastname'];
 		if (isset($post_array['nic']))
 			$this->post['nic'] = $post_array['nic'];
+		if (isset($post_array['dob']))
+			$this->post['dob'] = $post_array['dob'];
 		if (isset($post_array['location']))
 			$this->post['location'] = $post_array['location'];
 		if (isset($post_array['telephone']))
@@ -60,6 +62,11 @@ class Mpublic extends CI_Model
 
 		if (!(isset($this->post['telephone']) && $this->mvalidation->telephone($this->post['telephone']))) {
 			array_push($this->validation_errors, 'Invalid Telephone.');
+			$result = false;
+		}
+
+		if (!(isset($this->post['dob']) && $this->mvalidation->telephone($this->post['dob']))) {
+			array_push($this->validation_errors, 'Invalid Birthday.');
 			$result = false;
 		}
 
