@@ -130,6 +130,8 @@ class Mclinicappointment extends CI_Model
 			$appointment['serial_number'] = $this->mserialnumber->get($res->row()->serial_number_id);
             if(!is_null($patient_id))
                 $appointment['payment_dues'] = $this->get_payment_dues($clinic_id,$patient_id);
+            else
+                $appointment['payment_dues'] = null;
         }
 
 		return $appointment;

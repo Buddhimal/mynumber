@@ -1690,23 +1690,13 @@ class Consultant extends REST_Controller
 
                                 $appointment = $this->mclinicappointment->get_next_appointment($clinic_id,$session_id,$appointment_data->patient_id);
 
+                                $response->status = REST_Controller::HTTP_OK;
+                                $response->status_code = APIResponseCode::SUCCESS;
+                                $response->msg = 'Next Appointment Number';
+                                $response->error_msg = null;
+                                $response->response['appointment'] = $appointment;
                                 $response->response['session_meta'] = $this->mclinicsession->get_session_meta($clinic_id, $session_id);
-
-                                if (!is_null($appointment)) {
-
-                                    $response->status = REST_Controller::HTTP_OK;
-                                    $response->status_code = APIResponseCode::SUCCESS;
-                                    $response->msg = 'Next Appointment Number';
-                                    $response->response['appointment'] = $appointment;
-                                    $this->response($response, REST_Controller::HTTP_OK);
-
-                                } else {
-                                    $response->status = REST_Controller::HTTP_OK;
-                                    $response->status_code = APIResponseCode::SUCCESS;
-                                    $response->msg = 'No More Appointments for today';
-                                    $response->response['appointment'] = NULL;
-                                    $this->response($response, REST_Controller::HTTP_OK);
-                                }
+                                $this->response($response, REST_Controller::HTTP_OK);
 
                             } else {
                                 $response->status = REST_Controller::HTTP_BAD_REQUEST;
@@ -1782,23 +1772,13 @@ class Consultant extends REST_Controller
 
                             $response->response['session_meta'] = $this->mclinicsession->get_session_meta($clinic_id, $session_id);
 
-                            if (!is_null($appointment)) {
-
-                                $response->status = REST_Controller::HTTP_OK;
-                                $response->status_code = APIResponseCode::SUCCESS;
-                                $response->msg = 'Next Appointment Number';
-                                $response->error_msg = null;
-                                $response->response = $appointment;
-                                $this->response($response, REST_Controller::HTTP_OK);
-
-                            } else {
-                                $response->status = REST_Controller::HTTP_OK;
-                                $response->status_code = APIResponseCode::SUCCESS;
-                                $response->msg = 'No More Appointments for today';
-                                $response->error_msg = null;
-                                $response->response = NULL;
-                                $this->response($response, REST_Controller::HTTP_OK);
-                            }
+                            $response->status = REST_Controller::HTTP_OK;
+                            $response->status_code = APIResponseCode::SUCCESS;
+                            $response->msg = 'Next Appointment Number';
+                            $response->error_msg = null;
+                            $response->response['appointment'] = $appointment;
+                            $response->response['session_meta'] = $this->mclinicsession->get_session_meta($clinic_id, $session_id);
+                            $this->response($response, REST_Controller::HTTP_OK);
 
                         } else {
                             $response->status = REST_Controller::HTTP_BAD_REQUEST;
