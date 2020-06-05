@@ -95,7 +95,7 @@ class Mclinicappointment extends CI_Model
 	}
 
 
-	public function get_next_appointment($session_id,$patient_id){
+	public function get_next_appointment($clinic_id,$session_id,$patient_id){
 
 		$appointment = null;
 
@@ -129,7 +129,7 @@ class Mclinicappointment extends CI_Model
 			$appointment['patient'] = $this->mpublic->get($res->row()->patient_id);
 			$appointment['serial_number'] = $this->mserialnumber->get($res->row()->serial_number_id);
             if(!is_null($patient_id))
-                $appointment['payment_dues'] = $this->get_payment_dues($patient_id);
+                $appointment['payment_dues'] = $this->get_payment_dues($clinic_id,$patient_id);
         }
 
 		return $appointment;
@@ -199,19 +199,23 @@ class Mclinicappointment extends CI_Model
         return $res->row()->cumulative_amount;
     }
 
-    public function get_payment_dues($patient_id)
+    public function get_payment_dues($clinic_id,$patient_id)
     {
         //check if current session only or all the sessions with the same clinic
 
         $output[] = null;
 
         $res = $this->db
-            ->select('appointment_date,appointment_charge')
-            ->from($this->table)
-            ->where('patient_id', $patient_id)
-            ->where('appointment_status', AppointmentStatus::PENDING)
-            ->where('is_active', 1)
-            ->where('is_deleted', 0)
+            ->select('a.appointment_date,a.appointment_charge')
+            ->from('clinic_appointments as a')
+            ->join('clinic_session as s','s.id=a.session_id')
+            ->where('a.patient_id', $patient_id)
+            ->where('s.clinic_id', $clinic_id)
+            ->where('a.appointment_status', AppointmentStatus::PENDING)
+            ->where('a.is_active', 1)
+            ->where('s.is_active', 1)
+            ->where('a.is_deleted', 0)
+            ->where('s.is_deleted', 0)
             ->get();
 
         foreach ($res->result() as $due){

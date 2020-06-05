@@ -602,6 +602,8 @@ class Consultant extends REST_Controller
 
                 if ($this->motpcode->is_valid($clinic_id)) {
 
+                    $this->mlogin->confirm_login($clinic_id);
+
                     $response->status = REST_Controller::HTTP_OK;
                     $response->status_code = APIResponseCode::SUCCESS;
                     $response->msg = 'OTP Validation Successful..';
@@ -1611,7 +1613,7 @@ class Consultant extends REST_Controller
 
                         if ($this->mclinicsessiontrans->start_session($session_id)) {
 
-                            $appointment = $this->mclinicappointment->get_next_appointment($session_id,null);
+                            $appointment = $this->mclinicappointment->get_next_appointment($clinic_id,$session_id,null);
 
                             $response->status = REST_Controller::HTTP_OK;
                             $response->status_code = APIResponseCode::SUCCESS;
@@ -1686,7 +1688,7 @@ class Consultant extends REST_Controller
 
                             if ($this->mclinicappointment->update_appointment_status($appointment_id, AppointmentStatus::CONSULTED)) {
 
-                                $appointment = $this->mclinicappointment->get_next_appointment($session_id,$appointment_data->patient_id);
+                                $appointment = $this->mclinicappointment->get_next_appointment($clinic_id,$session_id,$appointment_data->patient_id);
 
                                 $response->response['session_meta'] = $this->mclinicsession->get_session_meta($clinic_id, $session_id);
 

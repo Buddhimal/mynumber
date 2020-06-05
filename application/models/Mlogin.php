@@ -156,5 +156,16 @@ class Mlogin extends CI_Model
 		return ($this->db->affected_rows() > 0);
 	}
 
+	public function confirm_login($clinic_id){
+        $this->db
+            ->set('is_confirmed', 1)
+            ->set('updated', date("Y-m-d H:i:s"))
+            ->where('entity_id', $clinic_id)
+            ->where('is_active', 1)
+            ->where('is_deleted', 0)
+            ->update($this->table);
+        return true;
+    }
+
 
 }
