@@ -123,6 +123,8 @@ class Mclinicappointment extends CI_Model
 											sn.serial_number ASC 
 											LIMIT 1");
 
+//        DatabaseFunction::last_query();
+
 		if($res->num_rows()>0){
 			$appointment['id'] = $res->row()->id;
 			$appointment['default_charge'] = Payments::DEFAULT_CHARGE;

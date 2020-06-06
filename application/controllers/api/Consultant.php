@@ -36,7 +36,7 @@ class Consultant extends REST_Controller
         $response = new stdClass();
         $response->status = REST_Controller::HTTP_BAD_REQUEST;
         $response->msg = 'Invalid Request.';
-        $response->error_msg = 'Invalid Request.';
+        $response->error_msg[] = 'Invalid Request.';
         $response->response = NULL;
         $this->response($response, REST_Controller::HTTP_BAD_REQUEST);
     }
@@ -46,7 +46,7 @@ class Consultant extends REST_Controller
         $response = new stdClass();
         $response->status = REST_Controller::HTTP_BAD_REQUEST;
         $response->msg = 'Invalid Request.';
-        $response->error_msg = 'Invalid Request.';
+        $response->error_msg[] = 'Invalid Request.';
         $response->response = NULL;
         $this->response($response, REST_Controller::HTTP_BAD_REQUEST);
     }
@@ -56,7 +56,7 @@ class Consultant extends REST_Controller
         $response = new stdClass();
         $response->status = REST_Controller::HTTP_BAD_REQUEST;
         $response->msg = 'Invalid Request.';
-        $response->error_msg = 'Invalid Request.';
+        $response->error_msg[] = 'Invalid Request.';
         $response->response = NULL;
         $this->response($response, REST_Controller::HTTP_BAD_REQUEST);
     }
@@ -66,7 +66,7 @@ class Consultant extends REST_Controller
         $response = new stdClass();
         $response->status = REST_Controller::HTTP_BAD_REQUEST;
         $response->msg = 'Invalid Request.';
-        $response->error_msg = 'Invalid Request.';
+        $response->error_msg[] = 'Invalid Request.';
         $response->response = NULL;
         $this->response($response, REST_Controller::HTTP_BAD_REQUEST);
     }
@@ -1896,6 +1896,64 @@ class Consultant extends REST_Controller
                             $response->response = NULL;
                             $this->response($response, REST_Controller::HTTP_BAD_REQUEST);
                         }
+
+                    } else {
+                        $response->status = REST_Controller::HTTP_BAD_REQUEST;
+                        $response->status_code = APIResponseCode::BAD_REQUEST;
+                        $response->msg = 'Invalid Session Id';
+                        $response->error_msg[] = 'Invalid Session Id';
+                        $response->response = NULL;
+                        $this->response($response, REST_Controller::HTTP_BAD_REQUEST);
+                    }
+                } else {
+                    $response->status = REST_Controller::HTTP_BAD_REQUEST;
+                    $response->status_code = APIResponseCode::BAD_REQUEST;
+                    $response->msg = 'Invalid Clinic Id';
+                    $response->error_msg[] = 'Invalid Clinic Id';
+                    $response->response = NULL;
+                    $this->response($response, REST_Controller::HTTP_BAD_REQUEST);
+                }
+
+            } else {
+                $response->status = REST_Controller::HTTP_UNAUTHORIZED;
+                $response->status_code = APIResponseCode::UNAUTHORIZED;
+                $response->msg = 'Unauthorized';
+                $response->response = NULL;
+                $response->error_msg[] = 'Invalid Authentication Key.';
+                $this->response($response, REST_Controller::HTTP_UNAUTHORIZED);
+            }
+
+        } else {
+            $response->status = REST_Controller::HTTP_METHOD_NOT_ALLOWED;
+            $response->status_code = APIResponseCode::METHOD_NOT_ALLOWED;
+            $response->msg = 'Method Not Allowed';
+            $response->response = NULL;
+            $response->error_msg[] = 'Invalid Request Method.';
+            $this->response($response, REST_Controller::HTTP_METHOD_NOT_ALLOWED);
+        }
+    }
+
+    public function SendOntheWayMessage_put($clinic_id = '', $session_id = '')
+    {
+        $method = $_SERVER['REQUEST_METHOD'];
+        $response = new stdClass();
+
+        if ($method == 'PUT') {
+
+            $check_auth_client = $this->mmodel->check_auth_client();
+
+            if ($check_auth_client == true) {
+
+                if ($this->mclinic->valid_clinic($clinic_id)) {
+
+                    if ($this->mclinicsession->valid_session($session_id)) {
+
+                            $response->status = REST_Controller::HTTP_OK;
+                            $response->status_code = APIResponseCode::SUCCESS;
+                            $response->msg = 'Success';
+                            $response->error_msg = null;
+                            $response->response=null;
+
 
                     } else {
                         $response->status = REST_Controller::HTTP_BAD_REQUEST;
