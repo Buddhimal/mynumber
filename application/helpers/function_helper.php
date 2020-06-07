@@ -26,6 +26,17 @@ class DateHelper
         return $date->format('H:i:s');
     }
 
+    public static function utc_day()
+    {
+        $date=date('Y-m-d H:i:s');
+        $minutes_to_add = 330;
+        $date = new DateTime($date);
+        $date->add(new DateInterval('PT' . $minutes_to_add . 'M'));
+        $date= $date->format('Y-m-d H:i:s');
+
+        return date('N', strtotime($date));
+    }
+
 }
 
 class DatabaseFunction{ //only for testing
