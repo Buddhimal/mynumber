@@ -1952,7 +1952,6 @@ class Consultant extends REST_Controller
                             $response->error_msg = null;
                             $response->response=null;
 
-
                     } else {
                         $response->status = REST_Controller::HTTP_BAD_REQUEST;
                         $response->status_code = APIResponseCode::BAD_REQUEST;
@@ -1961,6 +1960,7 @@ class Consultant extends REST_Controller
                         $response->response = NULL;
                         $this->response($response, REST_Controller::HTTP_BAD_REQUEST);
                     }
+
                 } else {
                     $response->status = REST_Controller::HTTP_BAD_REQUEST;
                     $response->status_code = APIResponseCode::BAD_REQUEST;
