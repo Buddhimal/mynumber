@@ -281,8 +281,8 @@ class Mclinicsession extends CI_Model
         $this->db->select("*")
             ->from( array( "s" => $this->table) )
             ->join( "clinic_session_trans as t", "s.id = t.session_id" )
-            ->where("s.action", SessionStatus::FINISHED)
-            ->where("s.action_datetime >=", )
+            ->where("s.action", SessionStatus::FINISHED);
+//            ->where("s.action_datetime >=", )
     }
 
 }
