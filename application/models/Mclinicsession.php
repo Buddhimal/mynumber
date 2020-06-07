@@ -176,7 +176,7 @@ class Mclinicsession extends CI_Model
             ->get();
 
         foreach ($all_sessions->result() as $session_data) {
-//            $output[] = new EntityClinicSession($session_data);
+            // $output[] = new EntityClinicSession($session_data);
             $output[] = ($session_data);
         }
         return $output;
@@ -212,7 +212,7 @@ class Mclinicsession extends CI_Model
         $all_sessions = $this->db
             ->select('c.*')
             ->from('clinic_session as c')
-//            ->join('clinic_session_days as d', 'd.session_id=c.id')
+            // ->join('clinic_session_days as d', 'd.session_id=c.id')
             ->where(sprintf("c.clinic_id='%s' and c.is_deleted=0 and c.is_active=1", $clinic_id))
             ->get();
 
@@ -263,20 +263,15 @@ class Mclinicsession extends CI_Model
         $session_meta['total_skipped'] = $this->mclinicappointment->get_appointment_count($session_id, AppointmentStatus::SKIPPED);
         $session_meta['total_time_elapsed'] = $this->get_session_time_elapsed($session_id);
         $session_meta['cumulative_amount'] = $this->mclinicappointment->get_cumulative_amount($session_id);
-
-
-//        cumulative_amount
-
+        // cumulative_amount
         return $session_meta;
     }
 
     public function get_session_time_elapsed($session_id)
     {
         $started_at = $this->mclinicsessiontrans->get_session_trans_by_action($session_id, SessionStatus::START)->action_datetime;
-//        $start_time = $this->mclinicsessiondays->get_today_session($session_id,date('N'))->starting_time;
-
+        // $start_time = $this->mclinicsessiondays->get_today_session($session_id,date('N'))->starting_time;
         $total_time_elapsed = strtotime(date('Y-m-d H:i:s')) - strtotime($started_at);
-
         return gmdate("H:i:s", $total_time_elapsed);
     }
 

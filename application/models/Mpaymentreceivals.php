@@ -38,4 +38,20 @@ class Mpaymentreceivals extends CI_Model{
 
 	}
 
+
+	public function get_last_paid_date( $clinic_id ){
+		$output = null;
+		$result_set = $this->db->select_max('collected')
+			->from($this->table)
+			->where('clinic_id', $clinic_id)
+			->where('collection_status', PaymentCollectionStatus::Pending)
+			->where('is_active', 1)
+			->where('is_deleted', 0)->get();
+
+		if ( $result_set->num_rows() > 0 ) {
+			$output = date("Y-m-d", strtotime("+5 hours +30 minutes", $result_set[0]['collected'])); // Database stores UTC, clinic is in SL time 
+		}
+
+		return $output;
+	}
 }
