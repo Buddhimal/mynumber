@@ -473,6 +473,45 @@ class Consultant extends REST_Controller
 
     }
 
+//    public function SearchClinicByDoctor_get($doctor_name = '')
+//    {
+//        $method = $_SERVER['REQUEST_METHOD'];
+//        $response = new stdClass();
+//        if ($method == 'GET') {
+//
+//            $check_auth_client = $this->mmodel->check_auth_client();
+//
+//            if ($check_auth_client == true) {
+//
+//                $clinic = $this->mclinic->get($clinic_id);
+//                $clinic->location = $this->mlocations->get($clinic->location);
+//
+//                $response->status = REST_Controller::HTTP_OK;
+//                $response->status_code = APIResponseCode::SUCCESS;
+//                $response->msg = 'Clinic Details';
+//                $response->error_msg = NULL;
+//                $response->response = $clinic;
+//                $this->response($response, REST_Controller::HTTP_OK);
+//
+//
+//            } else {
+//                $response->status = REST_Controller::HTTP_UNAUTHORIZED;
+//                $response->status_code = APIResponseCode::UNAUTHORIZED;
+//                $response->msg = 'Unauthorized';
+//                $response->response = NULL;
+//                $response->error_msg[] = 'Invalid Authentication Key.';
+//                $this->response($response, REST_Controller::HTTP_UNAUTHORIZED);
+//            }
+//        } else {
+//            $response->status = REST_Controller::HTTP_METHOD_NOT_ALLOWED;
+//            $response->status_code = APIResponseCode::METHOD_NOT_ALLOWED;
+//            $response->msg = 'Method Not Allowed';
+//            $response->response = NULL;
+//            $response->error_msg[] = 'Invalid Request Method.';
+//            $this->response($response, REST_Controller::HTTP_METHOD_NOT_ALLOWED);
+//        }
+//    }
+
     //endregion
 
 
@@ -489,8 +528,6 @@ class Consultant extends REST_Controller
             if ($check_auth_client == true) {
 
                 $json_data = $this->post('json_data');
-
-                file_put_contents(APPPATH . 'requests/requests.txt', $json_data);
 
                 // Passing post array to the model.
                 $this->mclinic->set_data($json_data);

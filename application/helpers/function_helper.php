@@ -34,6 +34,11 @@ class DateHelper
         $date->add(new DateInterval('PT' . $minutes_to_add . 'M'));
         $date= $date->format('Y-m-d H:i:s');
 
+//        $target_time_zone = new DateTimeZone('UTC');
+//        $kolkata_date_time = new DateTime(date('Y-m-d H:i:s'), $target_time_zone);
+//        echo 'GMT '.$kolkata_date_time->format('P');
+//        die();
+
         return date('N', strtotime($date));
     }
 
