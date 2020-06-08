@@ -1,6 +1,8 @@
 <?php
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 
+require_once(APPPATH . 'entities/EntityClinicPendingPaymentDetails.php');
+
 class Mclinicappointment extends CI_Model
 {
 
@@ -51,7 +53,7 @@ class Mclinicappointment extends CI_Model
 		$this->post['appointment_date'] = date("Y-m-d");
 		$this->post['serial_number_id'] = $serial_number_id;
 		$this->post['patient_id'] = $patient_id;
-//		$this->post['is_canceled'] = 0;
+		// $this->post['is_canceled'] = 0;
 		$this->post['appointment_status'] = AppointmentStatus::PENDING;
 		$this->post['appointment_charge'] = Payments::DEFAULT_CHARGE;
 		$this->post['appointment_status_updated'] = date("Y-m-d H:i:s");
@@ -88,7 +90,7 @@ class Mclinicappointment extends CI_Model
 		$this->db->select('id, patient_id, session_id, serial_number_id,appointment_date');
 		$this->db->from($this->table);
 		$this->db->where('id', $id);
-//		$this->db->where('appointment_status', AppointmentStatus::PENDING);
+		// $this->db->where('appointment_status', AppointmentStatus::PENDING);
 		$this->db->where('is_deleted', 0);
 		$this->db->where('is_active', 1);
 		return $this->db->get()->row();
@@ -123,7 +125,7 @@ class Mclinicappointment extends CI_Model
 											sn.serial_number ASC 
 											LIMIT 1");
 
-//        DatabaseFunction::last_query();
+		// DatabaseFunction::last_query();
 
 		if($res->num_rows()>0){
 			$appointment['id'] = $res->row()->id;
@@ -141,14 +143,13 @@ class Mclinicappointment extends CI_Model
 
 	public function update_appointment_status($appointment_id,$status){
 
-//		$result = false;
-
+		// $result = false;
 		$this->db
 			->set('appointment_status', $status)
 			->set('appointment_status_updated', date("Y-m-d H:i:s"))
 			->set('updated', date("Y-m-d H:i:s"))
 			->where('id', $appointment_id)
-			->where('appointment_status !=', $status)       //this is add to skip updating same status twice. for better validation if call next_number() two times with same appointment number
+			->where('appointment_status !=', $status) //this is add to skip updating same status twice. for better validation if call next_number() two times with same appointment number
 			->update($this->table);
 
 		if ($this->db->affected_rows() > 0) {
@@ -226,8 +227,36 @@ class Mclinicappointment extends CI_Model
             $output[] = $due;
         }
         return $output;
-
     }
 
 
+    public function get_consulted_appoinments_for($clinic_id, $sessions){
+
+    	if( !isset($sessions) || empty($sessions) ){
+    		throw new Exception("Empty Sessions list");
+    	}
+
+    	$output = new EntityClinicPendingPaymentDetails();
+
+    	$grand_total = 0;
+    	foreach ($sessions as $session) {
+
+    		$result_set = $this->db->select("count(t.id) as appointment_count, sum(t.appointment_charge) as session_total")
+    			->from( array("a" => $this->table))
+    			->join( array("t" => "clinic_appointment_trans" ), "t.appointment_id = a.id" )
+    			->where("a.session_id", $session->id)
+    			->where("a.is_active = 1 and a.is_deleted = 0 ")
+    			->where("t.status", AppointmentStatus::CONSULTED)
+    			->group_by("a.session_id")
+    			->get();
+
+    		if($result_set->num_rows() > 0){
+	    		$session->total_appointments = $result_set[0]['appointment_count'];
+	    		$session->total = $result_set[0]['session_total'];
+	    		$output->add_session($session);
+	    	}
+    	}
+
+    	return $output;
+    }
 }

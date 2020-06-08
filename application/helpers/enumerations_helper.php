@@ -17,6 +17,7 @@ class APIResponseCode{
 	const METHOD_NOT_ALLOWED = 4050;
 }
 
+
 class AppointmentStatus{
 	const PENDING =0;
 	const CONSULTED =1;

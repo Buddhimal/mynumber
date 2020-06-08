@@ -2044,8 +2044,33 @@ class Consultant extends REST_Controller
                     // determine the last paid date
                     $date_last_paid = $this->payment_receivals->get_last_paid_date();
 
-                    // get the list of session after the last paid date 
+                    // get the list of session after the last paid date
+                    $billable_sessions = $this->mclinicsession->get_sessions_completed_within($clinic_id, $date_last_paid);
                     
+                    // list the consulted transactions + per charge from appointment trans per each session.
+                    if( isset($billable_sessions) && count($billable_sessions) > 0){
+
+                        // EntityClinicPendingPaymentDetails
+                        $clinic_payment_pendings = $this->mclinicappointment->get_consulted_appoinments_for($clinic_id, $billable_sessions);
+
+                        $response->status = REST_Controller::HTTP_OK;
+                        $response->status_code = APIResponseCode::SUCCESS;
+                        $response->msg = 'successful';
+                        $response->error_msg = null;
+                        $response->response['pending_payments'] = $clinic_payment_pendings;
+
+                        $this->response($response, REST_Controller::HTTP_OK);
+
+                    } else {
+                        // no billable sessions within the specified date range.
+                        $response->status = REST_Controller::HTTP_OK;
+                        $response->status_code = APIResponseCode::SUCCESS;
+                        $response->msg = 'No payment pending for the given duration';
+                        $response->error_msg = null;
+                        $response->response = NULL;
+                        $this->response($response, REST_Controller::HTTP_OK);
+                    }
+
                 }else{
 
                     $response->status = REST_Controller::HTTP_BAD_REQUEST;
