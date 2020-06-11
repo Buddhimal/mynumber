@@ -32,6 +32,7 @@ class EntityLocation
 			$this->location_district = $data->district;
 			$this->location_province = $data->province;
 			$this->lat = $data->lat;
+
 			$this->long = $data->long;
 //			$this->location_long_lat = json_decode($data->long_lat);
 //			$this->created = $data->created;
