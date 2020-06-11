@@ -144,6 +144,12 @@ class Mclinic extends CI_Model
 	}
 
 
+    public function get_clinics_by_doctor_name($doctor_name)
+    {
+
+    }
+
+
 	public function valid_clinic($id)
 	{
 		$this->db->select('id');

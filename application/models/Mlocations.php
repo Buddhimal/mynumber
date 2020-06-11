@@ -29,15 +29,20 @@ class Mlocations extends CI_Model
             $this->post['district'] = $post_array['location_district'];
         if (isset($post_array['location_province']))
             $this->post['province'] = $post_array['location_province'];
-        if (isset($post_array['location_long_lat'])) {
-            $this->post['long_lat'] = json_encode($post_array['location_long_lat']);
-        }
+//        if (isset($post_array['location_long_lat'])) {
+//            $this->post['long_lat'] = json_encode($post_array['location_long_lat']);
+        if (isset($post_array['lat']))
+            $this->post['lat'] = $post_array['lat'];
+        if (isset($post_array['long']))
+            $this->post['long'] = $post_array['long'];
+    }
 
 //        var_dump(json_encode($post_array['location_long_lat']));
 //        die();
-    }
 
-    public function is_valid()
+
+    public
+    function is_valid()
     {
         $result = true;
 
@@ -54,6 +59,18 @@ class Mlocations extends CI_Model
             array_push($this->validation_errors, 'Invalid Location City.');
             $result = false;
         }
+
+        if (!(isset($this->post['long']) && $this->mvalidation->isGeoValid('longitude', $this->post['long']) == true)) {
+
+            array_push($this->validation_errors, 'Invalid Location longitude.');
+            $result = false;
+        }
+        if (!(isset($this->post['lat']) && $this->mvalidation->isGeoValid('latitude', $this->post['lat']) == true)) {
+
+            array_push($this->validation_errors, 'Invalid Location latitude.');
+            $result = false;
+        }
+
 
 //        if ((isset($this->post['long_lat']) && $this->post['long_lat'] != NULL && $this->post['long_lat'] != '')) {
 //
@@ -91,7 +108,8 @@ class Mlocations extends CI_Model
     /*
     *
     */
-    public function create()
+    public
+    function create()
     {
         $result = null;
 
@@ -113,7 +131,8 @@ class Mlocations extends CI_Model
         return $result;
     }
 
-    private function get_record($id)
+    private
+    function get_record($id)
     {
         $this->db->select('*');
         $this->db->from($this->table);
@@ -121,7 +140,8 @@ class Mlocations extends CI_Model
         return $this->db->get()->row();
     }
 
-    public function get($id)
+    public
+    function get($id)
     {
         $query_result = $this->get_record($id);
         $CI = &get_instance();
@@ -129,5 +149,14 @@ class Mlocations extends CI_Model
 
         return $CI->location_response;
     }
+
+    public
+    function test_location()
+    {
+        $res = $this->db->query("select * from locations where id='1F25722A-64A4-4C1D-A23D-7418CF7F9269' ");
+
+        var_dump($res->row()->long_lat);
+    }
+
 
 }
