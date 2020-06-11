@@ -12,9 +12,9 @@ class EntityClinic
 	public $email = null;
 	public $web = null;
 	public $location = null;
-	public $consultants=null;
-	public $holidays = null;
-	public $sessions = null;
+//	public $consultants=null;
+//	public $holidays = null;
+//	public $sessions = null;
 	
 	function __construct($data=null){
 		if(!is_null($data)){

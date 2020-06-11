@@ -170,14 +170,18 @@ class Mclinicsession extends CI_Model
         $output = null;
 
         $all_sessions = $this->db
-            ->select('*')
+            ->select('id,clinic_id,consultant,session_name,avg_time_per_patient,max_patients')
             ->from(sprintf("%s S", $this->table))
             ->where(sprintf("S.clinic_id='%s' and S.is_deleted=0 and S.is_active=1", $clinic_id))
             ->get();
 
         foreach ($all_sessions->result() as $session_data) {
             // $output[] = new EntityClinicSession($session_data);
-            $output[] = ($session_data);
+
+            $result = $session_data;
+            $result->days = $this->mclinicsessiondays->get_days_by_session($session_data->id);
+
+            $output[] = $session_data;
         }
         return $output;
     }
