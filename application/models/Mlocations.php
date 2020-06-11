@@ -31,10 +31,10 @@ class Mlocations extends CI_Model
             $this->post['province'] = $post_array['location_province'];
 //        if (isset($post_array['location_long_lat'])) {
 //            $this->post['long_lat'] = json_encode($post_array['location_long_lat']);
-        if (isset($post_array['lat']))
-            $this->post['lat'] = $post_array['lat'];
-        if (isset($post_array['long']))
-            $this->post['long'] = $post_array['long'];
+//        if (isset($post_array['lat']))
+//            $this->post['lat'] = $post_array['lat'];
+//        if (isset($post_array['long']))
+//            $this->post['long'] = $post_array['long'];
     }
 
 //        var_dump(json_encode($post_array['location_long_lat']));
@@ -60,16 +60,16 @@ class Mlocations extends CI_Model
             $result = false;
         }
 
-        if (!(isset($this->post['long']) && $this->mvalidation->isGeoValid('longitude', $this->post['long']) == true)) {
-
-            array_push($this->validation_errors, 'Invalid Location longitude.');
-            $result = false;
-        }
-        if (!(isset($this->post['lat']) && $this->mvalidation->isGeoValid('latitude', $this->post['lat']) == true)) {
-
-            array_push($this->validation_errors, 'Invalid Location latitude.');
-            $result = false;
-        }
+//        if (!(isset($this->post['long']) && $this->mvalidation->isGeoValid('longitude', $this->post['long']) == true)) {
+//
+//            array_push($this->validation_errors, 'Invalid Location longitude.');
+//            $result = false;
+//        }
+//        if (!(isset($this->post['lat']) && $this->mvalidation->isGeoValid('latitude', $this->post['lat']) == true)) {
+//
+//            array_push($this->validation_errors, 'Invalid Location latitude.');
+//            $result = false;
+//        }
 
 
 //        if ((isset($this->post['long_lat']) && $this->post['long_lat'] != NULL && $this->post['long_lat'] != '')) {
