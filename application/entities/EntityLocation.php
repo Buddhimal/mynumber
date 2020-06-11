@@ -12,6 +12,8 @@ class EntityLocation
 	public $location_district = null;
 	public $location_province = null;
 	public $location_long_lat = null;
+	public $lat = null;
+	public $long = null;
 //	public $created = null;
 //	public $updated = null;
 //	public $is_active = null;
@@ -29,7 +31,9 @@ class EntityLocation
 			$this->location_city = $data->city;
 			$this->location_district = $data->district;
 			$this->location_province = $data->province;
-			$this->location_long_lat = json_decode($data->long_lat);
+			$this->lat = $data->lat;
+			$this->long = $data->long;
+//			$this->location_long_lat = json_decode($data->long_lat);
 //			$this->created = $data->created;
 //			$this->updated = $data->updated;
 //			$this->is_active = $data->is_active;
