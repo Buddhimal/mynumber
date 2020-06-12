@@ -122,10 +122,11 @@ class Appointmentserialnumber extends CI_Model
 	public function confirm_number($appointment_serial_number_id)
 	{
 		$this->db
-			->set('is_confirmed', 1)
+			->set('is_confirmed', SerialNumberStatus::CONFIRM)
 			->set('confirmed', date("Y-m-d  H:i:s"))
 			->set('updated', date("Y-m-d  H:i:s"))
 			->where('id', $appointment_serial_number_id)
+			->where('is_confirmed', SerialNumberStatus::PENDING)
 			->update($this->table);
 
 		return true;

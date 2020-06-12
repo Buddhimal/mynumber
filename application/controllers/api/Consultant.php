@@ -375,6 +375,7 @@ class Consultant extends REST_Controller
     public function BookAppointment_post($patient_id = '', $session_id = '')
     {
         $method = $_SERVER['REQUEST_METHOD'];
+
         $response = new stdClass();
         if ($method == 'POST') {
 
@@ -394,27 +395,39 @@ class Consultant extends REST_Controller
                         if (!is_null($number)) {
                             if ($json_data['serial_number_id'] == $number->serial_number_id) {
 
-                                //confirm booking
-                                $appointment = $this->mclinicappointment->create($patient_id, $session_id, $number->serial_number_id, $number->id);
+                                $this->mclinicappointment->set_data($json_data);
 
-                                if (!is_null($appointment)) {
+                                if ($this->mclinicappointment->is_valid()) {
 
-                                    $appointment->serial_number = $this->mserialnumber->get($appointment->serial_number_id);
+                                    //confirm booking
+                                    $appointment = $this->mclinicappointment->create($patient_id, $session_id, $number->id);
 
-                                    unset($appointment->serial_number_id);
+                                    if (!is_null($appointment)) {
 
-                                    $response->status = REST_Controller::HTTP_OK;
-                                    $response->status_code = APIResponseCode::SUCCESS;
-                                    $response->msg = 'Appointment Details';
-                                    $response->error_msg = '';
-                                    $response->response['appointment_details'] = $appointment;
-                                    $this->response($response, REST_Controller::HTTP_BAD_REQUEST);
-                                } else {
-                                    $response->status = REST_Controller::HTTP_INTERNAL_SERVER_ERROR;
-                                    $response->status_code = APIResponseCode::INTERNAL_SERVER_ERROR;
-                                    $response->msg = 'Failed to create Appointment';
-                                    $response->error_msg[] = 'Failed to create Appointment';
-                                    $response->response = null;
+                                        $appointment->serial_number = $this->mserialnumber->get($appointment->serial_number_id);
+
+                                        unset($appointment->serial_number_id);
+
+                                        $response->status = REST_Controller::HTTP_OK;
+                                        $response->status_code = APIResponseCode::SUCCESS;
+                                        $response->msg = 'Appointment Confirmed.';
+                                        $response->error_msg = null;
+                                        $response->response['appointment_details'] = $appointment;
+                                        $this->response($response, REST_Controller::HTTP_BAD_REQUEST);
+                                    } else {
+                                        $response->status = REST_Controller::HTTP_INTERNAL_SERVER_ERROR;
+                                        $response->status_code = APIResponseCode::INTERNAL_SERVER_ERROR;
+                                        $response->msg = 'Failed to confirm Appointment';
+                                        $response->error_msg[] = 'Failed to create Appointment';
+                                        $response->response = null;
+                                        $this->response($response, REST_Controller::HTTP_BAD_REQUEST);
+                                    }
+                                }else{
+                                    $response->status = REST_Controller::HTTP_BAD_REQUEST;
+                                    $response->status_code = APIResponseCode::BAD_REQUEST;
+                                    $response->msg = 'Validation Failed.';
+                                    $response->error_msg = $this->mclinicappointment->validation_errors;
+                                    $response->response = NULL;
                                     $this->response($response, REST_Controller::HTTP_BAD_REQUEST);
                                 }
 
@@ -483,8 +496,7 @@ class Consultant extends REST_Controller
 
             if ($check_auth_client == true) {
 
-                $clinic = $this->mclinic->get($clinic_id);
-                $clinic->location = $this->mlocations->get($clinic->location);
+                $clinic = $this->mclinic->get_clinics_by_doctor_name($doctor_name);
 
                 $response->status = REST_Controller::HTTP_OK;
                 $response->status_code = APIResponseCode::SUCCESS;
@@ -492,7 +504,6 @@ class Consultant extends REST_Controller
                 $response->error_msg = NULL;
                 $response->response = $clinic;
                 $this->response($response, REST_Controller::HTTP_OK);
-
 
             } else {
                 $response->status = REST_Controller::HTTP_UNAUTHORIZED;
@@ -513,12 +524,8 @@ class Consultant extends REST_Controller
     }
 
 
-    public function SearchClinicByLocation_get($location_lat_long = '')
+    public function SearchClinicByLocation_get($lat = '', $long = '')
     {
-
-        $this->mlocations->test_location();
-        die();
-
         $method = $_SERVER['REQUEST_METHOD'];
         $response = new stdClass();
         if ($method == 'GET') {
@@ -527,8 +534,7 @@ class Consultant extends REST_Controller
 
             if ($check_auth_client == true) {
 
-                $clinic = $this->mclinic->get($clinic_id);
-                $clinic->location = $this->mlocations->get($clinic->location);
+                $clinic = $this->mclinic->get_clinics_by_location($lat, $long);
 
                 $response->status = REST_Controller::HTTP_OK;
                 $response->status_code = APIResponseCode::SUCCESS;
@@ -536,7 +542,6 @@ class Consultant extends REST_Controller
                 $response->error_msg = NULL;
                 $response->response = $clinic;
                 $this->response($response, REST_Controller::HTTP_OK);
-
 
             } else {
                 $response->status = REST_Controller::HTTP_UNAUTHORIZED;

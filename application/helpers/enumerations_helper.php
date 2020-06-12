@@ -53,8 +53,6 @@ class Payments{
     const DEFAULT_CHARGE=30.00;
 }
 
-
-
 class PaymentCollectionStatus{
 	const Pending=0;
 	const Collected = 1;
@@ -63,6 +61,11 @@ class PaymentCollectionStatus{
 class PaymentPaidStatus{
 	const Pending=0;
 	const Paid = 1;
+}
+
+class SerialNumberStatus{
+    const CONFIRM = 1;
+    const PENDING = 0;
 }
 
 

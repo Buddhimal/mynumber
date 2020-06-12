@@ -1,6 +1,8 @@
 <?php
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 
+require_once(APPPATH . 'entities/EntityLocation.php');
+
 class Mlocations extends CI_Model
 {
 
@@ -116,7 +118,7 @@ class Mlocations extends CI_Model
         $location_id = trim($this->mmodel->getGUID(), '{}');
         $this->post['id'] = $location_id;
         $this->post['is_deleted'] = 0;
-        $this->post['is_active'] = 0;
+        $this->post['is_active'] = 1;
         $this->post['updated'] = date("Y-m-d H:i:s");
         $this->post['created'] = date("Y-m-d H:i:s");
         $this->post['updated_by'] = $location_id;
@@ -144,10 +146,7 @@ class Mlocations extends CI_Model
     function get($id)
     {
         $query_result = $this->get_record($id);
-        $CI = &get_instance();
-        $CI->load->entity('EntityLocation', $query_result, 'location_response');
-
-        return $CI->location_response;
+        return  new EntityLocation($query_result);
     }
 
     public

@@ -191,12 +191,14 @@ class Mclinicsession extends CI_Model
         $output = null;
 
         $all_sessions = $this->db
-            ->select('c.*')
+            ->select("c.*,d.day")
             ->from('clinic_session as c')
             ->join('clinic_session_days as d', 'd.session_id=c.id')
             ->where(sprintf("c.clinic_id='%s' and c.is_deleted=0 and c.is_active=1 and d.is_deleted=0 and d.is_active=1", $clinic_id))
             ->where('d.day', $day)
             ->get();
+
+//        DatabaseFunction::last_query();
 
         foreach ($all_sessions->result() as $session_data) {
             $sessions = new EntityClinicSession($session_data);
