@@ -74,7 +74,11 @@ class Mclinicsessiontrans extends CI_Model
             $this->post['clinic_date'] = date("Y-m-d");
             $this->post['clinic_session_id'] = $session_id;
             $this->post['action'] = SessionStatus::FINISHED;
-            $this->post['additional_data'] = NULL;
+
+            $additional_data['action'] = "finished";
+            $additional_data['action_datetime'] = date("Y-m-d H:i:s");
+
+            $this->post['additional_data'] = json_encode($additional_data);
             $this->post['action_datetime'] = date("Y-m-d H:i:s");
             $this->post['is_deleted'] = 0;
             $this->post['is_active'] = 1;

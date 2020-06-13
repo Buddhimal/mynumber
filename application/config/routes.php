@@ -72,6 +72,7 @@ $route['default_controller'] = 'index';
 	$route['api/clinic/(:any)/session/(:any)']['GET'] = 'api/consultant/ViewSessionsByID/$1/$2';
 	$route['api/clinic/(:any)/consultant/(:any)/sessions']['GET'] = 'api/consultant/ViewSessionsByConsultant/$1/$2';
 	$route['api/clinic/(:any)/session/(:any)/start']['PUT'] = 'api/consultant/StartSession/$1/$2';
+	$route['api/clinic/(:any)/session/(:any)/end']['PUT'] = 'api/consultant/EndSession/$1/$2';
 	$route['api/clinic/(:any)/session/(:any)/appointment/(:any)/next']['PUT'] = 'api/consultant/NextNumber/$1/$2/$3';
 	$route['api/clinic/(:any)/session/(:any)/appointment/(:any)/skip']['PUT'] = 'api/consultant/SkipNumber/$1/$2/$3';
 // 
@@ -88,6 +89,7 @@ $route['default_controller'] = 'index';
 	$route['api/otp/send/username']['PUT'] = 'api/consultant/SendOTPforUsername';
 	$route['api/clinic/auth/checkin']['POST'] = 'api/auth/checkin';
 	$route['api/clinic/auth/reset']['PUT'] = 'api/auth/ResetPassword';
+	$route['api/clinic/(:any)/auth/change']['PUT'] = 'api/auth/ChangePassword/$1';
 //endregion
 
 
