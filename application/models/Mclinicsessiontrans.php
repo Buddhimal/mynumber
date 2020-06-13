@@ -1,6 +1,8 @@
 <?php
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 
+require_once(APPPATH . 'entities/EntityClinicSessionTask.php');
+
 class Mclinicsessiontrans extends CI_Model
 {
 
