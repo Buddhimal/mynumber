@@ -132,11 +132,11 @@ class Mclinicsessiontrans extends CI_Model
         $output = null;
         
         $result_set = $this->db->select("t.*")
-            ->from( array( "t" => $this->table) )
-            ->join( "clinic_session as s", "s.id = t.session_id" )
+            ->from( 'clinic_session_trans as t' )
+            ->join( "clinic_session as s", "s.id = t.clinic_session_id" )
             ->where("t.action", SessionStatus::FINISHED)
             ->where("t.action_datetime >= ", $from )
-            ->where("t.action_datetime < ", date() )
+            ->where("t.action_datetime < ", date("Y-m-d") )
             ->where("t.is_deleted=0 and t.is_active=1")
             ->where("s.clinic_id", $clinic_id)
             ->get();
