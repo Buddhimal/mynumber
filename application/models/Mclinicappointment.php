@@ -278,7 +278,7 @@ class Mclinicappointment extends CI_Model
                 ->get();
 
             if ($result_set->num_rows() > 0) {
-            	
+                //removed class instantiation here
                 $session_task->total_appointments = $result_set[0]['appointment_count'];
                 $session_task->total = $result_set[0]['session_total'];
                 $output->add_session($session_task);
