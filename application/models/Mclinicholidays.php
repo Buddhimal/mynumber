@@ -19,6 +19,10 @@ class Mclinicholidays extends CI_Model
 	{
 		if (isset($post_array['date']))
 			$this->post['holiday'] = $post_array['date'];
+		if (isset($post_array['title']))
+			$this->post['title'] = $post_array['title'];
+		if (isset($post_array['note']))
+			$this->post['holiday'] = $post_array['note'];
 	}
 
 	public function is_valid()
@@ -75,7 +79,7 @@ class Mclinicholidays extends CI_Model
 	private function get_record($id)
 	{
 
-		$this->db->select('id,holiday');
+		$this->db->select('id,holiday,title,note');
 		$this->db->from($this->table);
 		$this->db->where('id', $id);
 		return $this->db->get()->row();
