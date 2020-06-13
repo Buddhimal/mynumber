@@ -143,6 +143,8 @@ class Mclinicsessiontrans extends CI_Model
             ->where("s.clinic_id", $clinic_id)
             ->get();
 
+        // DatabaseFunction::last_query();
+
         if($result_set->num_rows() > 0 ){
             foreach ($result_set->result() as $session_data) {
                 $output[] = new EntityClinicSessionTask($session_data);

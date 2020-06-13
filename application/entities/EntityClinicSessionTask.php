@@ -18,6 +18,24 @@ class EntityClinicSessionTask{
 	public $total_appointments = null;
 	public $total = null;
 	public $appointments = array();
+
+	function __set($name, $value){
+		if(property_exists($this, $name)){
+			$this->{$name} = json_decode($value);
+		}
+	}
+
+	function __get($name){
+		if(property_exists($this, $name)){
+			return $this->{$name};
+		}
+	}
+
+	function __construct($data = null){
+		foreach($data as $key =>$value){
+			$this->{$key} = $value;
+		}
+	}
 }
 
 

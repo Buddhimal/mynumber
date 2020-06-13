@@ -2181,7 +2181,7 @@ class Consultant extends REST_Controller
                         // EntityClinicPendingPaymentDetails
                         $clinic_payment_pendings = $this->mclinicappointment->get_consulted_appoinments_for($clinic_id, $billable_sessions);
                         $clinic_payment_pendings->from = $date_last_paid;
-                        $clinic_payment_pendings->to = date();
+                        $clinic_payment_pendings->to = date("Y-m-d");
 
                         $response->status = REST_Controller::HTTP_OK;
                         $response->status_code = APIResponseCode::SUCCESS;
