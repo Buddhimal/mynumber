@@ -122,6 +122,8 @@ class Mclinicholidays extends CI_Model
         foreach ($all_holidays->result() as $holiday_data) {
             $holiday['id'] = $holiday_data->id;
             $holiday['holiday'] = $holiday_data->holiday;
+            $holiday['note'] = $holiday_data->note;
+            $holiday['title'] = $holiday_data->title;
             $output[] = $holiday;
         }
         return $output;
