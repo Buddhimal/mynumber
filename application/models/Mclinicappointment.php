@@ -278,12 +278,9 @@ class Mclinicappointment extends CI_Model
                 ->get();
 
             if ($result_set->num_rows() > 0) {
-            	$session_task = new EntityClinicSessionTask();
+                //removed class instantiation here
                 $session_task->total_appointments = $result_set[0]['appointment_count'];
                 $session_task->total = $result_set[0]['session_total'];
-                $session_task->clinic_session_id = $session->clinic_session_id;
-                $session_task->id = $session->id;
-
                 $output->add_session($session_task);
             }
         }
