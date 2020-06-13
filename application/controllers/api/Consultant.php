@@ -2110,9 +2110,10 @@ class Consultant extends REST_Controller
 
                         $response->status = REST_Controller::HTTP_OK;
                         $response->status_code = APIResponseCode::SUCCESS;
-                        $response->msg = 'Success';
+                        $response->msg = 'On the way message sent successfully.';
                         $response->error_msg = null;
                         $response->response = null;
+                        $this->response($response, REST_Controller::HTTP_BAD_REQUEST);
 
                     } else {
                         $response->status = REST_Controller::HTTP_BAD_REQUEST;
@@ -2301,10 +2302,10 @@ class Consultant extends REST_Controller
     {
         $config = array(
             'protocol' => 'smtp',
-            'smtp_host' => 'ssl://smtp.googlemail.com',
-            'smtp_port' => 465, //587
-            'smtp_user' => 'mailtemp340@gmail.com',
-            'smtp_pass' => 'afisol@123',
+            'smtp_host' => 'mail.mynumber.lk',
+            'smtp_port' => 587, //587
+            'smtp_user' => 'info@mynumber.lk',
+            'smtp_pass' => '!yoOA+3cwv&2',
             'mailtype' => 'html',
             'charset' => 'iso-8859-1',
             'newline' => "\r\n",
