@@ -2158,7 +2158,7 @@ class Consultant extends REST_Controller
         // verify that the clinic exists
         $response = new stdClass();
 
-        if (($_SERVER['REQUEST_METHOD']) == 'GET') {
+        if ( ucwords( $_SERVER['REQUEST_METHOD']) == 'GET') {
             $check_auth_client = $this->mmodel->check_auth_client();
             if ($check_auth_client == true) {
 
@@ -2167,6 +2167,10 @@ class Consultant extends REST_Controller
 
                     // determine the last paid date
                     $date_last_paid = $this->payment_receivals->get_last_paid_date($clinic_id);
+
+                    if(!isset($date_last_paid) || empty($date_last_paid)){
+                        $date_last_paid  = $this->mclinic->get($clinic_id)->created;
+                    }
 
                     // get the list of session after the last paid date
                     $billable_sessions = $this->mclinicsessiontrans->get_sessions_tasks_completed_within($clinic_id, $date_last_paid);

@@ -95,7 +95,6 @@ class Mpaymentreceivals extends CI_Model{
 			->where('is_deleted', 0)->get();
 
 		if ( $result_set->num_rows() > 0 ) {
-//			$output = date(strtotime("+5 hours +30 minutes", $result_set->row()->collected)); // Database stores UTC, clinic is in SL time
             $output = $result_set->row()->collected;
 		}
 

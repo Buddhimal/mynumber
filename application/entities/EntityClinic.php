@@ -12,9 +12,7 @@ class EntityClinic
 	public $email = null;
 	public $web = null;
 	public $location = null;
-//	public $consultants=null;
-//	public $holidays = null;
-//	public $sessions = null;
+	public $created = null;
 	
 	function __construct($data=null){
 		if(!is_null($data)){
@@ -26,6 +24,7 @@ class EntityClinic
 			$this->email = $data->email;
 			$this->web = $data->web;
 			$this->location = $data->location_id;
+			$this->created = $data->created;
 		}
 	}
 }
