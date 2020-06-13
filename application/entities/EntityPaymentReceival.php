@@ -1,6 +1,5 @@
 <?php 
-<?php 
-defined('BASEPATH') OR exit('No direct script access allowed');
+if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 class EntityPaymentReceival{
 	public $id = null;
@@ -25,24 +24,26 @@ class EntityPaymentReceival{
 	function __set($name, $value){
 		if(property_exists($this, $name)){
 			switch($name){
-			case "daily_breakdown":
+				case "daily_breakdown":
 				$this->{$name} = json_decode($value);
 				break;
-			default:
+				default:
 				$this->{$name} = $value;
 				break;
+			}
 		}
 	}
 
 	function __get($name){
 		if(property_exists($this, $name)){
 			switch($name){
-			case "daily_breakdown":
+				case "daily_breakdown":
 				return json_encode($value);
 				break;
-			default:
+				default:
 				return $this->{$name};
 				break;
+			}
 		}
 	}
 

@@ -1,7 +1,8 @@
-<?php 
+<?php
+
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-//require_once(APPPATH . 'entities/EntityPaymentReceival.php');
+require_once(APPPATH . 'entities/EntityPaymentReceival.php');
 
 class Mpaymentreceivals extends CI_Model{
 
@@ -84,6 +85,16 @@ class Mpaymentreceivals extends CI_Model{
         return $result;
 	}
 
+	public function get($receival_id){
+		$query_result = $this->get_record($id);
+		
+       $query_result = $this->db->from($this->table)
+	        ->where('id', $id)
+	        ->where('is_deleted', 0)
+	        ->where('is_active', 1)->get()->row();
+
+         return $query_result
+	}
 
 	public function get_last_paid_date( $clinic_id ){
 		$output = null;

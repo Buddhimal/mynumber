@@ -2248,14 +2248,14 @@ class Consultant extends REST_Controller
             $check_auth_client = $this->mmodel->check_auth_client();
 
             if ($check_auth_client == true) {
-                $data = json_decode($this->post('json_data'));
+                $data = $this->post('json_data');
 
 
                 $billable_sessions = $this->mclinicsessiontrans->get_sessions_tasks($clinic_id, $data['session_tasks']);
                 $clinic_payment_pendings = $this->mclinicappointment->get_consulted_appoinments_for($clinic_id, $billable_sessions);
 
                 $data['clinic_id'] = $clinic_id;
-                $data['total'] = $clinic_payment_pendings->grad_total;
+                $data['total'] = $clinic_payment_pendings->grand_total;
 
                 $this->payment_receivals->set_data($data);
                 if ($this->payment_receivals->is_valid()) {

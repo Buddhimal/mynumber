@@ -158,8 +158,8 @@ class Mclinicsessiontrans extends CI_Model
         $output = null;
         
         $result_set = $this->db->select("t.*")
-            ->from( array( "t" => $this->table) )
-            ->join( "clinic_session as s", "s.id = t.session_id" )
+            ->from( "clinic_session_trans as t" )
+            ->join( "clinic_session as s", "s.id = t.clinic_session_id" )
             ->where_in("t.id ", $ids)
             ->where("s.clinic_id", $clinic_id)
             ->get();
