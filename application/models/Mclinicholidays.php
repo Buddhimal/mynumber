@@ -111,7 +111,7 @@ class Mclinicholidays extends CI_Model
 		$end_date = date("Y-m-d", strtotime( sprintf("%s-12-31", $date )));
 
 		$all_holidays= $this->db
-            ->select( array('id', 'holiday'))
+            ->select( array('id', 'holiday','title','note'))
             ->from($this->table)
             ->where( sprintf("holiday > '%s' and holiday < '%s' and clinic_id ='%s'", $start_date, $end_date, $clinic_id) )
             ->where('is_active',1)
