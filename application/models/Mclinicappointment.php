@@ -234,7 +234,7 @@ class Mclinicappointment extends CI_Model
     {
         //check if current session only or all the sessions with the same clinic
 
-        $output[] = null;
+        $output = null;
 
         $res = $this->db
             ->select('a.appointment_date,a.appointment_charge')

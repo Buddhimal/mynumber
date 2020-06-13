@@ -70,6 +70,15 @@ class Mvalidation extends CI_Model
         }
     }
 
+    function valid_password($password)
+    {
+        if (preg_match("/^(?=.*\d).{6,20}$/", $password)) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+
     function isGeoValid($type, $value)
     {
         /*

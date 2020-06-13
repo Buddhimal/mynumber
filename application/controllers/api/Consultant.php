@@ -1935,6 +1935,77 @@ class Consultant extends REST_Controller
         }
     }
 
+    public function EndSession_put($clinic_id = '', $session_id = '')
+    {
+        $method = $_SERVER['REQUEST_METHOD'];
+        $response = new stdClass();
+
+        if ($method == 'PUT') {
+
+            $check_auth_client = $this->mmodel->check_auth_client();
+
+            if ($check_auth_client == true) {
+
+                if ($this->mclinic->valid_clinic($clinic_id)) {
+
+                    if ($this->mclinicsession->valid_session($session_id)) {
+
+                        if ($this->mclinicsessiontrans->finish_session($session_id)) {
+
+//                            $appointment = $this->mclinicappointment->get_next_appointment($clinic_id, $session_id, null);
+
+                            $response->status = REST_Controller::HTTP_OK;
+                            $response->status_code = APIResponseCode::SUCCESS;
+                            $response->msg = 'Session Finished Successfully';
+                            $response->error_msg = null;
+//                            $response->response['appointment'] = null;
+                            $response->response['session_meta'] = $this->mclinicsession->get_session_meta($clinic_id, $session_id);
+                            $this->response($response, REST_Controller::HTTP_OK);
+
+                        } else {
+                            $response->status = REST_Controller::HTTP_INTERNAL_SERVER_ERROR;
+                            $response->status_code = APIResponseCode::INTERNAL_SERVER_ERROR;
+                            $response->msg = 'Internal Server Error';
+                            $response->error_msg[] = "Internal Server Error";
+                            $response->response = null;
+                            $this->response($response, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+                        }
+
+                    } else {
+                        $response->status = REST_Controller::HTTP_BAD_REQUEST;
+                        $response->status_code = APIResponseCode::BAD_REQUEST;
+                        $response->msg = 'Invalid Session Id';
+                        $response->response = NULL;
+                        $this->response($response, REST_Controller::HTTP_BAD_REQUEST);
+                    }
+
+                } else {
+                    $response->status = REST_Controller::HTTP_BAD_REQUEST;
+                    $response->status_code = APIResponseCode::BAD_REQUEST;
+                    $response->msg = 'Invalid Clinic Id';
+                    $response->response = NULL;
+                    $this->response($response, REST_Controller::HTTP_BAD_REQUEST);
+                }
+
+            } else {
+                $response->status = REST_Controller::HTTP_UNAUTHORIZED;
+                $response->status_code = APIResponseCode::UNAUTHORIZED;
+                $response->msg = 'Unauthorized';
+                $response->response = NULL;
+                $response->error_msg = 'Invalid Authentication Key.';
+                $this->response($response, REST_Controller::HTTP_UNAUTHORIZED);
+            }
+
+        } else {
+            $response->status = REST_Controller::HTTP_METHOD_NOT_ALLOWED;
+            $response->status_code = APIResponseCode::METHOD_NOT_ALLOWED;
+            $response->msg = 'Method Not Allowed';
+            $response->response = NULL;
+            $response->error_msg = 'Invalid Request Method.';
+            $this->response($response, REST_Controller::HTTP_METHOD_NOT_ALLOWED);
+        }
+    }
+
     public function NextNumber_put($clinic_id = '', $session_id = '', $appointment_id = '')
     {
         $method = $_SERVER['REQUEST_METHOD'];
@@ -2307,13 +2378,26 @@ class Consultant extends REST_Controller
         $config = array(
             'protocol' => 'smtp',
             'smtp_host' => 'mail.mynumber.lk',
-            'smtp_port' => 587, //587
+            'smtp_port' => 465, //587
             'smtp_user' => 'info@mynumber.lk',
             'smtp_pass' => '!yoOA+3cwv&2',
             'mailtype' => 'html',
             'charset' => 'iso-8859-1',
             'newline' => "\r\n",
         );
+
+
+//        $config = array(
+//            'protocol' => 'smtp',
+//            'smtp_host' => 'mail.smartloan.lk',
+//            'smtp_port' => 587, //587
+//            'smtp_user' => 'noreply@smartloan.lk',
+//            'smtp_pass' => 'noreply//1',
+//            'mailtype' => 'html',
+//            'charset' => 'iso-8859-1',
+//            'newline' => "\r\n",
+//        );
+
         $this->load->library('email', $config);
         $ci = get_instance();
         $ci->email->initialize($config);
@@ -2327,7 +2411,7 @@ class Consultant extends REST_Controller
 
         $body = $this->load->view('fogot_password', $data, TRUE);
 
-        $ci->email->from('noreply@smartloan.lk', 'Smartloan.lk');
+        $ci->email->from('MyNumber', 'MyNumber');
         $ci->email->to("bbb.navin@gmail.com");
         $ci->email->subject("Feedback");
         $ci->email->message($body);
