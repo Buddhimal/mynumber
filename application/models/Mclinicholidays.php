@@ -22,7 +22,7 @@ class Mclinicholidays extends CI_Model
 		if (isset($post_array['title']))
 			$this->post['title'] = $post_array['title'];
 		if (isset($post_array['note']))
-			$this->post['holiday'] = $post_array['note'];
+			$this->post['note'] = $post_array['note'];
 	}
 
 	public function is_valid()
