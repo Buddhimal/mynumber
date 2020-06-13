@@ -128,6 +128,45 @@ class Mclinicsessiontrans extends CI_Model
 
     }
 
+    public function get_sessions_tasks_completed_within($clinic_id, $from ){
+        $output = null;
+        
+        $result_set = $this->db->select("t.*")
+            ->from( array( "t" => $this->table) )
+            ->join( "clinic_session as s", "s.id = t.session_id" )
+            ->where("t.action", SessionStatus::FINISHED)
+            ->where("t.action_datetime >= ", $from )
+            ->where("t.action_datetime < ", date() )
+            ->where("t.is_deleted=0 and t.is_active=1")
+            ->where("s.clinic_id", $clinic_id)
+            ->get();
 
+        if($result_set->num_rows() > 0 ){
+            foreach ($result_set->result() as $session_data) {
+                $output[] = new EntityClinicSessionTask($session_data);
+            }
+        }
+
+        return $output;
+    }
+
+    public function get_sessions_tasks($clinic_id, $ids ){
+        $output = null;
+        
+        $result_set = $this->db->select("t.*")
+            ->from( array( "t" => $this->table) )
+            ->join( "clinic_session as s", "s.id = t.session_id" )
+            ->where_in("t.id ", $ids)
+            ->where("s.clinic_id", $clinic_id)
+            ->get();
+
+        if($result_set->num_rows() > 0 ){
+            foreach ($result_set->result() as $session_data) {
+                $output[] = new EntityClinicSessionTask($session_data);
+            }
+        }
+
+        return $output;
+    }
 
 }

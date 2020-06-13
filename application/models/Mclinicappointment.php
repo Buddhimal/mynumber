@@ -266,21 +266,25 @@ class Mclinicappointment extends CI_Model
         $output = new EntityClinicPendingPaymentDetails();
 
         $grand_total = 0;
-        foreach ($sessions as $session) {
+        foreach ($sessions as $session_task) {
 
             $result_set = $this->db->select("count(t.id) as appointment_count, sum(t.appointment_charge) as session_total")
                 ->from(array("a" => $this->table))
                 ->join(array("t" => "clinic_appointment_trans"), "t.appointment_id = a.id")
-                ->where("a.session_id", $session->id)
+                ->where("a.session_id", $session_task->clinic_session_id)
                 ->where("a.is_active = 1 and a.is_deleted = 0 ")
                 ->where("t.status", AppointmentStatus::CONSULTED)
                 ->group_by("a.session_id")
                 ->get();
 
             if ($result_set->num_rows() > 0) {
-                $session->total_appointments = $result_set[0]['appointment_count'];
-                $session->total = $result_set[0]['session_total'];
-                $output->add_session($session);
+            	$session_task = new EntityClinicSessionTask();
+                $session_task->total_appointments = $result_set[0]['appointment_count'];
+                $session_task->total = $result_set[0]['session_total'];
+                $session_task->clinic_session_id = $session->clinic_session_id;
+                $session_task->id = $session->id;
+
+                $output->add_session($session_task);
             }
         }
 

@@ -1,6 +1,8 @@
 <?php 
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 
+require_once(APPPATH . 'entities/EntityPaymentReceival.php');
+
 class Mpaymentreceivals extends CI_Model{
 
 	public $validation_errors = array();
@@ -16,16 +18,35 @@ class Mpaymentreceivals extends CI_Model{
 
 	public function set_data($post_array)
 	{
-		// $this->post = $post_array
+		$this->post = $post_array;
 	}
 
 	public function is_valid()
 	{
 		$result = true;
-
 		/*
 		 Validation logics goes here
 		*/
+
+		if(!isset($this->post['clinic_id']) && empty($this->post['clinic_id'])){
+		 	array_push($this->validation_errors, 'Clinic Id missing');
+		 	$result = false;
+		}
+		
+		if(!isset($this->post['start']) && empty($this->post['start'])){
+			array_push($this->validation_errors, 'Start date missing or invalid');
+			$result = false;
+		}
+
+		if(!isset($this->post['end']) && empty($this->post['end'])){
+			array_push($this->validation_errors, 'End date missing or invalid');
+			$result = false;
+		}
+
+		if(!isset($this->post['session_tasks']) && empty($this->post['session_tasks'])){
+			array_push($this->validation_errors, 'sessions list missing or invalid');
+			$result = false;
+		}
 
 		return $result;
 	}
@@ -35,7 +56,32 @@ class Mpaymentreceivals extends CI_Model{
 	*/
 	public function create()
 	{
+		$receival_id = trim($this->mmodel->getGUID(), '{}');
+		$now = time();
+		$new_record = array(
+			"id" => $receival_id,
+			"clinic_id" => $this->post['clinic_id'],
+			"pay_start" => $this->post['start'],
+			"pay_end" => $this->post['end'],
+			"daily_breakdown" => json_encode($this->post["session_tasks"]),
+			"total_amount" => $this->post['total'],
+			"pay_requested" => $now,
+			"collection_status" => PaymentCollectionStatus::Pending,
+			"is_deleted" => 0,
+			"is_active" => 1,
+			"updated" =>  $now,
+			"created" => $now,
+			"updated_by" => $this->post['clinic_id'],
+			"created_by" => $this->post['clinic_id']
+		);
 
+		$this->mmodel->insert($this->table, $new_record);
+
+        if ($this->db->affected_rows() > 0) {
+            $result = new EntityPaymentReceival( $this->get($receival_id) );
+        }
+
+        return $result;
 	}
 
 

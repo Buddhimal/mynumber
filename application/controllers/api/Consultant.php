@@ -2092,9 +2092,7 @@ class Consultant extends REST_Controller
 
     public function ViewPaymentsPending_get($clinic_id)
     {
-
         // verify that the clinic exists
-
         $response = new stdClass();
 
         if (ucword($_SERVER['REQUEST_METHOD']) == 'GET') {
@@ -2108,13 +2106,15 @@ class Consultant extends REST_Controller
                     $date_last_paid = $this->payment_receivals->get_last_paid_date();
 
                     // get the list of session after the last paid date
-                    $billable_sessions = $this->mclinicsession->get_sessions_completed_within($clinic_id, $date_last_paid);
+                    $billable_sessions = $this->mclinicsessiontrans->get_sessions_tasks_completed_within($clinic_id, $date_last_paid);
 
                     // list the consulted transactions + per charge from appointment trans per each session.
                     if (isset($billable_sessions) && count($billable_sessions) > 0) {
 
                         // EntityClinicPendingPaymentDetails
                         $clinic_payment_pendings = $this->mclinicappointment->get_consulted_appoinments_for($clinic_id, $billable_sessions);
+                        $clinic_payment_pendings->from = $date_last_paid;
+                        $clinic_payment_pendings->to = date();
 
                         $response->status = REST_Controller::HTTP_OK;
                         $response->status_code = APIResponseCode::SUCCESS;
@@ -2171,9 +2171,67 @@ class Consultant extends REST_Controller
     }
 
 
-    public function DoPayment_post($clinic_id, $start, $end)
+    public function DoPayment_post($clinic_id)
     {
-        // 
+        $method = $_SERVER['REQUEST_METHOD'];
+        $response = new stdClass();
+
+        if ($method == 'POST') {
+
+            $check_auth_client = $this->mmodel->check_auth_client();
+
+            if ($check_auth_client == true) {
+                $data = json_decode( $this->post('json_data') );
+                
+
+                $billable_sessions = $this->mclinicsessiontrans->get_sessions_tasks($clinic_id, $data['session_tasks']);
+                $clinic_payment_pendings = $this->mclinicappointment->get_consulted_appoinments_for($clinic_id, $billable_sessions);
+
+                $data['clinic_id'] = $clinic_id;
+                $data['total'] = $clinic_payment_pendings->grad_total;
+
+                $this->payment_receivals->set_data($data);
+                if( $this->payment_receivals->is_valid() ){
+
+                    $receival_record = $this->payment_receivals->create();
+
+                    if(!is_null($receival_record)){
+                        $response->status = REST_Controller::HTTP_OK;
+                        $response->status_code = APIResponseCode::SUCCESS;
+                        $response->msg = 'Payment request Successful';
+                        $response->error_msg = NULL;
+                        $response->response['payment_request_id'] = $receival_record->id;
+                        $this->response($response, REST_Controller::HTTP_OK);
+                    }
+                }else{
+                    $response->status = REST_Controller::HTTP_BAD_REQUEST;
+                    $response->status_code = APIResponseCode::BAD_REQUEST;
+                    $response->msg = 'Validation Failed.';
+                    $response->error_msg = $this->mclinicholidays->validation_errors;
+                    $response->response = NULL;
+                    $this->response($response, REST_Controller::HTTP_BAD_REQUEST);
+                }
+
+            } else {
+                $response->status = REST_Controller::HTTP_UNAUTHORIZED;
+                $response->status_code = APIResponseCode::UNAUTHORIZED;
+                $response->msg = 'Unauthorized';
+                $response->error_msg[] = 'Invalid Authentication Key.';
+                $response->response = NULL;
+                $this->response($response, REST_Controller::HTTP_UNAUTHORIZED);
+            
+            }
+        }else{
+            $response->status = REST_Controller::HTTP_METHOD_NOT_ALLOWED;
+            $response->status_code = APIResponseCode::METHOD_NOT_ALLOWED;
+            $response->msg = 'Method Not Allowed';
+            $response->error_msg[] = 'Invalid Request Method.';
+            $response->response = NULL;
+            $this->response($response, REST_Controller::HTTP_METHOD_NOT_ALLOWED);
+        }
+        
+        // $this->mclinicholidays->set_data($data);
+        // $this->mclinicholidays->set_data();
     }
 
 
