@@ -2157,7 +2157,7 @@ class Consultant extends REST_Controller
         // verify that the clinic exists
         $response = new stdClass();
 
-        if (($_SERVER['REQUEST_METHOD']) == 'GET') {
+        if ( ucwords( $_SERVER['REQUEST_METHOD']) == 'GET') {
             $check_auth_client = $this->mmodel->check_auth_client();
             if ($check_auth_client == true) {
 
