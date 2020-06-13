@@ -1,7 +1,7 @@
 <?php
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-//require_once(APPPATH . 'entities/EntityClinicPendingPaymentDetails.php');
+require_once(APPPATH . 'entities/EntityClinicPendingPaymentDetails.php');
 
 class Mclinicappointment extends CI_Model
 {
@@ -268,19 +268,22 @@ class Mclinicappointment extends CI_Model
         $grand_total = 0;
         foreach ($sessions as $session_task) {
 
-            $result_set = $this->db->select("count(t.id) as appointment_count, sum(t.appointment_charge) as session_total")
-                ->from(array("a" => $this->table))
-                ->join(array("t" => "clinic_appointment_trans"), "t.appointment_id = a.id")
+            $result_set = $this->db->select("count(t.id) as appointment_count, sum(a.appointment_charge) as session_total")
+                ->from("$this->table a")
+                ->join( "clinic_appointment_trans t" , "t.clinic_appointment_id = a.id")
                 ->where("a.session_id", $session_task->clinic_session_id)
                 ->where("a.is_active = 1 and a.is_deleted = 0 ")
-                ->where("t.status", AppointmentStatus::CONSULTED)
+                ->where_in("a.appointment_status", array(AppointmentStatus::CONSULTED, AppointmentStatus::PAYMENT_COLLECT))
                 ->group_by("a.session_id")
                 ->get();
 
+           // DatabaseFunction::last_query();
+
             if ($result_set->num_rows() > 0) {
                 //removed class instantiation here
-                $session_task->total_appointments = $result_set[0]['appointment_count'];
-                $session_task->total = $result_set[0]['session_total'];
+
+                $session_task->total_appointments = $result_set->row('appointment_count');
+                $session_task->total = $result_set->row('session_total');
                 $output->add_session($session_task);
             }
         }

@@ -78,8 +78,8 @@ $route['default_controller'] = 'index';
 // 
 
 // payments routes
-	$route['api/clinic/(:any)/payments/pending']['GET'] = 'api/consultant/ViewPaymentsPending/$1';
 	$route['api/clinic/(:any)/pay/']['POST'] = 'api/consultant/DoPayment/$1';
+	$route['api/clinic/(:any)/payments/pending']['GET'] = 'api/consultant/ViewPaymentsPending/$1';	
 //endregion
 
 
