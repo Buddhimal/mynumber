@@ -65,6 +65,7 @@ $route['default_controller'] = 'index';
 	$route['api/clinic/(:any)/sessions/(:any)/ontheway']['PUT'] = 'api/consultant/SendOntheWayMessage/$1/$2';
 	$route['api/clinic/(:any)/holidays']['POST'] = 'api/consultant/AddHolidays/$1';
 	$route['api/clinic/(:any)/holidays']['GET'] = 'api/consultant/GetHolidaysByClinic/$1';
+	$route['api/clinic/(:any)/holidays/(:any)']['DELETE'] = 'api/consultant/DeleteHolidays/$1/$2';
 	$route['api/clinic/(:any)/session']['GET'] = 'api/consultant/ViewSessionsBClinic/$1';
 	$route['api/clinic/(:any)/session/day/(:any)']['GET'] = 'api/consultant/ViewSessionsByDay/$1/$2';
 	$route['api/clinic/(:any)/session/date/(:any)']['GET'] = 'api/consultant/ViewSessionsByDate/$1/$2';

@@ -67,6 +67,20 @@ class Mclinicholidays extends CI_Model
 		return $result;
 	}
 
+    public function delete($clinic_id,$holiday_id)
+    {
+        $this->db
+            ->set('is_active', 0)
+            ->set('is_deleted', 1)
+            ->set('updated', 1)
+            ->set('updated', date("Y-m-d H:i:s"))
+            ->where('clinic_id', $clinic_id)
+            ->where('id', $holiday_id)
+            ->update($this->table);
+
+        return true;
+    }
+
 
 	public function get($id)
 	{
@@ -96,7 +110,13 @@ class Mclinicholidays extends CI_Model
 		$start_date = date("Y-m-d", strtotime( sprintf("%s-01-01", $date )));
 		$end_date = date("Y-m-d", strtotime( sprintf("%s-12-31", $date )));
 
-		$all_holidays= $this->db->select( array('id', 'holiday'))->from($this->table)->where( sprintf("holiday > '%s' and holiday < '%s' and clinic_id ='%s'", $start_date, $end_date, $clinic_id) )->get();
+		$all_holidays= $this->db
+            ->select( array('id', 'holiday'))
+            ->from($this->table)
+            ->where( sprintf("holiday > '%s' and holiday < '%s' and clinic_id ='%s'", $start_date, $end_date, $clinic_id) )
+            ->where('is_active',1)
+            ->where('is_deleted',0)
+            ->get();
 
 		foreach($all_holidays->result() as $holiday_data) {
 			$holiday['id'] = $holiday_data->id;
@@ -106,4 +126,21 @@ class Mclinicholidays extends CI_Model
 		return $output;
 
 	}
+
+    public function valid_holiday($id)
+    {
+        $this->db->select('id');
+        $this->db->from($this->table);
+        $this->db->where('id', $id);
+        $this->db->where('is_deleted', 0);
+        $this->db->where('is_active', 1);
+
+        $result = $this->db->get();
+
+        if ($result->num_rows() > 0) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
 }

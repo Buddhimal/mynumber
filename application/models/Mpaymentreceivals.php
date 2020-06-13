@@ -1,7 +1,7 @@
 <?php 
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-require_once(APPPATH . 'entities/EntityPaymentReceival.php');
+//require_once(APPPATH . 'entities/EntityPaymentReceival.php');
 
 class Mpaymentreceivals extends CI_Model{
 
