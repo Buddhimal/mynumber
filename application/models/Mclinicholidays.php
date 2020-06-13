@@ -17,8 +17,8 @@ class Mclinicholidays extends CI_Model
 
 	public function set_data($post_array)
 	{
-		if (isset($post_array['date']))
-			$this->post['holiday'] = $post_array['date'];
+		if (isset($post_array['holiday']))
+			$this->post['holiday'] = $post_array['holiday'];
 		if (isset($post_array['title']))
 			$this->post['title'] = $post_array['title'];
 		if (isset($post_array['note']))
