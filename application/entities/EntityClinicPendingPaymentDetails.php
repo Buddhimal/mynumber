@@ -5,6 +5,8 @@ class EntityClinicPendingPaymentDetails{
 
 	public $sessions;
 	public $grand_total;
+	public $from;
+	public $to;
 
 	public EntityClinicPendingPaymentDetails(){
 		//default constructor

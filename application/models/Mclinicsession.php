@@ -282,25 +282,8 @@ class Mclinicsession extends CI_Model
     }
 
 
-    public function get_sessions_completed_within($clinic_id, $from ){
-        $output = null;
-        
-        $result_set = $this->db->select("s.*")
-            ->from( array( "s" => $this->table) )
-            ->join( "clinic_session_trans as t", "s.id = t.session_id" )
-            ->where("t.action", SessionStatus::FINISHED)
-            ->where("t.action_datetime >= ", $from )
-            ->where("t.action_datetime < ", date() )
-            ->where("t.is_deleted=0 and t.is_active=1")
-            ->get();
+    
 
-        if($result_set->num_rows() > 0 ){
-            foreach ($result_set->result() as $session_data) {
-                $output[] = new EntityClinicSession($session_data);
-            }
-        }
-
-        return $output;
-    }
+    
 
 }
