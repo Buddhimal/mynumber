@@ -2408,7 +2408,7 @@ class Consultant extends REST_Controller
                     $response->status = REST_Controller::HTTP_BAD_REQUEST;
                     $response->status_code = APIResponseCode::BAD_REQUEST;
                     $response->msg = 'Validation Failed.';
-                    $response->error_msg = $this->mclinicholidays->validation_errors;
+                    $response->error_msg = $this->payment_receivals->validation_errors;
                     $response->response = NULL;
                     $this->response($response, REST_Controller::HTTP_BAD_REQUEST);
                 }
