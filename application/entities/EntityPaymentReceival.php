@@ -38,7 +38,7 @@ class EntityPaymentReceival{
 		if(property_exists($this, $name)){
 			switch($name){
 				case "daily_breakdown":
-				return json_encode($value);
+				return json_encode($this->{$name});
 				break;
 				default:
 				return $this->{$name};
