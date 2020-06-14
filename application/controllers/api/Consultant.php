@@ -2235,7 +2235,7 @@ class Consultant extends REST_Controller
                         $response->msg = 'On the way message sent successfully.';
                         $response->error_msg = null;
                         $response->response['msg'] = "On the way message sent successfully.";
-                        $this->response($response, REST_Controller::HTTP_BAD_REQUEST);
+                        $this->response($response, REST_Controller::HTTP_OK);
 
                     } else {
                         $response->status = REST_Controller::HTTP_BAD_REQUEST;
