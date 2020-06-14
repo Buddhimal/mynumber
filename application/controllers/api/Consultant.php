@@ -28,6 +28,7 @@ class Consultant extends REST_Controller
         $this->load->model('mserialnumber');
         $this->load->model('mclinicappointment');
         $this->load->model('mclinicsessiontrans');
+        $this->load->model('mappversion');
         $this->load->model('mpaymentreceivals', "payment_receivals");
     }
 
@@ -87,6 +88,57 @@ class Consultant extends REST_Controller
             if ($check_auth_client == true) {
 
                 //code...
+
+            } else {
+                $response->status = REST_Controller::HTTP_UNAUTHORIZED;
+                $response->status_code = APIResponseCode::UNAUTHORIZED;
+                $response->msg = 'Unauthorized';
+                $response->response = NULL;
+                $response->error_msg = 'Invalid Authentication Key.';
+                $this->response($response, REST_Controller::HTTP_UNAUTHORIZED);
+            }
+
+        } else {
+            $response->status = REST_Controller::HTTP_METHOD_NOT_ALLOWED;
+            $response->status_code = APIResponseCode::METHOD_NOT_ALLOWED;
+            $response->msg = 'Method Not Allowed';
+            $response->response = NULL;
+            $response->error_msg = 'Invalid Request Method.';
+            $this->response($response, REST_Controller::HTTP_METHOD_NOT_ALLOWED);
+        }
+    }
+
+    public function GetAppVersion_get($app_name)
+    {
+
+        $method = $_SERVER['REQUEST_METHOD'];
+        $response = new stdClass();
+
+        if ($method == 'GET') {
+
+            $check_auth_client = $this->mmodel->check_auth_client();
+
+            if ($check_auth_client == true) {
+
+                $app_info = $this->mappversion->get_app_version($app_name);
+
+                if(!is_null($app_info)){
+
+                    $response->status = REST_Controller::HTTP_OK;
+                    $response->status_code = APIResponseCode::SUCCESS;
+                    $response->msg = 'App Details';
+                    $response->response = $app_info;
+                    $response->error_msg = null;
+                    $this->response($response, REST_Controller::HTTP_UNAUTHORIZED);
+
+                } else{
+                    $response->status = REST_Controller::HTTP_BAD_REQUEST;
+                    $response->status_code = APIResponseCode::BAD_REQUEST;
+                    $response->msg = 'Invalid App Name';
+                    $response->response = NULL;
+                    $response->error_msg = null;
+                    $this->response($response, REST_Controller::HTTP_UNAUTHORIZED);
+                }
 
             } else {
                 $response->status = REST_Controller::HTTP_UNAUTHORIZED;
@@ -2182,7 +2234,7 @@ class Consultant extends REST_Controller
                         $response->status_code = APIResponseCode::SUCCESS;
                         $response->msg = 'On the way message sent successfully.';
                         $response->error_msg = null;
-                        $response->response = null;
+                        $response->response = "On the way message sent successfully.";
                         $this->response($response, REST_Controller::HTTP_BAD_REQUEST);
 
                     } else {
@@ -2228,7 +2280,7 @@ class Consultant extends REST_Controller
         // verify that the clinic exists
         $response = new stdClass();
 
-        if ( ucwords( $_SERVER['REQUEST_METHOD']) == 'GET') {
+        if (ucwords($_SERVER['REQUEST_METHOD']) == 'GET') {
             $check_auth_client = $this->mmodel->check_auth_client();
             if ($check_auth_client == true) {
 
@@ -2238,8 +2290,8 @@ class Consultant extends REST_Controller
                     // determine the last paid date
                     $date_last_paid = $this->payment_receivals->get_last_paid_date($clinic_id);
 
-                    if(!isset($date_last_paid) || empty($date_last_paid)){
-                        $date_last_paid  = $this->mclinic->get($clinic_id)->created;
+                    if (!isset($date_last_paid) || empty($date_last_paid)) {
+                        $date_last_paid = $this->mclinic->get($clinic_id)->created;
                     }
 
                     // get the list of session after the last paid date
@@ -2306,7 +2358,7 @@ class Consultant extends REST_Controller
         // verify that the clinic exists
         $response = new stdClass();
 
-        if ( ucwords( $_SERVER['REQUEST_METHOD']) == 'GET') {
+        if (ucwords($_SERVER['REQUEST_METHOD']) == 'GET') {
             $check_auth_client = $this->mmodel->check_auth_client();
             if ($check_auth_client == true) {
 

@@ -51,6 +51,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 $route['default_controller'] = 'index';
 
+$route['api/app/version/(:any)']['GET'] = 'api/consultant/GetAppVersion/$1';
 
 //region Clinic Routes
 $route['api/clinic']['POST'] = 'api/consultant/CreateClinic';
