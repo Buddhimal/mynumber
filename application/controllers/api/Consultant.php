@@ -2234,7 +2234,7 @@ class Consultant extends REST_Controller
                         $response->status_code = APIResponseCode::SUCCESS;
                         $response->msg = 'On the way message sent successfully.';
                         $response->error_msg = null;
-                        $response->response[] = "On the way message sent successfully.";
+                        $response->response['msg'] = "On the way message sent successfully.";
                         $this->response($response, REST_Controller::HTTP_BAD_REQUEST);
 
                     } else {
