@@ -523,7 +523,6 @@ class Consultant extends REST_Controller
         }
     }
 
-
     public function SearchClinicByLocation_get($lat = '', $long = '')
     {
         $method = $_SERVER['REQUEST_METHOD'];
@@ -2305,7 +2304,70 @@ class Consultant extends REST_Controller
     public function ViewPaymentsDone_get($clinic_id)
     {
         // verify that the clinic exists
-        // list the payment records which the payment has made. list the session relevant to that payment record under it.
+        $response = new stdClass();
+
+        if ( ucwords( $_SERVER['REQUEST_METHOD']) == 'GET') {
+            $check_auth_client = $this->mmodel->check_auth_client();
+            if ($check_auth_client == true) {
+
+                if ($this->mclinic->valid_clinic($clinic_id)) {
+                    /* list the completed sessions from last paid date.*/
+
+                    // get last paid sessions
+                    $paid_sessions = $this->payment_receivals->get_paid_records($clinic_id);
+
+                    // list the consulted transactions + per charge from appointment trans per each session.
+                    if (!is_null($paid_sessions)) {
+
+                        // EntityClinicPendingPaymentDetails
+                        $grand_total = $this->payment_receivals->get_cumulative_paid_amount($clinic_id);
+
+                        $response->status = REST_Controller::HTTP_OK;
+                        $response->status_code = APIResponseCode::SUCCESS;
+                        $response->msg = 'successful';
+                        $response->error_msg = null;
+                        $response->response['paid_sessions'] = $paid_sessions;
+                        $response->response['grand_total'] = $grand_total;
+
+                        $this->response($response, REST_Controller::HTTP_OK);
+
+                    } else {
+                        // no billable sessions within the specified date range.
+                        $response->status = REST_Controller::HTTP_OK;
+                        $response->status_code = APIResponseCode::SUCCESS;
+                        $response->msg = 'No payments done yet.';
+                        $response->error_msg = null;
+                        $response->response = NULL;
+                        $this->response($response, REST_Controller::HTTP_OK);
+                    }
+
+                } else {
+
+                    $response->status = REST_Controller::HTTP_BAD_REQUEST;
+                    $response->status_code = APIResponseCode::BAD_REQUEST;
+                    $response->msg = 'Invalid Clinic Id';
+                    $response->error_msg[] = 'Invalid Clinic';
+                    $response->response = NULL;
+                    $this->response($response, REST_Controller::HTTP_BAD_REQUEST);
+
+                }
+            } else {
+                $response->status = REST_Controller::HTTP_UNAUTHORIZED;
+                $response->status_code = APIResponseCode::UNAUTHORIZED;
+                $response->msg = 'Unauthorized';
+                $response->response = NULL;
+                $response->error_msg[] = 'Authentication Failed';
+                $this->response($response, REST_Controller::HTTP_UNAUTHORIZED);
+            }
+        } else {
+
+            $response->status = REST_Controller::HTTP_METHOD_NOT_ALLOWED;
+            $response->status_code = APIResponseCode::METHOD_NOT_ALLOWED;
+            $response->msg = 'Method Not Allowed';
+            $response->response = NULL;
+            $response->error_msg[] = 'Invalid Request Method.';
+            $this->response($response, REST_Controller::HTTP_METHOD_NOT_ALLOWED);
+        }
     }
 
 
@@ -2329,6 +2391,7 @@ class Consultant extends REST_Controller
                 $data['total'] = $clinic_payment_pendings->grand_total;
 
                 $this->payment_receivals->set_data($data);
+
                 if ($this->payment_receivals->is_valid()) {
 
                     $receival_record = $this->payment_receivals->create();

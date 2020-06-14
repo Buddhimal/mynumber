@@ -137,7 +137,7 @@ class Mclinicsessiontrans extends CI_Model
     public function get_sessions_tasks_completed_within($clinic_id, $from ){
         $output = null;
         
-        $result_set = $this->db->select("t.*")
+        $result_set = $this->db->select("t.*,s.session_name")
             ->from( 'clinic_session_trans as t' )
             ->join( "clinic_session as s", "s.id = t.clinic_session_id" )
             ->where("t.action", SessionStatus::FINISHED)

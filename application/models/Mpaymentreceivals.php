@@ -109,4 +109,46 @@ class Mpaymentreceivals extends CI_Model{
 
 		return $output;
 	}
+
+    public function get_paid_records($clinic_id)
+    {
+        $output = null;
+
+        $result_set= $this->db
+            ->select('total_amount,pay_start,pay_end')
+            ->from($this->table)
+            ->where('clinic_id',$clinic_id)
+            ->where('collection_status',PaymentCollectionStatus::Collected)
+            ->where('paid_status',PaymentPaidStatus::Paid)
+            ->where('is_active', 1)
+            ->where('is_deleted', 0)->get();
+
+        foreach ($result_set->result() as $item) {
+            $output[] = $item;
+        }
+
+        return $output;
+    }
+
+    public function get_cumulative_paid_amount($clinic_id)
+    {
+        $output = null;
+
+        $result_set= $this->db
+            ->select('sum(total_amount) as total_amount')
+            ->from($this->table)
+            ->where('clinic_id',$clinic_id)
+            ->where('collection_status',PaymentCollectionStatus::Collected)
+            ->where('paid_status',PaymentPaidStatus::Paid)
+            ->where('is_active', 1)
+            ->where('is_deleted', 0)->get();
+
+        if ( $result_set->num_rows() > 0 ) {
+            $output =$result_set->row()->total_amount;
+        }
+
+        return $output;
+    }
+
+
 }
