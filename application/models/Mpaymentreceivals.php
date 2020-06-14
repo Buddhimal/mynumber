@@ -58,7 +58,7 @@ class Mpaymentreceivals extends CI_Model{
 	public function create()
 	{
 		$receival_id = trim($this->mmodel->getGUID(), '{}');
-		$now = time();
+		$now = date("Y-m-d h:i:s");
 		$new_record = array(
 			"id" => $receival_id,
 			"clinic_id" => $this->post['clinic_id'],
@@ -79,21 +79,19 @@ class Mpaymentreceivals extends CI_Model{
 		$this->mmodel->insert($this->table, $new_record);
 
         if ($this->db->affected_rows() > 0) {
-            $result = new EntityPaymentReceival( $this->get($receival_id) );
+            $result = new EntityPaymentReceival( $this->get_record($receival_id) );
         }
 
         return $result;
 	}
 
-	public function get($receival_id){
-		$query_result = $this->get_record($id);
-		
-       $query_result = $this->db->from($this->table)
-	        ->where('id', $id)
+	public function get_record($receival_id){
+
+       	$query_result = $this->db->from($this->table)
+	        ->where('id', $receival_id)
 	        ->where('is_deleted', 0)
 	        ->where('is_active', 1)->get()->row();
-
-         return $query_result
+        return $query_result;
 	}
 
 	public function get_last_paid_date( $clinic_id ){
