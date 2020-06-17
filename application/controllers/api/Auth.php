@@ -152,7 +152,7 @@ class Auth extends REST_Controller
                             $response->status_code = APIResponseCode::SUCCESS;
                             $response->msg = 'Password Reset Successful';
                             $response->error_msg = null;
-                            $response->response[] = 'Password Reset Successful';
+                            $response->response['msg'] = 'Password Reset Successful';
                             $this->response($response, REST_Controller::HTTP_OK);
                         }
 
@@ -217,7 +217,7 @@ class Auth extends REST_Controller
                                 $response->status_code = APIResponseCode::SUCCESS;
                                 $response->msg = 'Password Reset Successful';
                                 $response->error_msg = NULL;
-                                $response->response[] = 'Password Reset Successful';
+                                $response->response['msg'] = 'Password Reset Successful';
                                 $this->response($response, REST_Controller::HTTP_OK);
                             } else {
                                 $response->status = REST_Controller::HTTP_BAD_REQUEST;
