@@ -2493,7 +2493,7 @@ class Consultant extends REST_Controller
         $config = array(
             'protocol' => 'smtp',
             'smtp_host' => 'mail.mynumber.lk',
-            'smtp_port' => 465, //587
+            'smtp_port' => 465, //587, 465
             'smtp_user' => 'info@mynumber.lk',
             'smtp_pass' => '!yoOA+3cwv&2',
             'mailtype' => 'html',
