@@ -133,6 +133,7 @@ class Mclinicsessiondays extends CI_Model
         $this->db->from($this->table);
         $this->db->where('session_id', $session_id);
         $this->db->where('day', $day);
+        $this->db->where('off', false);
         $this->db->where('is_deleted', 0);
         $this->db->where('is_active', 1);
         return $this->db->get()->row();
@@ -145,6 +146,7 @@ class Mclinicsessiondays extends CI_Model
         $this->db->select('id,day,starting_time,end_time,off');
         $this->db->from($this->table);
         $this->db->where('session_id', $session_id);
+        $this->db->where('off', false);
         $this->db->where('is_deleted', 0);
         $this->db->where('is_active', 1);
 

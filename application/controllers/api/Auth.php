@@ -162,7 +162,7 @@ class Auth extends REST_Controller
                         $response->msg = 'Validation Failed.';
                         $response->error_msg = $this->mlogin->validation_errors;
                         $response->response = NULL;
-                        $this->response($response, REST_Controller::HTTP_BAD_REQUEST);
+                        $this->response($response, REST_Controller::HTTP_OK);
                     }
 
                 } else {
@@ -171,7 +171,7 @@ class Auth extends REST_Controller
                     $response->msg = 'Validation Failed.';
                     $response->response = NULL;
                     $response->error_msg = $this->mlogin->validation_errors;
-                    $this->response($response, REST_Controller::HTTP_BAD_REQUEST);
+                    $this->response($response, REST_Controller::HTTP_OK);
                 }
 
             } else {
@@ -180,7 +180,7 @@ class Auth extends REST_Controller
                 $response->msg = 'Unauthorized';
                 $response->response = NULL;
                 $response->error_msg[] = 'Invalid Authentication Key.';
-                $this->response($response, REST_Controller::HTTP_UNAUTHORIZED);
+                $this->response($response, REST_Controller::HTTP_OK);
             }
         } else {
             $response->status = REST_Controller::HTTP_METHOD_NOT_ALLOWED;
@@ -188,7 +188,7 @@ class Auth extends REST_Controller
             $response->msg = 'Method Not Allowed';
             $response->error_msg[] = 'Invalid Request Method.';
             $response->response = NULL;
-            $this->response($response, REST_Controller::HTTP_METHOD_NOT_ALLOWED);
+            $this->response($response, REST_Controller::HTTP_OK);
         }
     }
 
@@ -225,7 +225,7 @@ class Auth extends REST_Controller
                                 $response->msg = 'Failed to change your password.';
                                 $response->error_msg = NULL;
                                 $response->response = NULL;
-                                $this->response($response, REST_Controller::HTTP_BAD_REQUEST);
+                                $this->response($response, REST_Controller::HTTP_OK);
                             }
 
                         } else {
@@ -234,7 +234,7 @@ class Auth extends REST_Controller
                             $response->msg = 'Invalid Old Password.';
                             $response->response = NULL;
                             $response->error_msg = NULL;
-                            $this->response($response, REST_Controller::HTTP_BAD_REQUEST);
+                            $this->response($response, REST_Controller::HTTP_OK);
                         }
                     } else {
                         $response->status = REST_Controller::HTTP_BAD_REQUEST;
@@ -242,7 +242,7 @@ class Auth extends REST_Controller
                         $response->msg = 'Validation Failed.';
                         $response->error_msg = array('New Password must be between 6 and 20 digits long and include at least one numeric digit.');
                         $response->response = NULL;
-                        $this->response($response, REST_Controller::HTTP_BAD_REQUEST);
+                        $this->response($response, REST_Controller::HTTP_OK);
                     }
                 } else {
                     $response->status = REST_Controller::HTTP_BAD_REQUEST;
@@ -250,7 +250,7 @@ class Auth extends REST_Controller
                     $response->msg = 'Invalid Clinic Id';
                     $response->error_msg[] = 'Invalid Clinic Id';
                     $response->response = NULL;
-                    $this->response($response, REST_Controller::HTTP_BAD_REQUEST);
+                    $this->response($response, REST_Controller::HTTP_OK);
                 }
 
             } else {
@@ -259,7 +259,7 @@ class Auth extends REST_Controller
                 $response->msg = 'Unauthorized';
                 $response->response = NULL;
                 $response->error_msg[] = 'Invalid Authentication Key.';
-                $this->response($response, REST_Controller::HTTP_UNAUTHORIZED);
+                $this->response($response, REST_Controller::HTTP_OK);
             }
         } else {
             $response->status = REST_Controller::HTTP_METHOD_NOT_ALLOWED;
@@ -267,7 +267,7 @@ class Auth extends REST_Controller
             $response->msg = 'Method Not Allowed';
             $response->error_msg[] = 'Invalid Request Method.';
             $response->response = NULL;
-            $this->response($response, REST_Controller::HTTP_METHOD_NOT_ALLOWED);
+            $this->response($response, REST_Controller::HTTP_OK);
         }
     }
 
