@@ -124,7 +124,7 @@ class Auth extends REST_Controller
             $response->response = NULL;
         }
 
-        $this->response($response, $response->status);
+        $this->response($response,REST_Controller::HTTP_OK);
     }
 
     public function ResetPassword_put()
