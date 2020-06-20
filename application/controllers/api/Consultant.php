@@ -744,7 +744,7 @@ class Consultant extends REST_Controller
                     $response->status_code = APIResponseCode::SUCCESS;
                     $response->msg = 'OTP Validation Successful..';
                     $response->error_msg = NULL;
-// $response->response = (object) array('OTP Validation Successful..');
+                    // $response->response = (object) array('OTP Validation Successful..');
                     $response->response['msg'] = 'OTP Validation Successful..';
                     $this->response($response, REST_Controller::HTTP_OK);
 
@@ -843,7 +843,17 @@ class Consultant extends REST_Controller
 
                     if ($this->mlogin->get_login_for_username($json_data['username'])->entity_id != null) {
 
-                        $this->ResendOTP_put($this->mlogin->get_login_for_username($json_data['username'])->entity_id);
+//                        $this->ResendOTP_put($this->mlogin->get_login_for_username($json_data['username'])->entity_id);
+                        $clinic_id= $this->mlogin->get_login_for_username($json_data['username'])->entity_id;
+
+                        if ($this->motpcode->resend_otp($clinic_id)) {
+                            $response->status = REST_Controller::HTTP_OK;
+                            $response->status_code = APIResponseCode::SUCCESS;
+                            $response->msg = 'OTP send successfully..';
+                            $response->error_msg = NULL;
+                            $response->response['clinic_id'] = $clinic_id;
+                            $this->response($response, REST_Controller::HTTP_OK);
+                        }
 
                     } else {
                         $response->status = REST_Controller::HTTP_BAD_REQUEST;
