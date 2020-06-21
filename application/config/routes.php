@@ -94,12 +94,6 @@ $route['api/clinic/auth/reset']['PUT'] = 'api/auth/ResetPassword';
 $route['api/clinic/(:any)/auth/change']['PUT'] = 'api/auth/ChangePassword/$1';
 //endregion
 
-
-//region Public Routes
-$route['api/patient/(:any)/session/(:any)/appointment']['POST'] = 'api/consultant/BookAppointment/$1/$2';
-$route['api/patient/(:any)/session/(:any)/number']['GET'] = 'api/consultant/GetAppointmentNumber/$1/$2';
-//endregion
-
 // errors
 $route['404_override'] = 'errors/index';
 $route['translate_uri_dashes'] = FALSE;
