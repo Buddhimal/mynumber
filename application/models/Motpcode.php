@@ -90,7 +90,7 @@ class Motpcode extends CI_Model
 
 	public function resend_otp($clinic_id = '')
 	{
-		$login_details = $this->mlogin->get_login_for_entity($clinic_id);
+		$login_details = $this->mlogin->get_login_for_entity_not_confirm($clinic_id);
 
 		if ($this->get_otp_code($clinic_id) == null) {
 

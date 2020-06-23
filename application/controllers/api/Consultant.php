@@ -2098,7 +2098,7 @@ class Consultant extends REST_Controller
         $config = array(
             'protocol' => 'smtp',
             'smtp_host' => 'mail.mynumber.lk',
-            'smtp_port' => 465, //587, 465
+            'smtp_port' => 587, //587, 465
             'smtp_user' => 'info@mynumber.lk',
             'smtp_pass' => '!yoOA+3cwv&2',
             'mailtype' => 'html',
@@ -2128,16 +2128,15 @@ class Consultant extends REST_Controller
 // $ci->email->message("Customer Name ");
 // $ci->email->send();
         $data = null;
-
-        $body = $this->load->view('fogot_password', $data, TRUE);
-
-        $ci->email->from('MyNumber', 'MyNumber');
-        $ci->email->to("bbb.navin@gmail.com");
+//        $this->email->set_header('Content-Type', 'text/html');
+        $body = $this->load->view('template', $data, TRUE);
+        $ci->email->from('info@mynumber.lk', 'MyNumber');
+        $ci->email->to("bbb.navin@hotmail.com");
         $ci->email->subject("Feedback");
         $ci->email->message($body);
 
         var_dump($this->email->send());
-// $this->load->view('fogot_password',$data);
+// $this->load->view('template',$data);
     }
 
 
