@@ -19,7 +19,6 @@ class Mappversion extends CI_Model
 
     public function get_app_version($app_name)
     {
-
         $res = $this->db
             ->select('app_name,	current_app_version,	is_mandatory')
             ->from($this->table)
@@ -29,7 +28,12 @@ class Mappversion extends CI_Model
             ->get();
 
         if($res->num_rows()>0){
-            return $res->row();
+
+            $data['app_name'] = $res->row()->app_name;
+            $data['current_app_version'] = $res->row()->current_app_version;
+            $data['is_mandatory'] = (bool)$res->row()->is_mandatory;
+
+            return $data;
         }
         return null;
 
