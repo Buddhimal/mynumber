@@ -64,12 +64,12 @@ class Mlocations extends CI_Model
 
         if (!(isset($this->post['long']) && $this->mvalidation->isGeoValid('longitude', $this->post['long']) == true)) {
 
-            array_push($this->validation_errors, 'Invalid Location longitude. :'+$this->post['long']);
+            array_push($this->validation_errors, 'Invalid Location longitude. request value:' .$this->post['long']);
             $result = false;
         }
         if (!(isset($this->post['lat']) && $this->mvalidation->isGeoValid('latitude', $this->post['lat']) == true)) {
 
-            array_push($this->validation_errors, 'Invalid Location latitude. :' + $this->post['lat']);
+            array_push($this->validation_errors, 'Invalid Location latitude. request value:' . $this->post['lat']);
             $result = false;
         }
 
