@@ -13,6 +13,8 @@ class Mclinic extends CI_Model
     {
         parent::__construct();
         $this->load->model('mvalidation');
+        $this->load->model('Mcommunicatoremailqueue', "memail");
+
     }
 
 
@@ -81,6 +83,16 @@ class Mclinic extends CI_Model
 
         if ($this->db->affected_rows() > 0) {
             $result = $this->get($clinic_id);
+
+            //create email record
+            $email_data['sender_name']=EmailSender::mynumber_info;
+            $email_data['send_to']=$this->post['email'];
+            $email_data['template_id'] = EmailTemplate::clinic_register;
+            $email_data['content']=NULL;
+            $email_data['email_type_id']=EmailType::new_user_email;
+
+            $this->memail->set_data($email_data);
+            $this->memail->create();
         }
 
         return $result;

@@ -30,6 +30,7 @@ class Consultant extends REST_Controller
         $this->load->model('mclinicsessiontrans');
         $this->load->model('mappversion');
         $this->load->model('mpaymentreceivals', "payment_receivals");
+        $this->load->model('Mcommunicatoremailqueue', "memail");
     }
 
 //region Index

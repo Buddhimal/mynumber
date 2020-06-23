@@ -106,6 +106,17 @@ class Mdoctor extends CI_Model
 
 		if ($this->db->affected_rows() > 0) {
 			$result = $this->get($doctor_id);
+
+            //create email record
+            $email_data['sender_name']=EmailSender::mynumber_info;
+            $email_data['send_to']=$this->post['email'];
+            $email_data['template_id'] = EmailTemplate::clinic_new_consultant;
+            $email_data['content']=NULL;
+            $email_data['email_type_id']=EmailType::new_user_email;
+
+            $this->memail->set_data($email_data);
+            $this->memail->create();
+
 		}
 
 		return $result;
