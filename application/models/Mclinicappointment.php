@@ -244,6 +244,7 @@ class Mclinicappointment extends CI_Model
             ->where('a.patient_id', $patient_id)
             ->where('s.clinic_id', $clinic_id)
             ->where('a.appointment_status', AppointmentStatus::PENDING)
+            ->where('a.appointment_date !=', DateHelper::slk_date())
             ->where('a.is_active', 1)
             ->where('s.is_active', 1)
             ->where('a.is_deleted', 0)
