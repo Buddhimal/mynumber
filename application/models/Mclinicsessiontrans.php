@@ -44,7 +44,7 @@ class Mclinicsessiontrans extends CI_Model
 
             $id = trim($this->mmodel->getGUID(), '{}');
             $this->post['id'] = $id;
-            $this->post['clinic_date'] = date("Y-m-d");
+            $this->post['clinic_date'] =DateHelper::slk_date();
             $this->post['clinic_session_id'] = $session_id;
             $this->post['action'] = SessionStatus::START;
 
@@ -73,7 +73,7 @@ class Mclinicsessiontrans extends CI_Model
 
             $id = trim($this->mmodel->getGUID(), '{}');
             $this->post['id'] = $id;
-            $this->post['clinic_date'] = date("Y-m-d");
+            $this->post['clinic_date'] = DateHelper::slk_date();
             $this->post['clinic_session_id'] = $session_id;
             $this->post['action'] = SessionStatus::FINISHED;
 
@@ -104,7 +104,7 @@ class Mclinicsessiontrans extends CI_Model
 
             $id = trim($this->mmodel->getGUID(), '{}');
             $this->post['id'] = $id;
-            $this->post['clinic_date'] = date("Y-m-d");
+            $this->post['clinic_date'] = DateHelper::slk_date();
             $this->post['clinic_session_id'] = $session_id;
             $this->post['action'] = SessionStatus::ON_THE_WAY;
 
@@ -141,7 +141,7 @@ class Mclinicsessiontrans extends CI_Model
             ->select('*')
             ->from($this->table)
             ->where('clinic_session_id', $session_id)
-            ->where('clinic_date', DateHelper::utc_date())
+            ->where('clinic_date', DateHelper::slk_date())
             ->where('action', $status)
             ->where('is_active', 1)
             ->where('is_deleted', 0)
@@ -156,7 +156,7 @@ class Mclinicsessiontrans extends CI_Model
             ->from($this->table)
             ->where('clinic_session_id',$session_id)
             ->where('action',$action)
-            ->where('clinic_date',date("Y-m-d"))
+            ->where('clinic_date',DateHelper::slk_date())
             ->where('is_active', 1)
             ->where('is_deleted', 0)
             ->get();

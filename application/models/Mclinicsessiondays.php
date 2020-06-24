@@ -23,7 +23,7 @@ class Mclinicsessiondays extends CI_Model
         if (isset($post_array['day']))
             $this->post['day'] = $post_array['day'];
         if (isset($post_array['off']))
-            $this->post['off'] = $post_array['off'];
+            $this->post['off'] = !$post_array['off'];
         if (isset($post_array['starting_time']))
             $this->post['starting_time'] = $post_array['starting_time'];
         if (isset($post_array['end_time']))
@@ -133,7 +133,7 @@ class Mclinicsessiondays extends CI_Model
         $this->db->from($this->table);
         $this->db->where('session_id', $session_id);
         $this->db->where('day', $day);
-//        $this->db->where('off', false);
+        $this->db->where('off', false);
         $this->db->where('is_deleted', 0);
         $this->db->where('is_active', 1);
         return $this->db->get()->row();
