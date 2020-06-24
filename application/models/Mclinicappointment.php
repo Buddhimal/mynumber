@@ -122,7 +122,7 @@ class Mclinicappointment extends CI_Model
 
     public function get_next_appointment($clinic_id, $session_id, $patient_id)
     {
-
+        $slk_date = DateHelper::slk_date();
         $appointment = null;
 
         $res = $this->db->query("SELECT
@@ -141,7 +141,7 @@ class Mclinicappointment extends CI_Model
 													clinic_appointment_trans cat 
 												)) 
 											AND a.session_id = '" . $session_id . "' 
-											AND a.appointment_date = '" . date('Y-m-d') . "' 
+											AND a.appointment_date = '" . $slk_date . "' 
 											AND a.appointment_status = " . AppointmentStatus::PENDING . " 
 											AND a.is_deleted = 0 
 											AND a.is_active = 1 
@@ -191,7 +191,7 @@ class Mclinicappointment extends CI_Model
         $this->db->select('id, patient_id, session_id, serial_number_id,appointment_date');
         $this->db->from($this->table);
         $this->db->where('session_id', $session_id);
-        $this->db->where('appointment_date', DateHelper::utc_date());
+        $this->db->where('appointment_date', DateHelper::slk_date());
         $this->db->where('appointment_status !=', AppointmentStatus::CANCELED);
         $this->db->where('is_deleted', 0);
         $this->db->where('is_active', 1);
@@ -204,7 +204,7 @@ class Mclinicappointment extends CI_Model
             ->select('*')
             ->from($this->table)
             ->where('session_id', $session_id)
-            ->where('appointment_date', date("Y-m-d"))
+            ->where('appointment_date', DateHelper::slk_date())
             ->where('appointment_status', $status)
             ->where('is_active', 1)
             ->where('is_deleted', 0)
@@ -222,8 +222,8 @@ class Mclinicappointment extends CI_Model
             ->select('COALESCE(sum(appointment_charge),0) as cumulative_amount')
             ->from($this->table)
             ->where('session_id', $session_id)
-            ->where('appointment_date', date("Y-m-d"))
-            ->where("(appointment_status =" . AppointmentStatus::CONSULTED . " OR (appointment_status=" . AppointmentStatus::PAYMENT_COLLECT . " AND CAST(appointment_status_updated AS DATE) ='" . $utc_date . "')  )")
+            ->where('appointment_date', DateHelper::slk_date())
+            ->where("(appointment_status =" . AppointmentStatus::CONSULTED . " OR (appointment_status=" . AppointmentStatus::PAYMENT_COLLECT . " AND CAST(appointment_status_updated AS DATE) ='" . date("Y-m-d") . "')  )")
             ->where('is_active', 1)
             ->where('is_deleted', 0)
             ->get();
