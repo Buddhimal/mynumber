@@ -112,7 +112,6 @@ class Mclinicsession extends CI_Model
             $update_data['max_patients'] = $this->post['max_patients'];
 
 
-
         if (sizeof($update_data) > 0) {
             $update_data['updated'] = date("Y-m-d H:i:s");
             $update_data['updated_by'] = $session_id;
@@ -204,7 +203,11 @@ class Mclinicsession extends CI_Model
             $sessions = new EntityClinicSession($session_data);
             $sessions->days = $this->mclinicsessiondays->get_today_session($sessions->id, $day);
             $sessions->days->appointment_count = $this->mclinicappointment->get_appointment_count_for_today($sessions->id);
-            $sessions->days->on_the_way = ($this->mclinicsessiontrans->check_session_already_updated($sessions->id, SessionStatus::ON_THE_WAY));
+            if ($this->mclinicsessiontrans->check_session_already_updated($sessions->id, SessionStatus::ON_THE_WAY))
+                $sessions->days->on_the_way = false;
+            else
+                $sessions->days->on_the_way = true;
+
             $sessions->consultant = $this->mdoctor->get($sessions->consultant);
             $output[] = $sessions;
         }
@@ -282,9 +285,5 @@ class Mclinicsession extends CI_Model
         return gmdate("H:i:s", $total_time_elapsed);
     }
 
-
-    
-
-    
 
 }
