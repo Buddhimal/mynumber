@@ -141,7 +141,7 @@ class Mclinicsessiontrans extends CI_Model
             ->select('*')
             ->from($this->table)
             ->where('clinic_session_id', $session_id)
-            ->where('clinic_date', date("Y-m-d"))
+            ->where('clinic_date', DateHelper::utc_date())
             ->where('action', $status)
             ->where('is_active', 1)
             ->where('is_deleted', 0)
