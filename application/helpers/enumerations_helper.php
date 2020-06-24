@@ -41,6 +41,7 @@ class SessionStatus{
 	const TIME_REVERSED = 3;
 	const FINISHED = 4;
 	const TERMINATED = 5;
+	const ON_THE_WAY = 6;
 }
 
 class APIKeys{
