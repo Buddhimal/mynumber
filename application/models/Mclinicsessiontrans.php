@@ -96,6 +96,37 @@ class Mclinicsessiontrans extends CI_Model
         return true;
     }
 
+
+    //create two functions for start and finish because additional data can be changed in future
+    public function send_on_the_way_session($session_id)
+    {
+        if ($this->check_session_already_updated($session_id, SessionStatus::ON_THE_WAY)) {
+
+            $id = trim($this->mmodel->getGUID(), '{}');
+            $this->post['id'] = $id;
+            $this->post['clinic_date'] = date("Y-m-d");
+            $this->post['clinic_session_id'] = $session_id;
+            $this->post['action'] = SessionStatus::ON_THE_WAY;
+
+            $additional_data['action'] = "on the way";
+            $additional_data['action_datetime'] = date("Y-m-d H:i:s");
+
+            $this->post['additional_data'] = json_encode($additional_data);
+            $this->post['action_datetime'] = date("Y-m-d H:i:s");
+            $this->post['is_deleted'] = 0;
+            $this->post['is_active'] = 1;
+            $this->post['updated'] = date("Y-m-d H:i:s");
+            $this->post['created'] = date("Y-m-d H:i:s");
+            $this->post['updated_by'] = $id;
+            $this->post['created_by'] = $id;
+
+            $this->mmodel->insert($this->table, $this->post);
+
+        }
+
+        return true;
+    }
+
     public function create()
     {
         $result = false;

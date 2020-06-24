@@ -214,7 +214,6 @@ class Consultant extends REST_Controller
 //endregion
 
 
-
 //region All API For Clinic
 
     public function CreateClinic_post()
@@ -443,7 +442,7 @@ class Consultant extends REST_Controller
                     if ($this->mlogin->get_login_for_username($json_data['username'])->entity_id != null) {
 
 //                        $this->ResendOTP_put($this->mlogin->get_login_for_username($json_data['username'])->entity_id);
-                        $clinic_id= $this->mlogin->get_login_for_username($json_data['username'])->entity_id;
+                        $clinic_id = $this->mlogin->get_login_for_username($json_data['username'])->entity_id;
 
                         if ($this->motpcode->resend_otp($clinic_id)) {
                             $response->status = REST_Controller::HTTP_OK;
@@ -1839,12 +1838,22 @@ class Consultant extends REST_Controller
 
                     if ($this->mclinicsession->valid_session($session_id)) {
 
-                        $response->status = REST_Controller::HTTP_OK;
-                        $response->status_code = APIResponseCode::SUCCESS;
-                        $response->msg = 'On the way message sent successfully.';
-                        $response->error_msg = null;
-                        $response->response['msg'] = "On the way message sent successfully.";
-                        $this->response($response, REST_Controller::HTTP_OK);
+                        if ($this->mclinicsessiontrans->send_on_the_way_session($session_id)) {
+
+                            $response->status = REST_Controller::HTTP_OK;
+                            $response->status_code = APIResponseCode::SUCCESS;
+                            $response->msg = 'On the way message sent successfully.';
+                            $response->error_msg = null;
+                            $response->response['msg'] = "On the way message sent successfully.";
+                            $this->response($response, REST_Controller::HTTP_OK);
+                        } else {
+                            $response->status = REST_Controller::HTTP_INTERNAL_SERVER_ERROR;
+                            $response->status_code = APIResponseCode::INTERNAL_SERVER_ERROR;
+                            $response->msg = 'Internal Server Error.';
+                            $response->error_msg = null;
+                            $response->response['msg'] = "Internal Server Error";
+                            $this->response($response, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+                        }
 
                     } else {
                         $response->status = REST_Controller::HTTP_BAD_REQUEST;
