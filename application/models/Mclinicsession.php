@@ -195,11 +195,14 @@ class Mclinicsession extends CI_Model
             ->join('clinic_session_days as d', 'd.session_id=c.id')
             ->where(sprintf("c.clinic_id='%s' and c.is_deleted=0 and c.is_active=1 and d.is_deleted=0 and d.is_active=1", $clinic_id))
             ->where('d.day', $day)
+            ->where('d.off', false)
             ->get();
 
 //        DatabaseFunction::last_query();
 
         foreach ($all_sessions->result() as $session_data) {
+
+
             $sessions = new EntityClinicSession($session_data);
             $sessions->days = $this->mclinicsessiondays->get_today_session($sessions->id, $day);
             $sessions->days->appointment_count = $this->mclinicappointment->get_appointment_count_for_today($sessions->id);
