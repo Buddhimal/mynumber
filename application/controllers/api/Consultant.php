@@ -1689,7 +1689,7 @@ class Consultant extends REST_Controller
 
                                 //finish session if no more appointments
                                 if(is_null($appointment))
-                                    $this->mclinicappointment->update_appointment_status($appointment_id, AppointmentStatus::FINISH);
+                                    $this->mclinicsessiontrans->finish_session($session_id);
 
                                 $response->status = REST_Controller::HTTP_OK;
                                 $response->status_code = APIResponseCode::SUCCESS;
@@ -1773,7 +1773,7 @@ class Consultant extends REST_Controller
 
                             //finish session if no more appointments
                             if(is_null($appointment))
-                                $this->mclinicappointment->update_appointment_status($appointment_id, AppointmentStatus::FINISH);
+                                $this->mclinicsessiontrans->finish_session($session_id);
 
                             $response->response['session_meta'] = $this->mclinicsession->get_session_meta($clinic_id, $session_id);
 
