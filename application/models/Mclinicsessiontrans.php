@@ -44,7 +44,7 @@ class Mclinicsessiontrans extends CI_Model
 
             $id = trim($this->mmodel->getGUID(), '{}');
             $this->post['id'] = $id;
-            $this->post['clinic_date'] =DateHelper::slk_date();
+            $this->post['clinic_date'] = DateHelper::slk_date();
             $this->post['clinic_session_id'] = $session_id;
             $this->post['action'] = SessionStatus::START;
 
@@ -134,6 +134,26 @@ class Mclinicsessiontrans extends CI_Model
         return $result;
     }
 
+    public function get_last_states_of_session($session_id,$date)
+    {
+        $res = $this->db
+            ->select('action')
+            ->from($this->table)
+            ->where('clinic_session_id', $session_id)
+            ->where('clinic_date', $date)
+            ->where('is_active', 1)
+            ->where('is_deleted', 0)
+            ->order_by('created','DECC')
+            ->order_by('updated','DECC')
+            ->limit(1)
+            ->get();
+
+        if($res->num_rows()>0)
+            return $res->row()->action;
+
+        return SessionStatus::PENDING;
+    }
+
     public function check_session_already_updated($session_id, $status)
     {
 
@@ -149,14 +169,14 @@ class Mclinicsessiontrans extends CI_Model
         return ($res->num_rows() == 0);
     }
 
-    public function get_session_trans_by_action($session_id,$action)
+    public function get_session_trans_by_action($session_id, $action)
     {
-        $res=$this->db
+        $res = $this->db
             ->select('*')
             ->from($this->table)
-            ->where('clinic_session_id',$session_id)
-            ->where('action',$action)
-            ->where('clinic_date',DateHelper::slk_date())
+            ->where('clinic_session_id', $session_id)
+            ->where('action', $action)
+            ->where('clinic_date', DateHelper::slk_date())
             ->where('is_active', 1)
             ->where('is_deleted', 0)
             ->get();
@@ -165,22 +185,23 @@ class Mclinicsessiontrans extends CI_Model
 
     }
 
-    public function get_sessions_tasks_completed_within($clinic_id, $from ){
+    public function get_sessions_tasks_completed_within($clinic_id, $from)
+    {
         $output = null;
-        
+
         $result_set = $this->db->select("t.*,s.session_name")
-            ->from( 'clinic_session_trans as t' )
-            ->join( "clinic_session as s", "s.id = t.clinic_session_id" )
+            ->from('clinic_session_trans as t')
+            ->join("clinic_session as s", "s.id = t.clinic_session_id")
             ->where("t.action", SessionStatus::FINISHED)
-            ->where("t.action_datetime >= ", $from )
-            ->where("t.action_datetime < ", date("Y-m-d") )
+            ->where("t.action_datetime >= ", $from)
+            ->where("t.action_datetime < ", date("Y-m-d"))
             ->where("t.is_deleted=0 and t.is_active=1")
             ->where("s.clinic_id", $clinic_id)
             ->get();
 
         // DatabaseFunction::last_query();
 
-        if($result_set->num_rows() > 0 ){
+        if ($result_set->num_rows() > 0) {
             foreach ($result_set->result() as $session_data) {
                 $output[] = new EntityClinicSessionTask($session_data);
             }
@@ -189,17 +210,18 @@ class Mclinicsessiontrans extends CI_Model
         return $output;
     }
 
-    public function get_sessions_tasks($clinic_id, $ids ){
+    public function get_sessions_tasks($clinic_id, $ids)
+    {
         $output = null;
-        
+
         $result_set = $this->db->select("t.*")
-            ->from( "clinic_session_trans as t" )
-            ->join( "clinic_session as s", "s.id = t.clinic_session_id" )
+            ->from("clinic_session_trans as t")
+            ->join("clinic_session as s", "s.id = t.clinic_session_id")
             ->where_in("t.id ", $ids)
             ->where("s.clinic_id", $clinic_id)
             ->get();
 
-        if($result_set->num_rows() > 0 ){
+        if ($result_set->num_rows() > 0) {
             foreach ($result_set->result() as $session_data) {
                 $output[] = new EntityClinicSessionTask($session_data);
             }

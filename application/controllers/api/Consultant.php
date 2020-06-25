@@ -1299,7 +1299,6 @@ class Consultant extends REST_Controller
 
                 if ($this->mclinic->valid_clinic($clinic_id)) {
 
-
                     $sessions = $this->mclinicsession->get_sessions_for_day($clinic_id, DateHelper::utc_day());
 
                     if (!is_null($sessions)) {
@@ -1688,6 +1687,10 @@ class Consultant extends REST_Controller
 
                                 $appointment = $this->mclinicappointment->get_next_appointment($clinic_id, $session_id, $appointment_data->patient_id);
 
+                                //finish session if no more appointments
+                                if(is_null($appointment))
+                                    $this->mclinicappointment->update_appointment_status($appointment_id, AppointmentStatus::FINISH);
+
                                 $response->status = REST_Controller::HTTP_OK;
                                 $response->status_code = APIResponseCode::SUCCESS;
                                 $response->msg = 'Next Appointment Number';
@@ -1766,7 +1769,11 @@ class Consultant extends REST_Controller
 
                         if ($this->mclinicappointment->update_appointment_status($appointment_id, AppointmentStatus::SKIPPED)) {
 
-                            $appointment = $this->mclinicappointment->get_next_appointment($clinic_id,$session_id,null);
+                            $appointment = $this->mclinicappointment->get_next_appointment($clinic_id, $session_id, null);
+
+                            //finish session if no more appointments
+                            if(is_null($appointment))
+                                $this->mclinicappointment->update_appointment_status($appointment_id, AppointmentStatus::FINISH);
 
                             $response->response['session_meta'] = $this->mclinicsession->get_session_meta($clinic_id, $session_id);
 
@@ -1894,7 +1901,7 @@ class Consultant extends REST_Controller
 
     public function ViewPaymentsPending_get($clinic_id)
     {
-// verify that the clinic exists
+        // verify that the clinic exists
         $response = new stdClass();
 
         if (ucwords($_SERVER['REQUEST_METHOD']) == 'GET') {
@@ -1904,20 +1911,20 @@ class Consultant extends REST_Controller
                 if ($this->mclinic->valid_clinic($clinic_id)) {
                     /* list the completed sessions from last paid date.*/
 
-// determine the last paid date
+                    // determine the last paid date
                     $date_last_paid = $this->payment_receivals->get_last_paid_date($clinic_id);
 
                     if (!isset($date_last_paid) || empty($date_last_paid)) {
                         $date_last_paid = $this->mclinic->get($clinic_id)->created;
                     }
 
-// get the list of session after the last paid date
+                    // get the list of session after the last paid date
                     $billable_sessions = $this->mclinicsessiontrans->get_sessions_tasks_completed_within($clinic_id, $date_last_paid);
 
-// list the consulted transactions + per charge from appointment trans per each session.
+                    // list the consulted transactions + per charge from appointment trans per each session.
                     if (isset($billable_sessions) && count($billable_sessions) > 0) {
 
-// EntityClinicPendingPaymentDetails
+                        // EntityClinicPendingPaymentDetails
                         $clinic_payment_pendings = $this->mclinicappointment->get_consulted_appoinments_for($clinic_id, $billable_sessions);
                         $clinic_payment_pendings->from = $date_last_paid;
                         $clinic_payment_pendings->to = date("Y-m-d");
@@ -1931,7 +1938,7 @@ class Consultant extends REST_Controller
                         $this->response($response, REST_Controller::HTTP_OK);
 
                     } else {
-// no billable sessions within the specified date range.
+                        // no billable sessions within the specified date range.
                         $response->status = REST_Controller::HTTP_OK;
                         $response->status_code = APIResponseCode::SUCCESS;
                         $response->msg = 'No payment pending for the given duration';
@@ -1972,7 +1979,7 @@ class Consultant extends REST_Controller
 
     public function ViewPaymentsDone_get($clinic_id)
     {
-// verify that the clinic exists
+        // verify that the clinic exists
         $response = new stdClass();
 
         if (ucwords($_SERVER['REQUEST_METHOD']) == 'GET') {
@@ -1982,13 +1989,13 @@ class Consultant extends REST_Controller
                 if ($this->mclinic->valid_clinic($clinic_id)) {
                     /* list the completed sessions from last paid date.*/
 
-// get last paid sessions
+                    // get last paid sessions
                     $paid_sessions = $this->payment_receivals->get_paid_records($clinic_id);
 
-// list the consulted transactions + per charge from appointment trans per each session.
+                    // list the consulted transactions + per charge from appointment trans per each session.
                     if (!is_null($paid_sessions)) {
 
-// EntityClinicPendingPaymentDetails
+                        // EntityClinicPendingPaymentDetails
                         $grand_total = $this->payment_receivals->get_cumulative_paid_amount($clinic_id);
 
                         $response->status = REST_Controller::HTTP_OK;
@@ -2001,7 +2008,7 @@ class Consultant extends REST_Controller
                         $this->response($response, REST_Controller::HTTP_OK);
 
                     } else {
-// no billable sessions within the specified date range.
+                        // no billable sessions within the specified date range.
                         $response->status = REST_Controller::HTTP_OK;
                         $response->status_code = APIResponseCode::SUCCESS;
                         $response->msg = 'No payments done yet.';
@@ -2099,8 +2106,8 @@ class Consultant extends REST_Controller
             $this->response($response, REST_Controller::HTTP_OK);
         }
 
-// $this->mclinicholidays->set_data($data);
-// $this->mclinicholidays->set_data();
+        // $this->mclinicholidays->set_data($data);
+        // $this->mclinicholidays->set_data();
     }
 
     public function send_email_get()
@@ -2117,26 +2124,26 @@ class Consultant extends REST_Controller
         );
 
 
-// $config = array(
-// 'protocol' => 'smtp',
-// 'smtp_host' => 'mail.smartloan.lk',
-// 'smtp_port' => 587, //587
-// 'smtp_user' => 'noreply@smartloan.lk',
-// 'smtp_pass' => 'noreply//1',
-// 'mailtype' => 'html',
-// 'charset' => 'iso-8859-1',
-// 'newline' => "\r\n",
-// );
+//        $config = array(
+//            'protocol' => 'smtp',
+//            'smtp_host' => 'mail.smartloan.lk',
+//            'smtp_port' => 587, //587
+//            'smtp_user' => 'noreply@smartloan.lk',
+//            'smtp_pass' => 'noreply//1',
+//            'mailtype' => 'html',
+//            'charset' => 'iso-8859-1',
+//            'newline' => "\r\n",
+//        );
 
         $this->load->library('email', $config);
         $ci = get_instance();
         $ci->email->initialize($config);
 
-// $ci->email->from('noreply@smartloan.lk', 'Smartloan.lk');
-// $ci->email->to("info@smartloan.lk");
-// $ci->email->subject("Message From Customer");
-// $ci->email->message("Customer Name ");
-// $ci->email->send();
+//        $ci->email->from('noreply@smartloan.lk', 'Smartloan.lk');
+//        $ci->email->to("info@smartloan.lk");
+//        $ci->email->subject("Message From Customer");
+//        $ci->email->message("Customer Name ");
+//        $ci->email->send();
         $data = null;
 //        $this->email->set_header('Content-Type', 'text/html');
         $body = $this->load->view('template', $data, TRUE);
@@ -2146,7 +2153,7 @@ class Consultant extends REST_Controller
         $ci->email->message($body);
 
         var_dump($this->email->send());
-// $this->load->view('template',$data);
+//       $this->load->view('template',$data);
     }
 
 

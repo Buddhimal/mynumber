@@ -196,25 +196,25 @@ class Mclinicsession extends CI_Model
             ->where(sprintf("c.clinic_id='%s' and c.is_deleted=0 and c.is_active=1 and d.is_deleted=0 and d.is_active=1", $clinic_id))
             ->where('d.day', $day)
             ->where('d.off', false)
+            ->order_by('d.starting_time', 'ASC')
+            ->order_by('d.end_time', 'ASC')
             ->get();
 
-//        DatabaseFunction::last_query();
-
         foreach ($all_sessions->result() as $session_data) {
-
 
             $sessions = new EntityClinicSession($session_data);
             $sessions->days = $this->mclinicsessiondays->get_today_session($sessions->id, $day);
             $sessions->days->appointment_count = $this->mclinicappointment->get_appointment_count_for_today($sessions->id);
+
             if ($this->mclinicsessiontrans->check_session_already_updated($sessions->id, SessionStatus::ON_THE_WAY))
                 $sessions->days->on_the_way = false;
             else
                 $sessions->days->on_the_way = true;
 
+            $sessions->days->session_status = $this->mclinicsessiontrans->get_last_states_of_session($sessions->id,DateHelper::slk_date());
             $sessions->consultant = $this->mdoctor->get($sessions->consultant);
             $output[] = $sessions;
         }
-
         return $output;
     }
 

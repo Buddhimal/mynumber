@@ -36,6 +36,7 @@ class StatusCode{
 }
 
 class SessionStatus{
+	const PENDING = 0;
 	const START = 1;
 	const CANCELED = 2;
 	const TIME_REVERSED = 3;
