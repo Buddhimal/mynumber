@@ -120,7 +120,7 @@ class Mclinicappointment extends CI_Model
     }
 
 
-    public function get_next_appointment($clinic_id, $session_id, $patient_id)
+    public function get_next_appointment($clinic_id, $session_id, $patient_id='')
     {
         $slk_date = DateHelper::slk_date();
         $appointment = null;

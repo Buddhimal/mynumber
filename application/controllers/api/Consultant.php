@@ -1766,7 +1766,7 @@ class Consultant extends REST_Controller
 
                         if ($this->mclinicappointment->update_appointment_status($appointment_id, AppointmentStatus::SKIPPED)) {
 
-                            $appointment = $this->mclinicappointment->get_next_appointment($session_id);
+                            $appointment = $this->mclinicappointment->get_next_appointment($clinic_id,$session_id,null);
 
                             $response->response['session_meta'] = $this->mclinicsession->get_session_meta($clinic_id, $session_id);
 
