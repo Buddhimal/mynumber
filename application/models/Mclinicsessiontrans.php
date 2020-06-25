@@ -143,8 +143,7 @@ class Mclinicsessiontrans extends CI_Model
             ->where('clinic_date', $date)
             ->where('is_active', 1)
             ->where('is_deleted', 0)
-            ->order_by('created','DECC')
-            ->order_by('updated','DECC')
+            ->order_by('created DESC, updated DESC')
             ->limit(1)
             ->get();
 
