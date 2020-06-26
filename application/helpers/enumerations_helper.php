@@ -39,7 +39,7 @@ class SessionStatus{
 	const PENDING = 0;
 	const START = 1;
 	const CANCELED = 2;
-	const TIME_REVERSED = 3;
+	const TIME_REVISED = 3;
 	const FINISHED = 4;
 	const TERMINATED = 5;
 	const ON_THE_WAY = 6;

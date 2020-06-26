@@ -96,6 +96,45 @@ class Mclinicsessiontrans extends CI_Model
         return true;
     }
 
+    public function cancel_session($session_id)
+    {
+        $last_status = $this->get_last_states_of_session($session_id, DateHelper::slk_date());
+
+        if ($last_status != SessionStatus::ON_THE_WAY) {
+
+            if ($last_status != SessionStatus::CANCELED) {
+
+                $id = trim($this->mmodel->getGUID(), '{}');
+                $this->post['id'] = $id;
+                $this->post['clinic_date'] = DateHelper::slk_date();
+                $this->post['clinic_session_id'] = $session_id;
+                $this->post['action'] = SessionStatus::CANCELED;
+
+                $additional_data['action'] = "canceled";
+                $additional_data['action_datetime'] = date("Y-m-d H:i:s");
+
+                $this->post['additional_data'] = json_encode($additional_data);
+                $this->post['action_datetime'] = date("Y-m-d H:i:s");
+                $this->post['is_deleted'] = 0;
+                $this->post['is_active'] = 1;
+                $this->post['updated'] = date("Y-m-d H:i:s");
+                $this->post['created'] = date("Y-m-d H:i:s");
+                $this->post['updated_by'] = $id;
+                $this->post['created_by'] = $id;
+
+                $this->mmodel->insert($this->table, $this->post);
+
+                {
+                    //need to send sms for all patients in appointment
+                }
+
+            }
+        } else
+            return false;
+
+        return true;
+    }
+
 
     //create two functions for start and finish because additional data can be changed in future
     public function send_on_the_way_session($session_id)
@@ -134,7 +173,7 @@ class Mclinicsessiontrans extends CI_Model
         return $result;
     }
 
-    public function get_last_states_of_session($session_id,$date)
+    public function get_last_states_of_session($session_id, $date)
     {
         $res = $this->db
             ->select('action')
@@ -147,7 +186,7 @@ class Mclinicsessiontrans extends CI_Model
             ->limit(1)
             ->get();
 
-        if($res->num_rows()>0)
+        if ($res->num_rows() > 0)
             return $res->row()->action;
 
         return SessionStatus::PENDING;
