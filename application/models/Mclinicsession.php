@@ -282,7 +282,12 @@ class Mclinicsession extends CI_Model
 
     public function get_session_time_elapsed($session_id)
     {
-        $started_at = $this->mclinicsessiontrans->get_session_trans_by_action($session_id, SessionStatus::START)->action_datetime;
+        $session_trans = $this->mclinicsessiontrans->get_session_trans_by_action($session_id, SessionStatus::START);
+
+        if(is_null($session_trans))
+            return "00:00:00";
+
+        $started_at = $session_trans->action_datetime;
         // $start_time = $this->mclinicsessiondays->get_today_session($session_id,date('N'))->starting_time;
         $total_time_elapsed = strtotime(date('Y-m-d H:i:s')) - strtotime($started_at);
         return gmdate("H:i:s", $total_time_elapsed);

@@ -219,7 +219,11 @@ class Mclinicsessiontrans extends CI_Model
             ->where('is_deleted', 0)
             ->get();
 
-        return $res->row();
+        if($res->num_rows()>0)
+            return $res->row();
+        else
+            return null;
+
 
     }
 
