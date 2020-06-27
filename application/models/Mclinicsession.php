@@ -100,7 +100,7 @@ class Mclinicsession extends CI_Model
             $update_data['consultant'] = $this->post['consultant'];
 
         if (isset($this->post['session_name']) && $this->post['session_name'] != $current_session_data->session_name)
-            $update_data['last_name'] = $this->post['last_name'];
+            $update_data['session_name'] = $this->post['session_name'];
 
         if (isset($this->post['session_description']) && $this->post['session_description'] != $current_session_data->session_description)
             $update_data['session_description'] = $this->post['session_description'];
