@@ -81,6 +81,7 @@ class Mclinicappointment extends CI_Model
             $this->post['appointment_status'] = AppointmentStatus::PENDING;
             $this->post['appointment_charge'] = Payments::DEFAULT_CHARGE;
             $this->post['appointment_status_updated'] = date("Y-m-d H:i:s");
+            $this->post['is_canceled'] = 0;
             $this->post['is_deleted'] = 0;
             $this->post['is_active'] = 1;
             $this->post['updated'] = date("Y-m-d H:i:s");
@@ -295,6 +296,8 @@ class Mclinicappointment extends CI_Model
 
     public function get_appointment_full_detail($session_id,$appointment_date)
     {
+        $day = DateHelper::utc_day();
+
         $res=$this->db
             ->query("SELECT
                             ca.id,
@@ -316,10 +319,22 @@ class Mclinicappointment extends CI_Model
                             INNER JOIN clinic AS c ON c.id=s.clinic_id 
                             INNER JOIN locations AS l ON l.id = c.location_id
                         WHERE 
-                            (DAYOFWEEK(ca.appointment_date)-1)=sd.day
+                            $day=sd.day
                             AND s.id='$session_id'
                             AND ca.appointment_date='$appointment_date'
-                        
+                            AND ca.is_canceled=0
+                            AND ca.is_active=1
+                            AND ca.is_deleted=0
+                            AND d.is_active=1
+                            AND d.is_deleted=0
+                            AND sn.is_active=1
+                            AND sn.is_deleted=0
+                            AND sd.is_active=1
+                            AND sd.is_deleted=0
+                            AND c.is_active=1
+                            AND c.is_deleted=0
+                            AND l.is_active=1
+                            AND l.is_deleted=0                        
                         ");
 
         return $res;

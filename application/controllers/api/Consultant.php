@@ -1975,7 +1975,9 @@ class Consultant extends REST_Controller
         $response = new stdClass();
 
         if (ucwords($_SERVER['REQUEST_METHOD']) == 'GET') {
+
             $check_auth_client = $this->mmodel->check_auth_client();
+
             if ($check_auth_client == true) {
 
                 if ($this->mclinic->valid_clinic($clinic_id)) {
