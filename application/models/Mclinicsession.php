@@ -190,7 +190,7 @@ class Mclinicsession extends CI_Model
         $output = null;
 
         $all_sessions = $this->db
-            ->select("c.*,d.day")
+            ->select("c.*,d.day,d.starting_time,d.end_time")
             ->from('clinic_session as c')
             ->join('clinic_session_days as d', 'd.session_id=c.id')
             ->where(sprintf("c.clinic_id='%s' and c.is_deleted=0 and c.is_active=1 and d.is_deleted=0 and d.is_active=1", $clinic_id))
@@ -211,7 +211,13 @@ class Mclinicsession extends CI_Model
             else
                 $sessions->days->on_the_way = true;
 
-            $sessions->days->session_status = $this->mclinicsessiontrans->get_last_states_of_session($sessions->id,DateHelper::slk_date());
+            $current_session_status = $this->mclinicsessiontrans->get_last_states_of_session($sessions->id, DateHelper::slk_date());
+
+            if ($current_session_status == SessionStatus::PENDING && (DateHelper::is_time_diff(DateHelper::utc_time(), $session_data->starting_time)))
+                $sessions->days->session_status = SessionStatus::TIME_PASSED;
+            else
+                $sessions->days->session_status = $current_session_status;
+
             $sessions->consultant = $this->mdoctor->get($sessions->consultant);
             $output[] = $sessions;
         }
@@ -284,7 +290,7 @@ class Mclinicsession extends CI_Model
     {
         $session_trans = $this->mclinicsessiontrans->get_session_trans_by_action($session_id, SessionStatus::START);
 
-        if(is_null($session_trans))
+        if (is_null($session_trans))
             return "00:00:00";
 
         $started_at = $session_trans->action_datetime;

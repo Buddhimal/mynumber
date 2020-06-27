@@ -677,11 +677,9 @@ class Consultant extends REST_Controller
 
             if ($check_auth_client == true) {
 
-
                 if ($this->mclinic->valid_clinic($clinic_id)) {
 
                     $consultant_list = $this->mconsultantpool->get_consultant_for_clinic($clinic_id);
-
 
                     $response->status = REST_Controller::HTTP_OK;
                     $response->status_code = APIResponseCode::SUCCESS;
@@ -696,11 +694,8 @@ class Consultant extends REST_Controller
                     $response->msg = 'Invalid Clinic Id';
                     $response->error_msg[] = 'Invalid Clinic Id';
                     $response->response = NULL;
-// $response->request_data = $this->post();
                     $this->response($response, REST_Controller::HTTP_OK);
-
                 }
-
             } else {
                 $response->status = REST_Controller::HTTP_UNAUTHORIZED;
                 $response->status_code = APIResponseCode::UNAUTHORIZED;
@@ -1368,11 +1363,8 @@ class Consultant extends REST_Controller
 
                     $this->mclinicholidays->set_data($this->post('json_data'));
 
-//Validate location data
                     if ($this->mclinicholidays->is_valid()) {
 
-
-// create the holiday record as the given data is valid
                         $holiday = $this->mclinicholidays->create($clinic_id);
 
                         if (!is_null($holiday)) {
@@ -1391,8 +1383,6 @@ class Consultant extends REST_Controller
                         $response->response = NULL;
                         $this->response($response, REST_Controller::HTTP_OK);
                     }
-
-
                 } else {
                     $response->status = REST_Controller::HTTP_BAD_REQUEST;
                     $response->status_code = APIResponseCode::BAD_REQUEST;
@@ -1401,7 +1391,6 @@ class Consultant extends REST_Controller
                     $response->response = NULL;
                     $this->response($response, REST_Controller::HTTP_OK);
                 }
-
             } else {
                 $response->status = REST_Controller::HTTP_UNAUTHORIZED;
                 $response->status_code = APIResponseCode::UNAUTHORIZED;
@@ -1496,7 +1485,6 @@ class Consultant extends REST_Controller
 
                     $this->mclinicholidays->set_data($this->post('json_data'));
 
-// create the holiday record as the given data is valid
                     $holiday = $this->mclinicholidays->get_holidays($clinic_id);
 
                     $response->status = REST_Controller::HTTP_OK;
