@@ -729,8 +729,11 @@ class Consultant extends REST_Controller
 
             if ($check_auth_client == true) {
 
+//                var_dump($this->put('json_data'));
+//                die();
+
 // Passing put array to the model.
-                $this->mdoctor->set_data($this->put());
+                $this->mdoctor->set_data($this->put('json_data'));
 
 // model it self will validate the input data
                 if ($this->mdoctor->is_valid()) {

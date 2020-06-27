@@ -43,6 +43,7 @@ class SessionStatus{
 	const FINISHED = 4;
 	const TERMINATED = 5;
 	const ON_THE_WAY = 6;
+	const TIME_PASSED = 7;
 }
 
 class APIKeys{
