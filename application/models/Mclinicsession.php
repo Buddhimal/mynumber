@@ -196,8 +196,8 @@ class Mclinicsession extends CI_Model
             ->where(sprintf("c.clinic_id='%s' and c.is_deleted=0 and c.is_active=1 and d.is_deleted=0 and d.is_active=1", $clinic_id))
             ->where('d.day', $day)
             ->where('d.off', false)
-            ->order_by('d.starting_time', 'ASC')
-            ->order_by('d.end_time', 'ASC')
+            ->order_by('d.starting_time', 'DESC')
+            ->order_by('d.end_time', 'DESC')
             ->get();
 
         foreach ($all_sessions->result() as $session_data) {

@@ -120,7 +120,7 @@ class Mclinicsessiondays extends CI_Model
     private function get_record($id)
     {
 
-        $this->db->select('id,day,starting_time,end_time,off');
+        $this->db->select('id,day,TIME_FORMAT(starting_time, "%H:%i") as starting_time,TIME_FORMAT(end_time, "%H:%i") as end_time,off');
         $this->db->from($this->table);
         $this->db->where('id', $id);
         $this->db->where('is_deleted', 0);
@@ -129,7 +129,7 @@ class Mclinicsessiondays extends CI_Model
     }
 
     public function get_today_session($session_id,$day){
-        $this->db->select('id,day,starting_time,end_time,off');
+        $this->db->select('id,day,TIME_FORMAT(starting_time, "%H:%i") as starting_time,TIME_FORMAT(end_time, "%H:%i") as end_time,off');
         $this->db->from($this->table);
         $this->db->where('session_id', $session_id);
         $this->db->where('day', $day);
@@ -143,7 +143,7 @@ class Mclinicsessiondays extends CI_Model
 
         $output = null;
 
-        $this->db->select('id,day,starting_time,end_time,off');
+        $this->db->select('id,day,TIME_FORMAT(starting_time, "%H:%i") as starting_time,TIME_FORMAT(end_time, "%H:%i") as end_time,off');
         $this->db->from($this->table);
         $this->db->where('session_id', $session_id);
 //        $this->db->where('off', false);

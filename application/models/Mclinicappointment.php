@@ -120,7 +120,7 @@ class Mclinicappointment extends CI_Model
     }
 
 
-    public function get_next_appointment($clinic_id, $session_id, $patient_id='')
+    public function get_next_appointment($clinic_id, $session_id, $patient_id = '')
     {
         $slk_date = DateHelper::slk_date();
         $appointment = null;
@@ -272,14 +272,14 @@ class Mclinicappointment extends CI_Model
 
             $result_set = $this->db->select("count(t.id) as appointment_count, sum(a.appointment_charge) as session_total")
                 ->from("$this->table a")
-                ->join( "clinic_appointment_trans t" , "t.clinic_appointment_id = a.id")
+                ->join("clinic_appointment_trans t", "t.clinic_appointment_id = a.id")
                 ->where("a.session_id", $session_task->clinic_session_id)
                 ->where("a.is_active = 1 and a.is_deleted = 0 ")
                 ->where_in("a.appointment_status", array(AppointmentStatus::CONSULTED, AppointmentStatus::PAYMENT_COLLECT))
                 ->group_by("a.session_id")
                 ->get();
 
-           // DatabaseFunction::last_query();
+            // DatabaseFunction::last_query();
 
             if ($result_set->num_rows() > 0) {
                 //removed class instantiation here
@@ -292,4 +292,39 @@ class Mclinicappointment extends CI_Model
 
         return $output;
     }
+
+    public function get_appointment_full_detail($session_id,$appointment_date)
+    {
+        $res=$this->db
+            ->query("SELECT
+                            ca.id,
+                            ca.patient_name,
+                            ca.patient_address,
+                            ca.patient_phone,
+                            CONCAT(  d.first_name, ' ', d.last_name ) AS doctor_name,
+                            c.clinic_name,
+                            l.city AS clinic_city,
+                            ca.appointment_date,
+                            sn.serial_number,
+                            sd.starting_time 
+                        FROM
+                            clinic_appointments AS ca
+                            INNER JOIN clinic_session AS s ON ca.session_id = s.id
+                            INNER JOIN doctor AS d ON s.consultant = d.id
+                            INNER JOIN serial_number AS sn ON ca.serial_number_id = sn.id
+                            INNER JOIN clinic_session_days AS sd ON s.id = sd.session_id 	
+                            INNER JOIN clinic AS c ON c.id=s.clinic_id 
+                            INNER JOIN locations AS l ON l.id = c.location_id
+                        WHERE 
+                            (DAYOFWEEK(ca.appointment_date)-1)=sd.day
+                            AND s.id='$session_id'
+                            AND ca.appointment_date='$appointment_date'
+                        
+                        ");
+
+        return $res;
+
+
+    }
+
 }

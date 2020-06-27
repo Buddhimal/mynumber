@@ -14,6 +14,7 @@ class Mclinicsessiontrans extends CI_Model
     {
         parent::__construct();
         $this->load->model('mvalidation');
+        $this->load->library('Messagesender');
     }
 
 
@@ -61,6 +62,17 @@ class Mclinicsessiontrans extends CI_Model
             $this->post['created_by'] = $id;
 
             $this->mmodel->insert($this->table, $this->post);
+
+            //sending sms
+            if ($this->db->affected_rows() > 0) {
+
+                //get full appointment details
+                $appointments = $this->mclinicappointment->get_appointment_full_detail($session_id, DateHelper::slk_date());
+
+                foreach ($appointments->result() as $patient) {
+                    $this->messagesender->send_sms($patient->patient_phone, SMSTemplate::StartSessionSMS((array)$patient));
+                }
+            }
         }
 
         return true;
@@ -124,10 +136,16 @@ class Mclinicsessiontrans extends CI_Model
 
                 $this->mmodel->insert($this->table, $this->post);
 
-                {
-                    //need to send sms for all patients in appointment
-                }
+                //sending sms
+                if ($this->db->affected_rows() > 0) {
 
+                    //get full appointment details
+                    $appointments = $this->mclinicappointment->get_appointment_full_detail($session_id, DateHelper::slk_date());
+
+                    foreach ($appointments->result() as $patient) {
+                        $this->messagesender->send_sms($patient->patient_phone, SMSTemplate::CancelSessionSMS((array)$patient));
+                    }
+                }
             }
         } else
             return false;
@@ -160,6 +178,17 @@ class Mclinicsessiontrans extends CI_Model
             $this->post['created_by'] = $id;
 
             $this->mmodel->insert($this->table, $this->post);
+
+            //sending sms
+            if ($this->db->affected_rows() > 0) {
+
+                //get full appointment details
+                $appointments = $this->mclinicappointment->get_appointment_full_detail($session_id, DateHelper::slk_date());
+
+                foreach ($appointments->result() as $patient) {
+                    $this->messagesender->send_sms($patient->patient_phone, SMSTemplate::OnTheWaySMS((array)$patient));
+                }
+            }
 
         }
 
@@ -219,7 +248,7 @@ class Mclinicsessiontrans extends CI_Model
             ->where('is_deleted', 0)
             ->get();
 
-        if($res->num_rows()>0)
+        if ($res->num_rows() > 0)
             return $res->row();
         else
             return null;
