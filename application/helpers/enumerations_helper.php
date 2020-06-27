@@ -11,6 +11,7 @@ class EntityType
 class APIResponseCode{
 	const SUCCESS = 2000;
 	const SUCCESS_WITH_ERRORS = 2001;
+	const SUCCESS_WITH_WITH_NO_CHANGES = 2002;
 	const INTERNAL_SERVER_ERROR = 5000;
 	const BAD_REQUEST = 4000;
 	const UNAUTHORIZED = 4010;
