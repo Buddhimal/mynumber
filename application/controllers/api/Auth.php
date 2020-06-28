@@ -96,7 +96,7 @@ class Auth extends REST_Controller
                         throw new Exception("Trying to access inactive account");
 
                     $clinic = $this->mclinic->get($consultant_login_data->entity_id);
-//					$clinic->holidays = $this->mclinicholidays->get_holidays($clinic->id);
+					$clinic->location = $this->mlocation->get($clinic->location);
 ////					$clinic->sessions = $this->mclinicsession->get_sessions($clinic->id);
 ////					$clinic->consultants = $this->mdoctor->get_consultants($clinic->id);
 
