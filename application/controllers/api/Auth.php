@@ -12,6 +12,7 @@ class Auth extends REST_Controller
 
         $this->load->model("mmodel");
         $this->load->model("mvalidation");
+        $this->load->model("mlocations");
         $this->load->model("mlogin");
         $this->load->model("mclinic");
         $this->load->model("mclinicholidays");
@@ -96,7 +97,7 @@ class Auth extends REST_Controller
                         throw new Exception("Trying to access inactive account");
 
                     $clinic = $this->mclinic->get($consultant_login_data->entity_id);
-					$clinic->location = $this->mlocation->get($clinic->location);
+					$clinic->location = $this->mlocations->get($clinic->location);
 ////					$clinic->sessions = $this->mclinicsession->get_sessions($clinic->id);
 ////					$clinic->consultants = $this->mdoctor->get_consultants($clinic->id);
 
