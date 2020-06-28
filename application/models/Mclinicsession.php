@@ -213,7 +213,7 @@ class Mclinicsession extends CI_Model
 
             $current_session_status = $this->mclinicsessiontrans->get_last_states_of_session($sessions->id, DateHelper::slk_date());
 
-            if ($current_session_status == SessionStatus::PENDING && (DateHelper::is_time_diff(DateHelper::utc_time(), $session_data->starting_time)))
+            if ($current_session_status == SessionStatus::PENDING && (DateHelper::is_time_diff(DateHelper::utc_time(), $session_data->end_time)))
                 $sessions->days->session_status = SessionStatus::TIME_PASSED;
             else
                 $sessions->days->session_status = $current_session_status;
