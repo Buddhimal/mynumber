@@ -13,7 +13,8 @@ class EntityClinic
 	public $web = null;
 	public $location = null;
 	public $created = null;
-	
+	public $is_verified = null;
+
 	function __construct($data=null){
 		if(!is_null($data)){
 			$this->id = $data->id;
@@ -25,6 +26,7 @@ class EntityClinic
 			$this->web = $data->web;
 			$this->location = $data->location_id;
 			$this->created = $data->created;
+			$this->is_verified = $data->is_verified;
 		}
 	}
 }
