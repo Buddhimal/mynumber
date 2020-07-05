@@ -1307,6 +1307,8 @@ class Consultant extends REST_Controller
 
                     $sessions = $this->mclinicsession->get_sessions_for_day($clinic_id, DateHelper::utc_day());
 
+					$sessions = array_reverse($sessions);
+
                     if (!is_null($sessions)) {
                         $response->status = REST_Controller::HTTP_OK;
                         $response->status_code = APIResponseCode::SUCCESS;
