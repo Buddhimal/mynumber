@@ -197,7 +197,7 @@ class Mclinicsession extends CI_Model
             ->where('d.day', $day)
             ->where('d.off', false)
             ->order_by('d.starting_time', 'ASC')
-            ->order_by('d.end_time', 'ASC')
+//            ->order_by('d.end_time', 'ASC')
             ->get();
 
         foreach ($all_sessions->result() as $session_data) {
