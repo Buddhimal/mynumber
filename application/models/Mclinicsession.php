@@ -188,6 +188,7 @@ class Mclinicsession extends CI_Model
     public function get_sessions_for_day($clinic_id = '', $day = '')
     {
         $output = null;
+		$current_datetime = DateHelper::utc_datetime();
 
         $all_sessions = $this->db
             ->select("c.*,d.day,d.starting_time,d.end_time")
@@ -196,7 +197,8 @@ class Mclinicsession extends CI_Model
             ->where(sprintf("c.clinic_id='%s' and c.is_deleted=0 and c.is_active=1 and d.is_deleted=0 and d.is_active=1", $clinic_id))
             ->where('d.day', $day)
             ->where('d.off', false)
-            ->order_by('d.starting_time', 'ASC')
+//            ->order_by('d.starting_time', 'ASC')
+            ->order_by("ABS('$current_datetime' - UNIX_TIMESTAMP(d.starting_time))")
 //            ->order_by('d.end_time', 'ASC')
             ->get();
 
