@@ -73,10 +73,10 @@ class Mdoctor extends CI_Model
 //			$result = false;
 //		}
 
-		if ((isset($this->post['email']) && ! $this->mvalidation->email($this->post['email']))) {
-			array_push($this->validation_errors, 'Invalid Email.');
-			$result = false;
-		}
+//		if ((isset($this->post['email']) && ! $this->mvalidation->email($this->post['email']))) {
+//			array_push($this->validation_errors, 'Invalid Email.');
+//			$result = false;
+//		}
 //
 //		if (!(isset($this->post['contact_telephone']) && $this->mvalidation->telephone($this->post['contact_telephone']))) {
 //			array_push($this->validation_errors, 'Invalid Contact Mobile.');
