@@ -143,7 +143,11 @@ class Mclinicsessiontrans extends CI_Model
                     $appointments = $this->mclinicappointment->get_appointment_full_detail($session_id, DateHelper::slk_date());
 
                     foreach ($appointments->result() as $patient) {
-                        $this->messagesender->send_sms($patient->patient_phone, SMSTemplate::CancelSessionSMS((array)$patient));
+                    	//update appointment main status
+						$this->mclinicappointment->update_appointment_status($patient->appointment_id,AppointmentStatus::DOCTOR_CANCELED);
+
+						$this->messagesender->send_sms($patient->patient_phone, SMSTemplate::CancelSessionSMS((array)$patient));
+
                     }
                 }
             }
