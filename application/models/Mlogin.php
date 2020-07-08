@@ -120,6 +120,7 @@ class Mlogin extends CI_Model
             ->select('*')
             ->from($this->table)
             ->where('username', $username)
+			->where('entity_type', EntityType::Consultant)
             ->where('is_active', 1)
             ->where('is_confirmed', 1)
             ->where('is_deleted', 0)
