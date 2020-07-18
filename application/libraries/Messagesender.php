@@ -6,7 +6,7 @@ class Messagesender
 {
 
 
-    public function send_otp($Mobile, $TEXT)
+    public function send_otp_new($Mobile, $TEXT)
     {
         $newsletters = new Newsletterslk;
         $newsletters->setUser(APIKeys::SMS_API_KEY, APIKeys::SMS_API_TOKEN);// Initializing User Api Key and Api Token
@@ -25,7 +25,7 @@ class Messagesender
             return false;
     }
 
-    public function send_sms($Mobile, $TEXT)
+    public function send_sms_new($Mobile, $TEXT)
     {
         $newsletters = new Newsletterslk;
         $newsletters->setUser(APIKeys::SMS_API_KEY, APIKeys::SMS_API_TOKEN);// Initializing User Api Key and Api Token
@@ -42,8 +42,29 @@ class Messagesender
             return false;
     }
 
+	public function send_sms($number, $msg)
+	{
 
-    public function send_otp_old($number, $msg)
+		$user = "94714102030";
+		$password = "1923";
+		$text = urlencode('MyNumber.lk OTP code : ' . $msg);
+		$to = $number;
+
+		$baseurl = "http://www.textit.biz/sendmsg";
+		$url = "$baseurl/?id=$user&pw=$password&to=$to&text=$text";
+		$ret = $this->get_web_page($url);
+		$res = explode(":", $ret);
+
+
+		if (trim($res[0]) == "OK") {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+
+    public function send_otp($number, $msg)
     {
 
         $user = "94714102030";
