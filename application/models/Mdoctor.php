@@ -32,6 +32,8 @@ class Mdoctor extends CI_Model
 			$this->post['location'] = $post_array['location'];
 		if (isset($post_array['contact_telephone']))
 			$this->post['contact_telephone'] = $post_array['contact_telephone'];
+		if (isset($post_array['device_mobile']))
+			$this->post['device_mobile'] = $post_array['device_mobile'];
 		if (isset($post_array['email']))
 			$this->post['email'] = $post_array['email'];
 		if (isset($post_array['specialities']))
