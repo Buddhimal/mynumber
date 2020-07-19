@@ -32,8 +32,6 @@ class Mdoctor extends CI_Model
 			$this->post['location'] = $post_array['location'];
 		if (isset($post_array['contact_telephone']))
 			$this->post['contact_telephone'] = $post_array['contact_telephone'];
-		if (isset($post_array['device_mobile']))
-			$this->post['device_mobile'] = $post_array['device_mobile'];
 		if (isset($post_array['email']))
 			$this->post['email'] = $post_array['email'];
 		if (isset($post_array['specialities']))
@@ -70,28 +68,18 @@ class Mdoctor extends CI_Model
 			$result = false;
 		}
 
-		if (!(isset($this->post['slmc_reg_number']) && $this->post['slmc_reg_number'] != NULL && $this->post['slmc_reg_number'] != '')) {
-			array_push($this->validation_errors, 'Invalid SLMC Reg Number..');
-			$result = false;
-		}
+//		if (!(isset($this->post['slmc_reg_number']) && $this->post['slmc_reg_number'] != NULL && $this->post['slmc_reg_number'] != '')) {
+//			array_push($this->validation_errors, 'Invalid SLMC Reg Number..');
+//			$result = false;
+//		}
 
 //		if ((isset($this->post['email']) && ! $this->mvalidation->email($this->post['email']))) {
 //			array_push($this->validation_errors, 'Invalid Email.');
 //			$result = false;
 //		}
 //
-//		if (!(isset($this->post['consulting_hospitals']) && $this->post['consulting_hospitals'] != NULL && $this->post['consulting_hospitals'] != '')) {
-//			array_push($this->validation_errors, 'Invalid consulting hospitals');
-//			$result = false;
-//		}
-//
-//		if (!(isset($this->post['specialities']) && $this->post['specialities'] != NULL && $this->post['specialities'] != '')) {
-//			array_push($this->validation_errors, 'Invalid SLMC Reg Number..');
-//			$result = false;
-//		}
-//
 //		if (!(isset($this->post['contact_telephone']) && $this->mvalidation->telephone($this->post['contact_telephone']))) {
-//			array_push($this->validation_errors, 'Invalid telephone number.');
+//			array_push($this->validation_errors, 'Invalid Contact Mobile.');
 //			$result = false;
 //		}
 
