@@ -88,10 +88,10 @@ class Mdoctor extends CI_Model
 			$result = false;
 		}
 
-		if (!(isset($this->post['contact_telephone']) && $this->mvalidation->telephone($this->post['contact_telephone']))) {
-			array_push($this->validation_errors, 'Invalid telephone number.');
-			$result = false;
-		}
+//		if (!(isset($this->post['contact_telephone']) && $this->mvalidation->telephone($this->post['contact_telephone']))) {
+//			array_push($this->validation_errors, 'Invalid telephone number.');
+//			$result = false;
+//		}
 
 		return $result;
 	}
