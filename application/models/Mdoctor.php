@@ -32,8 +32,6 @@ class Mdoctor extends CI_Model
 			$this->post['location'] = $post_array['location'];
 		if (isset($post_array['contact_telephone']))
 			$this->post['contact_telephone'] = $post_array['contact_telephone'];
-		if (isset($post_array['device_mobile']))
-			$this->post['device_mobile'] = $post_array['device_mobile'];
 		if (isset($post_array['email']))
 			$this->post['email'] = $post_array['email'];
 		if (isset($post_array['specialities']))
@@ -152,12 +150,6 @@ class Mdoctor extends CI_Model
 
 		if (isset($this->post['contact_telephone']) && $this->post['contact_telephone'] != $current_doctor_data->contact_telephone)
 			$update_data['contact_telephone'] = $this->post['contact_telephone'];
-
-		if (isset($this->post['contact_mobile']) && $this->post['contact_mobile'] != $current_doctor_data->contact_mobile)
-			$update_data['contact_mobile'] = $this->post['contact_mobile'];
-
-		if (isset($this->post['device_mobile']) && $this->post['device_mobile'] != $current_doctor_data->device_mobile)
-			$update_data['device_mobile'] = $this->post['device_mobile'];
 
 		if (isset($this->post['email']) && $this->post['email'] != $current_doctor_data->email)
 			$update_data['email'] = $this->post['email'];
