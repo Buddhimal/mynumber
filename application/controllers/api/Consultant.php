@@ -918,7 +918,7 @@ class Consultant extends REST_Controller
 
 						$json_data = $this->put('json_data');
 
-						if ($this->mclinicappointment->get_appointment_count($session_id,SessionStatus::PENDING)>0) {
+						if ($this->mclinicappointment->get_appointment_count($session_id,SessionStatus::PENDING)==0) {
 							foreach ($json_data['sessions'] as $session) {
 
 								// Passing post array to the model.
