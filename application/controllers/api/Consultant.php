@@ -918,57 +918,65 @@ class Consultant extends REST_Controller
 
 						$json_data = $this->put('json_data');
 
-						foreach ($json_data['sessions'] as $session) {
+						if ($this->mclinicappointment->get_appointment_count($session_id,SessionStatus::PENDING)) {
+							foreach ($json_data['sessions'] as $session) {
 
-// Passing post array to the model.
-							$this->mclinicsession->set_data($session);
+								// Passing post array to the model.
+								$this->mclinicsession->set_data($session);
 
-// model it self will validate the input data
-							if ($this->mclinicsession->is_valid()) {
+								// model it self will validate the input data
+								if ($this->mclinicsession->is_valid()) {
 
-								if ($this->mclinicsession->update($session_id)) {
+									if ($this->mclinicsession->update($session_id)) {
 
-									foreach ($session['days'] as $days) {
+										foreach ($session['days'] as $days) {
 
-										$this->mclinicsessiondays->set_data($days);
+											$this->mclinicsessiondays->set_data($days);
 
-										if ($this->mclinicsessiondays->is_valid()) {
+											if ($this->mclinicsessiondays->is_valid()) {
 
-											$this->mclinicsessiondays->update($days['id']);
+												$this->mclinicsessiondays->update($days['id']);
 
-										} else {
-											$errors['msg'] = 'Validation Failed.';
-											$errors['request_data'] = $days;
-											$errors['errors'] = $this->mclinicsessiondays->validation_errors;
-											$validation_errors[] = $errors;
+											} else {
+												$errors['msg'] = 'Validation Failed.';
+												$errors['request_data'] = $days;
+												$errors['errors'] = $this->mclinicsessiondays->validation_errors;
+												$validation_errors[] = $errors;
+											}
 										}
 									}
+
+								} else {
+									$errors['msg'] = 'Validation Failed.';
+									$errors['request_data'] = $session;
+									$errors['errors'] = $this->mclinicsession->validation_errors;
+									$validation_errors[] = $errors;
 								}
-
-							} else {
-								$errors['msg'] = 'Validation Failed.';
-								$errors['request_data'] = $session;
-								$errors['errors'] = $this->mclinicsession->validation_errors;
-								$validation_errors[] = $errors;
+								$sessions = $this->mclinicsession->get_full_session($session_id);
 							}
-							$sessions = $this->mclinicsession->get_full_session($session_id);
-						}
-
-						if (sizeof($validation_errors) == 0) {
-							$response->status = REST_Controller::HTTP_OK;
-							$response->status_code = APIResponseCode::SUCCESS;
-							$response->msg = 'Success';
+							if (sizeof($validation_errors) == 0) {
+								$response->status = REST_Controller::HTTP_OK;
+								$response->status_code = APIResponseCode::SUCCESS;
+								$response->msg = 'Success';
+								$response->error_msg = NULL;
+								$response->response['sessions'] = $sessions;
+								$this->response($response, REST_Controller::HTTP_OK);
+							} else {
+								$response->status = REST_Controller::HTTP_OK;
+								$response->status_code = APIResponseCode::SUCCESS_WITH_ERRORS;
+								$response->msg = 'Success with errors';
+								$response->error_msg = $validation_errors;
+								$response->response['sessions'] = $sessions;
+								$this->response($response, REST_Controller::HTTP_OK);
+							}
+						} else{
+							$response->status = REST_Controller::HTTP_BAD_REQUEST;
+							$response->status_code = APIResponseCode::BAD_REQUEST;
+							$response->msg = 'You cannot change sessions with pending appointments. Try again later.';
 							$response->error_msg = NULL;
-							$response->response['sessions'] = $sessions;
+							$response->response = NULL;
 							$this->response($response, REST_Controller::HTTP_OK);
-						} else {
-							$response->status = REST_Controller::HTTP_OK;
-							$response->status_code = APIResponseCode::SUCCESS_WITH_ERRORS;
-							$response->msg = 'Success with errors';
-							$response->error_msg = $validation_errors;
-							$response->response['sessions'] = $sessions;
-							$this->response($response, REST_Controller::HTTP_OK);
-						}
+						} //end appointment count check id
 
 					} else {
 						$response->status = REST_Controller::HTTP_BAD_REQUEST;
@@ -1004,7 +1012,7 @@ class Consultant extends REST_Controller
 			$response->response = NULL;
 			$this->response($response, REST_Controller::HTTP_OK);
 		}
-	} // not complete
+	}
 
 	public function ViewSessionsBClinic_get($clinic_id = '')
 	{
