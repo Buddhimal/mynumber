@@ -20,7 +20,7 @@ class Mclinicholidays extends CI_Model
         if (isset($post_array['holiday']))
             $this->post['holiday'] = $post_array['holiday'];
         if (isset($post_array['title']))
-            $this->post['title'] = ucfirst($post_array['title']);
+            $this->post['title'] = ucwords($post_array['title']);
         if (isset($post_array['note']))
             $this->post['note'] =ucfirst( $post_array['note']);
     }

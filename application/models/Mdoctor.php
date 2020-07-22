@@ -21,13 +21,13 @@ class Mdoctor extends CI_Model
 		if (isset($post_array['salutation']))
 			$this->post['salutation'] = $post_array['salutation'];
 		if (isset($post_array['firstname']))
-			$this->post['first_name'] = ucfirst($post_array['firstname']);
+			$this->post['first_name'] = ucwords($post_array['firstname']);
 		if (isset($post_array['lastname']))
-			$this->post['last_name'] = ucfirst($post_array['lastname']);
+			$this->post['last_name'] = ucwords($post_array['lastname']);
 		if (isset($post_array['nic']))
 			$this->post['nic'] = $post_array['nic'];
 		if (isset($post_array['known_name']))
-			$this->post['known_name'] = ucfirst($post_array['wellknownas']);
+			$this->post['known_name'] = ucwords($post_array['wellknownas']);
 		if (isset($post_array['location']))
 			$this->post['location'] = $post_array['location'];
 		if (isset($post_array['contact_telephone']))
@@ -35,7 +35,7 @@ class Mdoctor extends CI_Model
 		if (isset($post_array['email']))
 			$this->post['email'] = $post_array['email'];
 		if (isset($post_array['specialities']))
-			$this->post['specialities'] = ucfirst($post_array['specialities']);
+			$this->post['specialities'] = ucwords($post_array['specialities']);
 		if (isset($post_array['doctor_code']))
 			$this->post['doctor_code'] = $post_array['doctor_code'];
 		if (isset($post_array['slmc_reg_number']))

@@ -23,9 +23,9 @@ class Mclinicsession extends CI_Model
         if (isset($post_array['consultant']))
             $this->post['consultant'] = $post_array['consultant'];
         if (isset($post_array['session_name']))
-            $this->post['session_name'] = ucfirst($post_array['session_name']);
+            $this->post['session_name'] = ucwords($post_array['session_name']);
         if (isset($post_array['session_description']))
-            $this->post['session_description'] = ucfirst($post_array['session_description']);
+            $this->post['session_description'] = ucwords($post_array['session_description']);
         if (isset($post_array['avg_time_per_patient']))
             $this->post['avg_time_per_patient'] = $post_array['avg_time_per_patient'];
         if (isset($post_array['max_patients']))
