@@ -21,7 +21,7 @@ class Mclinic extends CI_Model
     public function set_data($post_array)
     {
         if (isset($post_array['name']))
-            $this->post['clinic_name'] = $post_array['name'];
+            $this->post['clinic_name'] = ucfirst($post_array['name']);
         if (isset($post_array['contact_telephone']))
             $this->post['contact_telephone'] = $post_array['contact_telephone'];
         if (isset($post_array['contact_mobile']))
