@@ -62,6 +62,7 @@ class Payments{
 class PaymentCollectionStatus{
 	const Pending=0;
 	const Collected = 1;
+	const Skipped = 3;
 }
 
 class PaymentPaidStatus{

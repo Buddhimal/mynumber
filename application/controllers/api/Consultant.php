@@ -2153,16 +2153,20 @@ class Consultant extends REST_Controller
 
 				if ($this->payment_receivals->is_valid()) {
 
-					$receival_record = $this->payment_receivals->create();
+					if($this->payment_receivals->update_older_pending_payment($clinic_id)){
 
-					if (!is_null($receival_record)) {
-						$response->status = REST_Controller::HTTP_OK;
-						$response->status_code = APIResponseCode::SUCCESS;
-						$response->msg = 'Payment request Successful';
-						$response->error_msg = NULL;
-						$response->response['payment_request_id'] = $receival_record->id;
-						$this->response($response, REST_Controller::HTTP_OK);
+						$receival_record = $this->payment_receivals->create();
+
+						if (!is_null($receival_record)) {
+							$response->status = REST_Controller::HTTP_OK;
+							$response->status_code = APIResponseCode::SUCCESS;
+							$response->msg = 'Payment request Successful';
+							$response->error_msg = NULL;
+							$response->response['payment_request_id'] = $receival_record->id;
+							$this->response($response, REST_Controller::HTTP_OK);
+						}
 					}
+
 				} else {
 					$response->status = REST_Controller::HTTP_BAD_REQUEST;
 					$response->status_code = APIResponseCode::BAD_REQUEST;
