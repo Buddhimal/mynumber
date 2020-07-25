@@ -170,6 +170,7 @@ class Mpaymentreceivals extends CI_Model
 			->set($update_record)
 			->where('pay_requested <', $now)
 			->where('clinic_id', $clinic_id)
+			->where('collection_status', 0)
 			->update($this->table);
 		if ($this->db->trans_status() === FALSE) {
 			$this->db->trans_rollback();
