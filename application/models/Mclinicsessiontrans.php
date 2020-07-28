@@ -75,7 +75,7 @@ class Mclinicsessiontrans extends CI_Model
 					$this->messagesender->send_sms($patient->patient_phone, SMSTemplate::StartSessionSMS((array)$patient));
 					$fcm_id[] = $patient->firebase_id;
 				}
-				if ($appointments->num_rows > 0)
+				if ($appointments->num_rows() > 0)
 					$this->Fcmsender->send_fcm(FCMTemplate::StartSessionFCM((array)$patient), $fcm_id);
 			}
 		}
@@ -153,7 +153,7 @@ class Mclinicsessiontrans extends CI_Model
 						$this->messagesender->send_sms($patient->patient_phone, SMSTemplate::CancelSessionSMS((array)$patient));
 						$fcm_id[] = $patient->firebase_id;
 					}
-					if ($appointments->num_rows > 0)
+					if ($appointments->num_rows() > 0)
 						$this->Fcmsender->send_fcm(FCMTemplate::StartSessionFCM((array)$patient), $fcm_id);
 				}
 			}
@@ -200,7 +200,7 @@ class Mclinicsessiontrans extends CI_Model
 					$this->messagesender->send_sms($patient->patient_phone, SMSTemplate::OnTheWaySMS((array)$patient));
 					$fcm_id[] = $patient->firebase_id;
 				}
-				if ($appointments->num_rows > 0)
+				if ($appointments->num_rows() > 0)
 					$this->Fcmsender->send_fcm(FCMTemplate::OnTheWayFCM((array)$patient), $fcm_id);
 			}
 
