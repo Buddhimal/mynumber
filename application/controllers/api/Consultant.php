@@ -918,7 +918,7 @@ class Consultant extends REST_Controller
 
 						$json_data = $this->put('json_data');
 
-						if ($this->mclinicappointment->get_appointment_count($session_id,SessionStatus::PENDING)==0) {
+						if ($this->mclinicappointment->get_appointment_count($session_id, SessionStatus::PENDING) == 0) {
 							foreach ($json_data['sessions'] as $session) {
 
 								// Passing post array to the model.
@@ -969,7 +969,7 @@ class Consultant extends REST_Controller
 								$response->response['sessions'] = $sessions;
 								$this->response($response, REST_Controller::HTTP_OK);
 							}
-						} else{
+						} else {
 							$response->status = REST_Controller::HTTP_BAD_REQUEST;
 							$response->status_code = APIResponseCode::BAD_REQUEST;
 							$response->msg = 'You cannot change sessions with pending appointments. Try again later.';
@@ -2153,7 +2153,7 @@ class Consultant extends REST_Controller
 
 				if ($this->payment_receivals->is_valid()) {
 
-					if($this->payment_receivals->update_older_pending_payment($clinic_id)){
+					if ($this->payment_receivals->update_older_pending_payment($clinic_id)) {
 
 						$receival_record = $this->payment_receivals->create();
 
@@ -2242,6 +2242,40 @@ class Consultant extends REST_Controller
 
 		var_dump($this->email->send());
 //       $this->load->view('template',$data);
+	}
+
+	public function send_fcm_get()
+	{
+		$curl = curl_init();
+
+		$id_array = array('c8b91QBmTlOzXLV7XNFEcW:APA91bFzbS2xQDZYk7AdzLb46MwYdC6wDf4_SiFH0EmoWnx1sCJmsDob5GDmyPernqrSdr3oGTxW7zieDMuAIfjUAZmoCA_AYJFYUTGCNWm0E-qvYu0M4ucmkAAUmVRcSQyZFh1HvKj3');
+		$notification['title'] = "Your doctor is on his way to clinic";
+		$notification['body'] = "Your clinic session will be started at 04:30PM and your appointment number is 04.";
+
+		$data['title'] = "Your doctor is on his way to clinic";
+		$data['body'] = "Your clinic session will be started at 04:30PM and your appointment number is 04.";
+
+		curl_setopt_array($curl, array(
+			CURLOPT_URL => "https://fcm.googleapis.com/fcm/send",
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_ENCODING => "",
+			CURLOPT_MAXREDIRS => 10,
+			CURLOPT_TIMEOUT => 0,
+			CURLOPT_FOLLOWLOCATION => true,
+			CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+			CURLOPT_CUSTOMREQUEST => "POST",
+			CURLOPT_SSL_VERIFYPEER => false,
+			CURLOPT_POSTFIELDS => json_encode(array('registration_ids' => $id_array, 'priority' => 10, 'notification' => $notification, 'data' => $data)),
+			CURLOPT_HTTPHEADER => array(
+				"Authorization: key=AAAALMcRCVU:APA91bEJrwF4xzH7eWD8mZOzBrdmZKSSCShlsDlUs3lwfZ_H-3qQuP2h7WBpYIv05P5wt0w6f2bK1gKRDAQgQ5CcxhBhUrVuVkmIaMOggjiyt3oreJ76Ybm1Qrm8vXRYs3edi4Mtq4n8",
+				"Content-Type: application/json"
+			),
+		));
+
+		$response = curl_exec($curl);
+
+		curl_close($curl);
+		echo $response;
 	}
 
 

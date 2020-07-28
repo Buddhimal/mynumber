@@ -301,6 +301,7 @@ class Mclinicappointment extends CI_Model
         $res=$this->db
             ->query("SELECT
                             ca.id,
+                            p.firebase_id,
                             ca.id as appointment_id,
                             ca.patient_name,
                             ca.patient_address,
@@ -313,6 +314,7 @@ class Mclinicappointment extends CI_Model
                             sd.starting_time 
                         FROM
                             clinic_appointments AS ca
+                            INNER JOIN `public` AS p on p.id=ca.patient_id and p.is_active=1 AND p.is_deleted=0
                             INNER JOIN clinic_session AS s ON ca.session_id = s.id
                             INNER JOIN doctor AS d ON s.consultant = d.id
                             INNER JOIN serial_number AS sn ON ca.serial_number_id = sn.id
