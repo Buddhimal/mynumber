@@ -179,8 +179,7 @@ class Mpublic extends CI_Model
 	{
 		$result = null;
 
-		$public_id = trim($this->mmodel->getGUID(), '{}');
-		$this->post['id'] = $public_id;
+		$this->post['id'] = $post_array->id;
 
 		$this->post['salutation'] = '';
 		$this->post['first_name'] = 'Clinic';
@@ -195,13 +194,13 @@ class Mpublic extends CI_Model
 		$this->post['is_active'] = 1;
 		$this->post['updated'] = date("Y-m-d H:i:s");
 		$this->post['created'] = date("Y-m-d H:i:s");
-		$this->post['updated_by'] = $public_id;
-		$this->post['created_by'] = $public_id;
+		$this->post['updated_by'] = $post_array->id;
+		$this->post['created_by'] = $post_array->id;
 
 		$this->mmodel->insert($this->table, $this->post);
 
 		if ($this->db->affected_rows() > 0) {
-			$result = $this->get($public_id);
+			$result = $this->get($post_array->id);
 		}
 
 		return $result;

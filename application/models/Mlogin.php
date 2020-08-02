@@ -69,7 +69,7 @@ class Mlogin extends CI_Model
 
     public function create($clinic_id, $entity_type)
     {
-        $login_password = $this->utilityhandler->_salt($this->post["password"], $this->post['username']);
+//        $login_password = $this->utilityhandler->_salt($this->post["password"], $this->post['username']);
         $this->post['id'] = trim($this->mmodel->getGUID(), '{}');
         $this->post['is_deleted'] = 0;
         $this->post['is_active'] = 1;
@@ -78,7 +78,7 @@ class Mlogin extends CI_Model
         $this->post['updated_by'] = $clinic_id;
         $this->post['created_by'] = $clinic_id;
         $this->post['entity_id'] = $clinic_id;
-        $this->post['password'] = $login_password;
+//        $this->post['password'] = $login_password;
         $this->post['entity_type'] = $entity_type;
         $this->post['is_confirmed'] = 0;
         $this->mmodel->insert($this->table, $this->post);
