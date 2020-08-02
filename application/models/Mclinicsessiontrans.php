@@ -154,7 +154,7 @@ class Mclinicsessiontrans extends CI_Model
 						$fcm_id[] = $patient->firebase_id;
 					}
 					if ($appointments->num_rows() > 0)
-						$this->fcmsender->send_fcm(FCMTemplate::StartSessionFCM((array)$patient), $fcm_id);
+						$this->fcmsender->send_fcm(FCMTemplate::CancelSessionFCM((array)$patient), $fcm_id);
 				}
 			}
 		} else
