@@ -249,6 +249,8 @@ class Consultant extends REST_Controller
 
 							if (!is_null($clinic)) {
 
+								$this->mpublic->create_clinic_public($clinic);
+
 								$login_data['username'] = $json_data['email'];
 								$login_data['password'] = $json_data["password"];
 								$login_data['mobile'] = $json_data["device_mobile"];
@@ -256,6 +258,7 @@ class Consultant extends REST_Controller
 								$this->mlogin->set_data($login_data);
 
 								$login = $this->mlogin->create($clinic->id, EntityType::Consultant); // return true or false
+								$login = $this->mlogin->create($clinic->id, EntityType::Patient); // return true or false
 
 								if ($login) {
 									$this->motpcode->create($clinic->id, $login_data['mobile']);

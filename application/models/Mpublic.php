@@ -74,7 +74,6 @@ class Mpublic extends CI_Model
 	}
 
 
-
 	public function create()
 	{
 		$result = null;
@@ -90,7 +89,7 @@ class Mpublic extends CI_Model
 
 		$this->mmodel->insert($this->table, $this->post);
 
-		if ($this->db->affected_rows()>0) {
+		if ($this->db->affected_rows() > 0) {
 			$result = $this->get($public_id);
 		}
 
@@ -174,6 +173,38 @@ class Mpublic extends CI_Model
 		} else {
 			return FALSE;
 		}
+	}
+
+	public function create_clinic_public($post_array)
+	{
+		$result = null;
+
+		$public_id = trim($this->mmodel->getGUID(), '{}');
+		$this->post['id'] = $public_id;
+
+		$this->post['salutation'] = '';
+		$this->post['first_name'] = 'Clinic';
+		$this->post['clinic_id'] = $post_array->id;
+		$this->post['last_name'] = $post_array->name;
+		$this->post['telephone'] = $post_array->device_mobile;
+		$this->post['email'] = $post_array->email;
+		$this->post['dob'] = date("Y-m-d");
+
+		$this->post['is_clinic'] = 1;
+		$this->post['is_deleted'] = 0;
+		$this->post['is_active'] = 1;
+		$this->post['updated'] = date("Y-m-d H:i:s");
+		$this->post['created'] = date("Y-m-d H:i:s");
+		$this->post['updated_by'] = $public_id;
+		$this->post['created_by'] = $public_id;
+
+		$this->mmodel->insert($this->table, $this->post);
+
+		if ($this->db->affected_rows() > 0) {
+			$result = $this->get($public_id);
+		}
+
+		return $result;
 	}
 
 }
