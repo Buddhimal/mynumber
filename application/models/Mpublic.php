@@ -186,6 +186,7 @@ class Mpublic extends CI_Model
 		$this->post['clinic_id'] = $post_array->id;
 		$this->post['last_name'] = $post_array->name;
 		$this->post['telephone'] = $post_array->device_mobile;
+		$this->post['address'] = "This Clinic";
 		$this->post['email'] = $post_array->email;
 		$this->post['dob'] = date("Y-m-d");
 
