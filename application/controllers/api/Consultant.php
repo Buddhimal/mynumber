@@ -922,7 +922,7 @@ class Consultant extends REST_Controller
 
 						$json_data = $this->put('json_data');
 
-						if ($this->mclinicappointment->get_appointment_count($session_id, SessionStatus::PENDING) == 0) {
+//						if ($this->mclinicappointment->get_appointment_count($session_id, SessionStatus::PENDING) == 0) {
 							foreach ($json_data['sessions'] as $session) {
 
 								// Passing post array to the model.
@@ -973,14 +973,14 @@ class Consultant extends REST_Controller
 								$response->response['sessions'] = $sessions;
 								$this->response($response, REST_Controller::HTTP_OK);
 							}
-						} else {
-							$response->status = REST_Controller::HTTP_BAD_REQUEST;
-							$response->status_code = APIResponseCode::BAD_REQUEST;
-							$response->msg = 'You cannot change sessions with pending appointments. Try again later.';
-							$response->error_msg = NULL;
-							$response->response = NULL;
-							$this->response($response, REST_Controller::HTTP_OK);
-						} //end appointment count check id
+//						} else {
+//							$response->status = REST_Controller::HTTP_BAD_REQUEST;
+//							$response->status_code = APIResponseCode::BAD_REQUEST;
+//							$response->msg = 'You cannot change sessions with pending appointments. Try again later.';
+//							$response->error_msg = NULL;
+//							$response->response = NULL;
+//							$this->response($response, REST_Controller::HTTP_OK);
+//						} //end appointment count check id
 
 					} else {
 						$response->status = REST_Controller::HTTP_BAD_REQUEST;
