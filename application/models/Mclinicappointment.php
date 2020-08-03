@@ -323,7 +323,7 @@ class Mclinicappointment extends CI_Model
                             INNER JOIN locations AS l ON l.id = c.location_id
                         WHERE 
                             $day=sd.day
-                            AND p.is_clini=0
+                            AND p.is_clinic=0
                             AND s.id='$session_id'
                             AND ca.appointment_date='$appointment_date'
                             AND ca.is_canceled=0
