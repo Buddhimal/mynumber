@@ -26,7 +26,7 @@ class Fcmsender
 			CURLOPT_SSL_VERIFYPEER => false,
 			CURLOPT_POSTFIELDS => json_encode(array('registration_ids' => $fcm_id, 'priority' => 10, 'notification' => $data, 'data' => $data)),
 			CURLOPT_HTTPHEADER => array(
-				"Authorization: key=AAAALMcRCVU:APA91bEJrwF4xzH7eWD8mZOzBrdmZKSSCShlsDlUs3lwfZ_H-3qQuP2h7WBpYIv05P5wt0w6f2bK1gKRDAQgQ5CcxhBhUrVuVkmIaMOggjiyt3oreJ76Ybm1Qrm8vXRYs3edi4Mtq4n8",
+				"Authorization: key=AAAAZIexVJk:APA91bEaS1mmqc56An3KNmRYi-9V1gTr-6AYbjjOBcOyk400nlmuQRkBXde73EY9H3zJPerRvCM5k5w_yeiHxZjgwC5u6D--9cRMZsW6ZS0S-ddqF4z55FAdbRx81Z4mMn7ancigAlAB",
 				"Content-Type: application/json"
 			),
 		));
