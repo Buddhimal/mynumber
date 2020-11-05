@@ -259,7 +259,7 @@ class Consultant extends REST_Controller
 
 
 								$login = $this->mlogin->create($clinic->id, EntityType::Consultant); // return true or false
-								$login = $this->mlogin->create($clinic->id, EntityType::Patient); // return true or false
+								$login = $this->mlogin->create($clinic->id, EntityType::Patient);    // return true or false
 
 								if ($login) {
 									$this->motpcode->create($clinic->id, $login_data['mobile']);
@@ -923,56 +923,56 @@ class Consultant extends REST_Controller
 						$json_data = $this->put('json_data');
 
 //						if ($this->mclinicappointment->get_appointment_count($session_id, SessionStatus::PENDING) == 0) {
-							foreach ($json_data['sessions'] as $session) {
+						foreach ($json_data['sessions'] as $session) {
 
-								// Passing post array to the model.
-								$this->mclinicsession->set_data($session);
+							// Passing post array to the model.
+							$this->mclinicsession->set_data($session);
 
-								// model it self will validate the input data
-								if ($this->mclinicsession->is_valid()) {
+							// model it self will validate the input data
+							if ($this->mclinicsession->is_valid()) {
 
-									if ($this->mclinicsession->update($session_id)) {
+								if ($this->mclinicsession->update($session_id)) {
 
-										foreach ($session['days'] as $days) {
+									foreach ($session['days'] as $days) {
 
-											$this->mclinicsessiondays->set_data($days);
+										$this->mclinicsessiondays->set_data($days);
 
-											if ($this->mclinicsessiondays->is_valid()) {
+										if ($this->mclinicsessiondays->is_valid()) {
 
-												$this->mclinicsessiondays->update($days['id']);
+											$this->mclinicsessiondays->update($days['id']);
 
-											} else {
-												$errors['msg'] = 'Validation Failed.';
-												$errors['request_data'] = $days;
-												$errors['errors'] = $this->mclinicsessiondays->validation_errors;
-												$validation_errors[] = $errors;
-											}
+										} else {
+											$errors['msg'] = 'Validation Failed.';
+											$errors['request_data'] = $days;
+											$errors['errors'] = $this->mclinicsessiondays->validation_errors;
+											$validation_errors[] = $errors;
 										}
 									}
-
-								} else {
-									$errors['msg'] = 'Validation Failed.';
-									$errors['request_data'] = $session;
-									$errors['errors'] = $this->mclinicsession->validation_errors;
-									$validation_errors[] = $errors;
 								}
-								$sessions = $this->mclinicsession->get_full_session($session_id);
-							}
-							if (sizeof($validation_errors) == 0) {
-								$response->status = REST_Controller::HTTP_OK;
-								$response->status_code = APIResponseCode::SUCCESS;
-								$response->msg = 'Success';
-								$response->error_msg = NULL;
-								$response->response['sessions'] = $sessions;
-								$this->response($response, REST_Controller::HTTP_OK);
+
 							} else {
-								$response->status = REST_Controller::HTTP_OK;
-								$response->status_code = APIResponseCode::SUCCESS_WITH_ERRORS;
-								$response->msg = 'Success with errors';
-								$response->error_msg = $validation_errors;
-								$response->response['sessions'] = $sessions;
-								$this->response($response, REST_Controller::HTTP_OK);
+								$errors['msg'] = 'Validation Failed.';
+								$errors['request_data'] = $session;
+								$errors['errors'] = $this->mclinicsession->validation_errors;
+								$validation_errors[] = $errors;
 							}
+							$sessions = $this->mclinicsession->get_full_session($session_id);
+						}
+						if (sizeof($validation_errors) == 0) {
+							$response->status = REST_Controller::HTTP_OK;
+							$response->status_code = APIResponseCode::SUCCESS;
+							$response->msg = 'Success';
+							$response->error_msg = NULL;
+							$response->response['sessions'] = $sessions;
+							$this->response($response, REST_Controller::HTTP_OK);
+						} else {
+							$response->status = REST_Controller::HTTP_OK;
+							$response->status_code = APIResponseCode::SUCCESS_WITH_ERRORS;
+							$response->msg = 'Success with errors';
+							$response->error_msg = $validation_errors;
+							$response->response['sessions'] = $sessions;
+							$this->response($response, REST_Controller::HTTP_OK);
+						}
 //						} else {
 //							$response->status = REST_Controller::HTTP_BAD_REQUEST;
 //							$response->status_code = APIResponseCode::BAD_REQUEST;
@@ -2280,6 +2280,106 @@ class Consultant extends REST_Controller
 
 		curl_close($curl);
 		echo $response;
+	}
+
+	public function GetPatientDetails_get($clinic_id = '', $from = '', $to = '')
+	{
+		$method = $_SERVER['REQUEST_METHOD'];
+		$response = new stdClass();
+
+		if ($method == 'GET') {
+
+			$check_auth_client = $this->mmodel->check_auth_client();
+
+			if ($check_auth_client == true) {
+
+				if ($this->mclinic->valid_clinic($clinic_id)) {
+
+					$result = $this->mclinicappointment->get_appointment_patients($clinic_id, $from, $to);
+
+					$response->status = REST_Controller::HTTP_OK;
+					$response->status_code = APIResponseCode::SUCCESS;
+					$response->msg = 'successful';
+					$response->error_msg = null;
+					$response->response = $result;
+					$this->response($response, REST_Controller::HTTP_OK);
+
+				} else {
+					$response->status = REST_Controller::HTTP_BAD_REQUEST;
+					$response->status_code = APIResponseCode::BAD_REQUEST;
+					$response->msg = 'Invalid Clinic Id';
+					$response->error_msg[] = 'Invalid Clinic Id';
+					$response->response = NULL;
+					$this->response($response, REST_Controller::HTTP_OK);
+				}
+
+			} else {
+				$response->status = REST_Controller::HTTP_UNAUTHORIZED;
+				$response->status_code = APIResponseCode::UNAUTHORIZED;
+				$response->msg = 'Unauthorized';
+				$response->response = NULL;
+				$response->error_msg[] = 'Invalid Authentication Key.';
+				$this->response($response, REST_Controller::HTTP_OK);
+			}
+
+		} else {
+			$response->status = REST_Controller::HTTP_METHOD_NOT_ALLOWED;
+			$response->status_code = APIResponseCode::METHOD_NOT_ALLOWED;
+			$response->msg = 'Method Not Allowed';
+			$response->response = NULL;
+			$response->error_msg[] = 'Invalid Request Method.';
+			$this->response($response, REST_Controller::HTTP_OK);
+		}
+	}
+
+	public function GetPatientDetailsForSession_get($clinic_id = '', $on = '', $session_id = '')
+	{
+		$method = $_SERVER['REQUEST_METHOD'];
+		$response = new stdClass();
+
+		if ($method == 'GET') {
+
+			$check_auth_client = $this->mmodel->check_auth_client();
+
+			if ($check_auth_client == true) {
+
+				if ($this->mclinic->valid_clinic($clinic_id)) {
+
+					$result = $this->mclinicappointment->get_appointment_patients_for_session($clinic_id, $on, $session_id);
+
+					$response->status = REST_Controller::HTTP_OK;
+					$response->status_code = APIResponseCode::SUCCESS;
+					$response->msg = 'successful';
+					$response->error_msg = null;
+					$response->response = $result;
+					$this->response($response, REST_Controller::HTTP_OK);
+
+				} else {
+					$response->status = REST_Controller::HTTP_BAD_REQUEST;
+					$response->status_code = APIResponseCode::BAD_REQUEST;
+					$response->msg = 'Invalid Clinic Id';
+					$response->error_msg[] = 'Invalid Clinic Id';
+					$response->response = NULL;
+					$this->response($response, REST_Controller::HTTP_OK);
+				}
+
+			} else {
+				$response->status = REST_Controller::HTTP_UNAUTHORIZED;
+				$response->status_code = APIResponseCode::UNAUTHORIZED;
+				$response->msg = 'Unauthorized';
+				$response->response = NULL;
+				$response->error_msg[] = 'Invalid Authentication Key.';
+				$this->response($response, REST_Controller::HTTP_OK);
+			}
+
+		} else {
+			$response->status = REST_Controller::HTTP_METHOD_NOT_ALLOWED;
+			$response->status_code = APIResponseCode::METHOD_NOT_ALLOWED;
+			$response->msg = 'Method Not Allowed';
+			$response->response = NULL;
+			$response->error_msg[] = 'Invalid Request Method.';
+			$this->response($response, REST_Controller::HTTP_OK);
+		}
 	}
 
 

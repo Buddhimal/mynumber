@@ -120,7 +120,6 @@ class Mclinicappointment extends CI_Model
         return $this->db->get()->row();
     }
 
-
     public function get_next_appointment($clinic_id, $session_id, $patient_id = '')
     {
         $slk_date = DateHelper::slk_date();
@@ -258,7 +257,6 @@ class Mclinicappointment extends CI_Model
         return $output;
     }
 
-
     public function get_consulted_appoinments_for($clinic_id, $sessions)
     {
 
@@ -345,5 +343,51 @@ class Mclinicappointment extends CI_Model
 
 
     }
+
+    public function get_appointment_patients($clinic_id,$from,$to){
+
+    	$res= $this->db->query("SELECT
+											public.salutation,
+											public.first_name,
+											public.last_name,
+											clinic_appointments.patient_phone 
+										FROM
+											clinic_appointments
+											INNER JOIN clinic_session ON clinic_appointments.session_id = clinic_session.id
+											INNER JOIN public ON clinic_appointments.patient_id = public.id 
+										WHERE
+											clinic_appointments.is_canceled = 0 
+											AND clinic_session.clinic_id = '$clinic_id'
+											AND clinic_appointments.appointment_status NOT IN ( 0, 4, 7 ) 
+											AND clinic_appointments.appointment_date BETWEEN '$from' 
+											AND '$to'");
+
+    	return $res->result();
+
+
+	}
+
+    public function get_appointment_patients_for_session($clinic_id,$on, $session_id){
+
+    	$res= $this->db->query("SELECT
+											public.salutation,
+											public.first_name,
+											public.last_name,
+											clinic_appointments.patient_phone 
+										FROM
+											clinic_appointments
+											INNER JOIN clinic_session ON clinic_appointments.session_id = clinic_session.id
+											INNER JOIN public ON clinic_appointments.patient_id = public.id 
+										WHERE
+											clinic_appointments.is_canceled = 0 
+											AND clinic_session.clinic_id = '$clinic_id'
+											AND clinic_appointments.appointment_status NOT IN ( 0, 4, 7 ) 
+											AND clinic_appointments.appointment_date = '$on' 
+											AND clinic_appointments.session_id = '$session_id'");
+
+    	return $res->result();
+
+
+	}
 
 }

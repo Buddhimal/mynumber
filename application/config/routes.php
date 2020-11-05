@@ -77,7 +77,8 @@ $route['api/clinic/(:any)/session/(:any)/end']['PUT'] = 'api/consultant/EndSessi
 $route['api/clinic/(:any)/session/(:any)/cancel']['PUT'] = 'api/consultant/CancelSession/$1/$2';
 $route['api/clinic/(:any)/session/(:any)/appointment/(:any)/next']['PUT'] = 'api/consultant/NextNumber/$1/$2/$3';
 $route['api/clinic/(:any)/session/(:any)/appointment/(:any)/skip']['PUT'] = 'api/consultant/SkipNumber/$1/$2/$3';
-//
+$route['api/clinic/(:any)/patient/from/(:any)/to/(:any)']['GET'] = 'api/consultant/GetPatientDetails/$1/$2/$3';
+$route['api/clinic/(:any)/patient/on/(:any)/session/(:any)']['GET'] = 'api/consultant/GetPatientDetailsForSession/$1/$2/$3';
 
 // payments routes
 $route['api/clinic/(:any)/pay']['POST'] = 'api/consultant/DoPayment/$1';
