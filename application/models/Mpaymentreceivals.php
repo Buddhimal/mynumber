@@ -181,5 +181,22 @@ class Mpaymentreceivals extends CI_Model
 		}
 	}
 
+	public function complete_payment($clinic_id, $order_id, $record){
+		
+		$this->db->trans_begin();
+		$this->db
+			->set($update_record)
+			->where('clinic_id', $clinic_id)
+			->where('id', $order_id)
+			->update($this->table);
+
+		if ($this->db->trans_status() === FALSE) {
+			$this->db->trans_rollback();
+			return false;
+		} else {
+			$this->db->trans_commit();
+			return true;
+		}
+	}
 
 }

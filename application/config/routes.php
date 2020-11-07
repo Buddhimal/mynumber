@@ -82,6 +82,8 @@ $route['api/clinic/(:any)/patient/on/(:any)/session/(:any)']['GET'] = 'api/consu
 
 // payments routes
 $route['api/clinic/(:any)/pay']['POST'] = 'api/consultant/DoPayment/$1';
+$route['api/clinic/(:any)/pay/(:any)/complete']['POST'] = 'api/consultant/CompletePayment/$1/$2';
+
 $route['api/clinic/(:any)/payments/pending']['GET'] = 'api/consultant/ViewPaymentsPending/$1';
 $route['api/clinic/(:any)/payments/done']['GET'] = 'api/consultant/ViewPaymentsDone/$1';
 //endregion

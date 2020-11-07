@@ -444,8 +444,7 @@ class Consultant extends REST_Controller
 				if ($this->mlogin->check_valid_account($json_data['username'])) {
 
 					if (isset($this->mlogin->get_login_for_username($json_data['username'])->entity_id)) {
-
-//                        $this->ResendOTP_put($this->mlogin->get_login_for_username($json_data['username'])->entity_id);
+						//$this->ResendOTP_put($this->mlogin->get_login_for_username($json_data['username'])->entity_id);
 						$clinic_id = $this->mlogin->get_login_for_username($json_data['username'])->entity_id;
 
 						if ($this->motpcode->resend_otp($clinic_id)) {
@@ -563,13 +562,13 @@ class Consultant extends REST_Controller
 				if ($this->mclinic->valid_clinic($clinic_id)) {
 					foreach ($json_data['substitute'] as $substitute) {
 
-// Passing post array to the model.
+						// Passing post array to the model.
 						$this->mdoctor->set_data($substitute);
 
-// model it self will validate the input data
+						// model it self will validate the input data
 						if ($this->mdoctor->is_valid()) {
 
-// create the doctor record as the given data is valid
+						// create the doctor record as the given data is valid
 							$doctor = $this->mdoctor->create();
 
 							if (!is_null($doctor)) {
@@ -580,7 +579,7 @@ class Consultant extends REST_Controller
 							}
 						} else {
 							$errors['msg'] = 'Validation Failed.';
-// $errors['request_data'] = $substitute;
+							// $errors['request_data'] = $substitute;
 							$errors['errors'] = $this->mdoctor->validation_errors;
 							$validation_errors[] = $errors;
 						}
@@ -811,10 +810,10 @@ class Consultant extends REST_Controller
 
 					foreach ($json_data['sessions'] as $session) {
 
-// Passing post array to the model.
+						// Passing post array to the model.
 						$this->mclinicsession->set_data($session);
 
-// model it self will validate the input data
+						// model it self will validate the input data
 						if ($this->mclinicsession->is_valid()) {
 
 							$clinic_session = $this->mclinicsession->create($clinic_id);
@@ -834,7 +833,7 @@ class Consultant extends REST_Controller
 											$clinic_session->days[] = $session_days;
 
 										} else {
-//internal server error
+											//internal server error
 										}
 									} else {
 										$errors['msg'] = 'Validation Failed.';
@@ -844,7 +843,7 @@ class Consultant extends REST_Controller
 									}
 								}
 							} else {
-//internal server error
+								//internal server error
 							}
 							if (!is_null($clinic_session))
 								$inserted_records[] = $clinic_session;
@@ -921,8 +920,7 @@ class Consultant extends REST_Controller
 					if ($this->mclinicsession->valid_session($session_id)) {
 
 						$json_data = $this->put('json_data');
-
-//						if ($this->mclinicappointment->get_appointment_count($session_id, SessionStatus::PENDING) == 0) {
+						// if ($this->mclinicappointment->get_appointment_count($session_id, SessionStatus::PENDING) == 0) {
 						foreach ($json_data['sessions'] as $session) {
 
 							// Passing post array to the model.
@@ -973,14 +971,14 @@ class Consultant extends REST_Controller
 							$response->response['sessions'] = $sessions;
 							$this->response($response, REST_Controller::HTTP_OK);
 						}
-//						} else {
-//							$response->status = REST_Controller::HTTP_BAD_REQUEST;
-//							$response->status_code = APIResponseCode::BAD_REQUEST;
-//							$response->msg = 'You cannot change sessions with pending appointments. Try again later.';
-//							$response->error_msg = NULL;
-//							$response->response = NULL;
-//							$this->response($response, REST_Controller::HTTP_OK);
-//						} //end appointment count check id
+						//						} else {
+						//							$response->status = REST_Controller::HTTP_BAD_REQUEST;
+						//							$response->status_code = APIResponseCode::BAD_REQUEST;
+						//							$response->msg = 'You cannot change sessions with pending appointments. Try again later.';
+						//							$response->error_msg = NULL;
+						//							$response->response = NULL;
+						//							$this->response($response, REST_Controller::HTTP_OK);
+						//						} //end appointment count check id
 
 					} else {
 						$response->status = REST_Controller::HTTP_BAD_REQUEST;
@@ -1625,13 +1623,13 @@ class Consultant extends REST_Controller
 
 						if ($this->mclinicsessiontrans->finish_session($session_id)) {
 
-// $appointment = $this->mclinicappointment->get_next_appointment($clinic_id, $session_id, null);
+							// $appointment = $this->mclinicappointment->get_next_appointment($clinic_id, $session_id, null);
 
 							$response->status = REST_Controller::HTTP_OK;
 							$response->status_code = APIResponseCode::SUCCESS;
 							$response->msg = 'Session Finished Successfully';
 							$response->error_msg = null;
-// $response->response['appointment'] = null;
+							// $response->response['appointment'] = null;
 							$response->response['session_meta'] = $this->mclinicsession->get_session_meta($clinic_id, $session_id);
 							$this->response($response, REST_Controller::HTTP_OK);
 
@@ -2065,6 +2063,9 @@ class Consultant extends REST_Controller
 
 	}
 
+	/*
+	* PAYMENT ENDPOINTS
+	*/
 	public function ViewPaymentsDone_get($clinic_id)
 	{
 		// verify that the clinic exists
@@ -2164,7 +2165,7 @@ class Consultant extends REST_Controller
 						if (!is_null($receival_record)) {
 							$response->status = REST_Controller::HTTP_OK;
 							$response->status_code = APIResponseCode::SUCCESS;
-							$response->msg = 'Payment request Successful';
+							$response->msg = 'Payment Successful';
 							$response->error_msg = NULL;
 							$response->response['payment_request_id'] = $receival_record->id;
 							$this->response($response, REST_Controller::HTTP_OK);
@@ -2197,10 +2198,82 @@ class Consultant extends REST_Controller
 			$response->response = NULL;
 			$this->response($response, REST_Controller::HTTP_OK);
 		}
-
-		// $this->mclinicholidays->set_data($data);
-		// $this->mclinicholidays->set_data();
 	}
+
+
+	public CompletePayment_post($clinic, $order_id) {
+		$method = $_SERVER['REQUEST_METHOD'];
+		$response = new stdClass();
+
+		if ($method == 'POST') {
+
+			$check_auth_client = $this->mmodel->check_auth_client();
+
+			if ($check_auth_client == true) {
+				$data = $this->post('json_data');
+
+				$order = $this->payment_receivals->get_record($order_id);
+
+				if(null != $order) {
+					// Order Found. can be processed.
+					// check the status of the order.
+					$now = date("Y-m-d H:i:s");
+					$update_record = array(
+						'pay_type' => PaymentType::PayHere,
+						'ipg_response' => json_encode($data)
+					);
+
+					if($data->status == PayHerePaymentStatus::OK){
+						
+						// Payment Success
+						$update_record['collection_status'] = PaymentCollectionStatus::Collected;
+						$update_record['collected'] = $now;
+						$update_record['paid_status'] = PaidStatus::HandedOver;
+						$update_record['paid_on'] = $now;
+
+
+					} else {
+						
+						// Payment failed/Skip this
+						$update_record['collection_status'] = PaymentCollectionStatus::Pending;
+						$update_record['paid_status'] = PaidStatus::Pending;
+					}
+
+					$result  = $this->payment_receivals->complete_payment( $clinic,$order_id, $update_record);
+
+					if(true == $result){
+						//
+						$response->status = REST_Controller::HTTP_OK;
+						$response->status_code = APIResponseCode::SUCCESS;
+						$response->msg = 'Order updated successfully';
+						$response->response = NULL;
+						$response->error_msg = null;
+						$this->response($response, REST_Controller::HTTP_OK);
+
+					}else{
+						
+						$response->status = REST_Controller::HTTP_INTERNAL_SERVER_ERROR;
+						$response->status_code = APIResponseCode::INTERNAL_SERVER_ERROR;
+						$response->msg = 'Order failed to update';
+						$response->response = NULL;
+						$response->error_msg[] = 'Invalid order id';
+						$this->response($response, REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+					}
+
+				}else{
+
+					$response->status = REST_Controller::HTTP_NOT_FOUND;
+					$response->status_code = APIResponseCode::BAD_REQUEST;
+					$response->msg = 'Order not found';
+					$response->response = NULL;
+					$response->error_msg[] = 'Invalid order id';
+					$this->response($response, REST_Controller::HTTP_NOT_FOUND);
+
+				}
+			}
+		}
+	}
+
 
 	public function send_email_get()
 	{
@@ -2216,28 +2289,28 @@ class Consultant extends REST_Controller
 		);
 
 
-//        $config = array(
-//            'protocol' => 'smtp',
-//            'smtp_host' => 'mail.smartloan.lk',
-//            'smtp_port' => 587, //587
-//            'smtp_user' => 'noreply@smartloan.lk',
-//            'smtp_pass' => 'noreply//1',
-//            'mailtype' => 'html',
-//            'charset' => 'iso-8859-1',
-//            'newline' => "\r\n",
-//        );
+		//        $config = array(
+		//            'protocol' => 'smtp',
+		//            'smtp_host' => 'mail.smartloan.lk',
+		//            'smtp_port' => 587, //587
+		//            'smtp_user' => 'noreply@smartloan.lk',
+		//            'smtp_pass' => 'noreply//1',
+		//            'mailtype' => 'html',
+		//            'charset' => 'iso-8859-1',
+		//            'newline' => "\r\n",
+		//        );
 
 		$this->load->library('email', $config);
 		$ci = get_instance();
 		$ci->email->initialize($config);
 
-//        $ci->email->from('noreply@smartloan.lk', 'Smartloan.lk');
-//        $ci->email->to("info@smartloan.lk");
-//        $ci->email->subject("Message From Customer");
-//        $ci->email->message("Customer Name ");
-//        $ci->email->send();
+		//        $ci->email->from('noreply@smartloan.lk', 'Smartloan.lk');
+		//        $ci->email->to("info@smartloan.lk");
+		//        $ci->email->subject("Message From Customer");
+		//        $ci->email->message("Customer Name ");
+		//        $ci->email->send();
 		$data = null;
-//        $this->email->set_header('Content-Type', 'text/html');
+		//        $this->email->set_header('Content-Type', 'text/html');
 		$body = $this->load->view('template', $data, TRUE);
 		$ci->email->from('info@mynumber.lk', 'MyNumber');
 		$ci->email->to("bbb.navin@hotmail.com");
@@ -2245,7 +2318,7 @@ class Consultant extends REST_Controller
 		$ci->email->message($body);
 
 		var_dump($this->email->send());
-//       $this->load->view('template',$data);
+		//       $this->load->view('template',$data);
 	}
 
 	public function send_fcm_get()

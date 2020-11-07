@@ -57,18 +57,20 @@ class APIKeys{
 }
 
 class Payments{
-    const DEFAULT_CHARGE=30.00;
+    const DEFAULT_CHARGE= 50.00;
+    const DOCTORS_PAY = 30.00;
 }
 
 class PaymentCollectionStatus{
-	const Pending=0;
+	const Pending= 0;
 	const Collected = 1;
 	const Skipped = 3;
 }
 
 class PaymentPaidStatus{
-	const Pending=0;
+	const Pending = 0;
 	const Paid = 1;
+	const Failed = -1;
 }
 
 class SerialNumberStatus{
@@ -76,6 +78,25 @@ class SerialNumberStatus{
     const PENDING = 0;
 }
 
+
+class PayHerePaymentStatus{
+	const OK =2;
+	const PENDING =0;
+	const CANCELLED = -1;
+	const FAILED = -2;
+	const CHARGEDBACK = -3;
+}
+
+
+class PaymentType{
+	const PayHere = 1;
+	const SaleRep = 2;
+}
+
+class PaidStatus {
+	const Pending =1;
+	const HandedOver=2;
+}
 
 //class DateHelper
 //{
