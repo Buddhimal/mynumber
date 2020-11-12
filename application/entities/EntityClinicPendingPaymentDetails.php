@@ -26,7 +26,7 @@ class EntityClinicPendingPaymentDetails
     {
         $this->sessions[] = $session;
         $this->grand_total += $session->total;
-        $this->comision = ( ( $this->grand_total / 100 ) * Payments::PERCENTAGE );
+        $this->comision = ( ( $this->grand_total / 100 ) * Payments::get_percentage() );
         $this->netpay = $this->grand_total - $this->comision;
     }
 }
