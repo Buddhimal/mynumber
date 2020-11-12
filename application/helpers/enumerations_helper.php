@@ -59,6 +59,7 @@ class APIKeys{
 class Payments{
     const DEFAULT_CHARGE= 50.00;
     const DOCTORS_PAY = 30.00;
+    const PERCENTAGE = 60;
 }
 
 class PaymentCollectionStatus{

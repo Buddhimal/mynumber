@@ -68,6 +68,7 @@ class Auth extends REST_Controller
 
     public function checkin_post()
     {
+
         $response = new stdClass();
         try {
 

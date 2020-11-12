@@ -185,7 +185,7 @@ class Mpaymentreceivals extends CI_Model
 		
 		$this->db->trans_begin();
 		$this->db
-			->set($update_record)
+			->set($record)
 			->where('clinic_id', $clinic_id)
 			->where('id', $order_id)
 			->update($this->table);

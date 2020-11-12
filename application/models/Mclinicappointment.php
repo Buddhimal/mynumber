@@ -348,8 +348,7 @@ class Mclinicappointment extends CI_Model
 
     	$res= $this->db->query("SELECT
 											public.salutation,
-											public.first_name,
-											public.last_name,
+											clinic_appointments.patient_name,
 											clinic_appointments.patient_phone 
 										FROM
 											clinic_appointments
@@ -364,15 +363,13 @@ class Mclinicappointment extends CI_Model
 
     	return $res->result();
 
-
 	}
 
     public function get_appointment_patients_for_session($clinic_id,$on, $session_id){
 
     	$res= $this->db->query("SELECT
 											public.salutation,
-											public.first_name,
-											public.last_name,
+											clinic_appointments.patient_name,
 											clinic_appointments.patient_phone 
 										FROM
 											clinic_appointments

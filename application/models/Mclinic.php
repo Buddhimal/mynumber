@@ -211,6 +211,26 @@ class Mclinic extends CI_Model
 
     }
 
+    public function get_clinic_details_for_payment($clinic_id){
+
+		$query = $this->db->query("SELECT
+										clinic.clinic_name as first_name,
+										'Clinic' as last_name,
+										clinic.device_mobile,
+										clinic.email,
+										locations.street_address,
+										locations.city,
+										'Sri Lanka' AS country 
+									FROM
+										clinic
+										INNER JOIN locations ON clinic.location_id = locations.id
+									WHERE 
+										clinic.id='$clinic_id'");
+
+		return $query->result();
+
+	}
+
 
     public function valid_clinic($id)
     {

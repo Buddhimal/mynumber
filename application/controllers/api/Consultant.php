@@ -2007,6 +2007,8 @@ class Consultant extends REST_Controller
 					// get the list of session after the last paid date
 					$billable_sessions = $this->mclinicsessiontrans->get_sessions_tasks_completed_within($clinic_id, $date_last_paid);
 
+//					DatabaseFunction::last_query();
+
 					// list the consulted transactions + per charge from appointment trans per each session.
 					if (isset($billable_sessions) && count($billable_sessions) > 0) {
 
@@ -2168,6 +2170,7 @@ class Consultant extends REST_Controller
 							$response->msg = 'Payment Successful';
 							$response->error_msg = NULL;
 							$response->response['payment_request_id'] = $receival_record->id;
+							$response->response['clinic_details'] = $this->mclinic->get_clinic_details_for_payment($clinic_id);
 							$this->response($response, REST_Controller::HTTP_OK);
 						}
 					}
@@ -2201,7 +2204,7 @@ class Consultant extends REST_Controller
 	}
 
 
-	public CompletePayment_post($clinic, $order_id) {
+	public function CompletePayment_post($clinic, $order_id) {
 		$method = $_SERVER['REQUEST_METHOD'];
 		$response = new stdClass();
 
@@ -2223,7 +2226,7 @@ class Consultant extends REST_Controller
 						'ipg_response' => json_encode($data)
 					);
 
-					if($data->status == PayHerePaymentStatus::OK){
+					if($data['status'] == PayHerePaymentStatus::OK){
 						
 						// Payment Success
 						$update_record['collection_status'] = PaymentCollectionStatus::Collected;
