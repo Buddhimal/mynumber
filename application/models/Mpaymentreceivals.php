@@ -102,7 +102,7 @@ class Mpaymentreceivals extends CI_Model
 		$result_set = $this->db->select_max('collected')
 			->from($this->table)
 			->where('clinic_id', $clinic_id)
-			->where('collection_status', PaymentCollectionStatus::Paid)
+			->where('collection_status', PaymentCollectionStatus::Collected)
 			->where('is_active', 1)
 			->where('is_deleted', 0)->get();
 
