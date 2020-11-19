@@ -107,9 +107,10 @@ class Mclinicholidays extends CI_Model
         if ($date == null) {
             $date = date("Y");
         }
+		$to_date = $date+1;
 
         $start_date = date("Y-m-d", strtotime(sprintf("%s-01-01", $date)));
-        $end_date = date("Y-m-d", strtotime(sprintf("%s-12-31", $date)));
+        $end_date = date("Y-m-d", strtotime(sprintf("%s-12-31", $to_date)));
 
         $all_holidays = $this->db
             ->select(array('id', 'holiday', 'title', 'note'))
