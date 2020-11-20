@@ -2007,7 +2007,7 @@ class Consultant extends REST_Controller
 					// get the list of session after the last paid date
 					$billable_sessions = $this->mclinicsessiontrans->get_sessions_tasks_completed_within($clinic_id, $date_last_paid);
 
-//					DatabaseFunction::last_query();
+					// DatabaseFunction::last_query();
 
 					// list the consulted transactions + per charge from appointment trans per each session.
 					if (isset($billable_sessions) && count($billable_sessions) > 0) {
@@ -2155,6 +2155,8 @@ class Consultant extends REST_Controller
 
 				$data['clinic_id'] = $clinic_id;
 				$data['total'] = $clinic_payment_pendings->grand_total;
+				$data['commission'] = $clinic_payment_pendings->commission;
+				$data['net_pay'] = $clinic_payment_pendings->netpay;
 
 				$this->payment_receivals->set_data($data);
 
@@ -2223,18 +2225,17 @@ class Consultant extends REST_Controller
 					$now = date("Y-m-d H:i:s");
 					$update_record = array(
 						'pay_type' => PaymentType::PayHere,
-						'ipg_response' => json_encode($data)
+						'ipg_response' => json_encode($data),
+						'payment_number' => $data->paymentNo,
+						'updated' => $now,
 					);
 
-					if($data['status'] == PayHerePaymentStatus::OK){
-						
+					if( $data['status'] == PayHerePaymentStatus::OK ) {
 						// Payment Success
 						$update_record['collection_status'] = PaymentCollectionStatus::Collected;
 						$update_record['collected'] = $now;
 						$update_record['paid_status'] = PaidStatus::HandedOver;
 						$update_record['paid_on'] = $now;
-
-
 					} else {
 						
 						// Payment failed/Skip this

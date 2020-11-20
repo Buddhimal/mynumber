@@ -270,7 +270,7 @@ class Mclinicsessiontrans extends CI_Model
 
 	}
 
-	public function get_sessions_tasks_completed_within($clinic_id, $from)
+	public function get_sessions_tasks_completed_within( $clinic_id, $from )
 	{
 		$output = null;
 
@@ -283,8 +283,6 @@ class Mclinicsessiontrans extends CI_Model
 			->where("t.is_deleted=0 and t.is_active=1")
 			->where("s.clinic_id", $clinic_id)
 			->get();
-
-		// DatabaseFunction::last_query();
 
 		if ($result_set->num_rows() > 0) {
 			foreach ($result_set->result() as $session_data) {

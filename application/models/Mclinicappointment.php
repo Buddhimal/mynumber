@@ -269,11 +269,11 @@ class Mclinicappointment extends CI_Model
         $grand_total = 0;
         foreach ($sessions as $session_task) {
 
-            $result_set = $this->db->select("count(t.id) as appointment_count, sum(a.appointment_charge) as session_total")
+            $result_set = $this->db->select("count(t.id) as appointment_count, sum(a.appointment_charge) as session_total, sum(a.doctors_pay) as commission, sum(a.net_pay) as net_amount")
                 ->from("$this->table a")
                 ->join("clinic_appointment_trans t", "t.clinic_appointment_id = a.id")
-                ->where("a.session_id", $session_task->clinic_session_id)
-                ->where("a.is_active = 1 and a.is_deleted = 0 ")
+                ->where( "a.session_id", $session_task->clinic_session_id )
+                ->where( "a.is_active = 1 and a.is_deleted = 0 ")
                 ->where_in("a.appointment_status", array(AppointmentStatus::CONSULTED, AppointmentStatus::PAYMENT_COLLECT))
                 ->group_by("a.session_id")
                 ->get();
@@ -285,6 +285,9 @@ class Mclinicappointment extends CI_Model
 
                 $session_task->total_appointments = $result_set->row('appointment_count');
                 $session_task->total = $result_set->row('session_total');
+                $session_task->commission = $result_set->row('commission');
+                $session_task->net_amount = $result_set->row('net_amount');
+
                 $output->add_session($session_task);
             }
         }
@@ -347,46 +350,41 @@ class Mclinicappointment extends CI_Model
     public function get_appointment_patients($clinic_id,$from,$to){
 
     	$res= $this->db->query("SELECT
-											public.salutation,
-											clinic_appointments.patient_name as first_name,
-											'' as last_name,
-											clinic_appointments.patient_phone 
-										FROM
-											clinic_appointments
-											INNER JOIN clinic_session ON clinic_appointments.session_id = clinic_session.id
-											INNER JOIN public ON clinic_appointments.patient_id = public.id 
-										WHERE
-											clinic_appointments.is_canceled = 0 
-											AND clinic_session.clinic_id = '$clinic_id'
-											AND clinic_appointments.appointment_status NOT IN ( 0, 4, 7 ) 
-											AND clinic_appointments.appointment_date BETWEEN '$from' 
-											AND '$to'");
-
+									public.salutation,
+									clinic_appointments.patient_name as first_name,
+									'' as last_name,
+									clinic_appointments.patient_phone 
+								FROM
+									clinic_appointments
+									INNER JOIN clinic_session ON clinic_appointments.session_id = clinic_session.id
+									INNER JOIN public ON clinic_appointments.patient_id = public.id 
+								WHERE
+									clinic_appointments.is_canceled = 0 
+									AND clinic_session.clinic_id = '$clinic_id'
+									AND clinic_appointments.appointment_status NOT IN ( 0, 4, 7 ) 
+									AND clinic_appointments.appointment_date BETWEEN '$from' 
+									AND '$to'");
     	return $res->result();
-
 	}
 
     public function get_appointment_patients_for_session($clinic_id,$on, $session_id){
 
     	$res= $this->db->query("SELECT
-											public.salutation,
-											clinic_appointments.patient_name as first_name,
-											'' as last_name,
-											clinic_appointments.patient_phone 
-										FROM
-											clinic_appointments
-											INNER JOIN clinic_session ON clinic_appointments.session_id = clinic_session.id
-											INNER JOIN public ON clinic_appointments.patient_id = public.id 
-										WHERE
-											clinic_appointments.is_canceled = 0 
-											AND clinic_session.clinic_id = '$clinic_id'
-											AND clinic_appointments.appointment_status NOT IN ( 0, 4, 7 ) 
-											AND clinic_appointments.appointment_date = '$on' 
-											AND clinic_appointments.session_id = '$session_id'");
-
+    								public.salutation,
+    								clinic_appointments.patient_name as first_name,
+    								'' as last_name,
+    								clinic_appointments.patient_phone 
+    							FROM
+    								clinic_appointments
+    								INNER JOIN clinic_session ON clinic_appointments.session_id = clinic_session.id
+    								INNER JOIN public ON clinic_appointments.patient_id = public.id 
+    							WHERE
+    								clinic_appointments.is_canceled = 0 
+    								AND clinic_session.clinic_id = '$clinic_id'
+    								AND clinic_appointments.appointment_status NOT IN ( 0, 4, 7 ) 
+    								AND clinic_appointments.appointment_date = '$on' 
+    								AND clinic_appointments.session_id = '$session_id'");
     	return $res->result();
-
-
 	}
 
 }

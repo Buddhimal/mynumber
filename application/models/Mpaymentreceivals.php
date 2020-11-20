@@ -122,7 +122,7 @@ class Mpaymentreceivals extends CI_Model
 			->from($this->table)
 			->where('clinic_id', $clinic_id)
 			->where('collection_status', PaymentCollectionStatus::Collected)
-//			->where('paid_status', PaymentPaidStatus::Paid)
+			// ->where('paid_status', PaymentPaidStatus::Paid)
 			->where('is_active', 1)
 			->where('is_deleted', 0)->get();
 
