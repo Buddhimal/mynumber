@@ -1327,7 +1327,7 @@ class Consultant extends REST_Controller
 						$response->msg = 'Session Details for today';
 						$response->error_msg = NULL;
 						$response->response['sessions'] = $sessions;
-						$response->response['image'] = 'https://public.mynumber.lk/images/advert-doctor-ratio.png';
+						$response->response['image'] = $this->mappversion->get_image_name();
 						$this->response($response, REST_Controller::HTTP_OK);
 					} else {
 						$response->status = REST_Controller::HTTP_OK;
