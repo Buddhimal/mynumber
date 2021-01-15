@@ -19,6 +19,8 @@ class EntityClinicSessionTask
 
     public $total_appointments = null;
     public $total = null;
+    public $commission = null;
+    public $net_amount = null;
 
 //	public $appointments = array();
 
